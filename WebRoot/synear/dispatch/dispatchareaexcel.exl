@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>dispatchareaqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>单据号##单据日期##KA系统##确认日期##KA门店##配送部门##业务员##配送客户名称##存货编码##存货名称##订单数量##配送数量##配送价税合计##KA价税合计##备注</web:col>
+  <web:key>VRECEIPTCODE##DBILLDATE##SYSCUSTNAME##ACCDATE##CUSTNAME##DEPTNAME##PSNNAME##OCUSTNAME##INVCODE##INVNAME##NNUMBER##SUREFNNUMBER##SUREMONEY##KAMONEY##VNOTE</web:key>
+  <web:name>区域配送量查询</web:name>
+</web:page>
+
+
+

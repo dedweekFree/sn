@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>库位信息</title>
+</head>
+
+<body>
+<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:900px;height:500px;visibility:block;z-index:1"> 
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%">
+        <tr>
+		<td>
+			<IFRAME style="width:200px;height:100%" name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="unusestockleft.aspx" frameBorder=0 
+			width="50%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+	       </td>
+	       <td>
+			<IFRAME style="width:700px;height:200%" name="result1" id="result1" marginWidth=0 marginHeight=0 src="unusestockright.aspx" frameBorder=0 
+			width="120%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+	       </td>
+       </tr>
+     </table>
+</div>
+</body>
+</html>

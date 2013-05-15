@@ -1,0 +1,492 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===销售计划===</title>
+<script language="javascript" src="../../../js/PlanGridEdit.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var bData1=new Array(); 
+bData1=[
+      ['产品代码','产品名称','产品规格','原报计划','本月计划','下月计划','状态','nc主键','0']
+ #set($i=1)
+ #foreach($m in $getFzPlanProduct)
+      ,['$m.ITEMCODE','$m.ITEMDESC','$m.ITEMSPEC','$m.NEXTREQUIREQTY','0','0','N','$m.NC_PK','$i']
+   #set($i=$i+1)
+ #end
+]
+var pageSize=50;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked onclick=\"javascript:setStatus("+i+")\">";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' onclick=\"javascript:setStatus("+i+")\">";
+	  }
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  for(var j=4;j<6;j++){
+	     with (row.insertCell())
+             {
+	       innerHTML=rdata[(page-1)*pageSize+i][j];
+	       if(rdata[(page-1)*pageSize+i][j]!='0'){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	     }
+	 }
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="O")
+        bstatus=(bData1[i][3]>0);
+    else
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+	//alert(bstatus)
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ toPage(1);
+}
+
+function save(step,status)
+{
+  savepage(pageno);
+  var datahtml="";
+  var num=0;
+  var nextnum=0;
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' &&(bData1[i][4]>0 || bData1[i][5]>0)){
+       datahtml+="<input type=hidden name=prodpk value='"+bData1[i][7]+"'>";
+       datahtml+="<input type=hidden name=plannum value='"+bData1[i][4]+"'>";
+       num+=parseInt(bData1[i][4]);
+       datahtml+="<input type=hidden name=nextplan value='"+bData1[i][5]+"'>";
+       nextnum+=parseInt(bData1[i][5]);
+    }
+ }
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ var f_id="SAF"+getTimeStr();
+ var pno="$form_begintime".split("-");
+ var mpno='M'+pno[0]+pno[1];
+ datahtml+="<input type=hidden name=billno value='"+f_id+"'>";
+ datahtml+="<input type=hidden name=plantype value='$form_plantype'>";
+ datahtml+="<input type=hidden name=custcls value='$form_custcls'>";
+ datahtml+="<input type=hidden name=plancls value='$form_plancls'>";
+ datahtml+="<input type=hidden name=periodno value='"+mpno+"'>";
+ datahtml+="<input type=hidden name=custpk value='$form_custpk'>";
+ datahtml+="<input type=hidden name=allnum value='"+num+"'>";
+ datahtml+="<input type=hidden name=nextallnum value='"+nextnum+"'>";
+ datahtml+="<input type=hidden name=memo value='"+document.all.remark.value+"'>";
+ datahtml+="<input type=hidden name=fstep value='"+step+"'>";
+ datahtml+="<input type=hidden name=fstatus value='"+status+"'>";
+ #foreach($m in $getFzCustArea)
+    datahtml+="<input type=hidden name=areacode value='$m.DEPTCODE'>";
+ #end
+ #foreach($m in $getCustomerInfo)
+    datahtml+="<input type=hidden name=custdocpk value='$m.PK_CUMANDOC'>";
+ #end 
+ subdata.innerHTML=datahtml;
+ #foreach($m in $getFzCustArea)
+    #if($m.DEPTTYPE=='B')
+       if(status=='B'){
+          form_submit.fstep.value='1';
+	  form_submit.fstatus.value='F';
+       }
+    #end
+ #end
+ form_submit.action="testPlan.aspx";
+ form_submit.submit();
+}
+
+function testok()
+{		
+   form_submit.action="newSalePlanSubmit.aspx";
+   form_submit.submit();
+}
+
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][6]='Y';
+      else  rdata[(page-1)*pageSize+i][6]='N';
+      for(var j=4;j<6;j++){
+        if(table6.rows[i].cells[j+1].innerText==""){
+	  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+        }
+      }
+      bData1[rdata[(page-1)*pageSize+i][8]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function document.onkeydown(){
+   key=event.keyCode;
+   if(key==83 && event.ctrlKey){
+    save();
+    return;
+   }
+   if(key==38)   //向上箭头
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+        var ly=event.srcElement.parentNode.offsetTop;
+	var hy=mdiv.scrollTop;
+	if(ly>hy && (ly-hy<2*ftr.offsetHeight)) mdiv.scrollTop=mdiv.scrollTop-ftr.offsetHeight*2; 
+  	//window.status=event.y+","+mdiv.offsetTop;
+	//form2.elements[0].value=ftr.offsetHeight;
+     }
+     return;
+   }
+   if(key==34)   //page down
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }else{
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }
+     return;
+   }
+   if(key==33)   //page up
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }else{
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }
+   }
+   return;
+}
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+
+function init()     
+{  
+   var pno="$form_begintime".split("-");
+   document.all.jhqj.innerHTML='M'+pno[0]+pno[1];
+}
+
+function setStatus(lineno)
+{
+    allPlan(event.srcElement,lineno)
+}
+
+function allPlan(element,oldvalue)
+{
+  var num=0;
+  var nextnum=0;
+  savepage(pageno);
+  for(var i=1;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' &&(bData1[i][4]>0 || bData1[i][5]>0)){
+       num+=parseInt(bData1[i][4]);
+       nextnum+=parseInt(bData1[i][5]);
+    }
+  }
+  document.all.byjh.innerHTML=num;
+  document.all.xyjh.innerHTML=nextnum;
+}
+
+</script>
+
+
+<body onload="init()">
+
+<p align="left"><font size="4"><b>新建销售计划</b></font>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<table  border="0" cellpadding="0" cellspacing="2" width="100%">
+    <tr>
+      <td height="19" width="7%">计划期间</td> <td height="19" width="15%"><span id="jhqj"></span></td>
+     #foreach($m in $getFzCustArea)
+       <td height="19" width="7%">客户名称/代码</td> <td height="19" width="15%">$m.ORGDESC/$m.ORGCODE</td>
+     #end
+    </tr>
+    <tr>
+      <td height="19" width="7%">本月计划</td> <td height="19" width="15%"><span id="byjh">0</span></td>
+      <td height="19" width="7%">下月计划</td> <td height="19" width="15%"><span id="xyjh">0</span></td>
+     </tr>
+     <tr>
+      <td height="19" width="7%">备注</td> <td height="19" colspan=3><textarea name="remark" cols="80" rows="2"></textarea></td>
+    </tr>
+</table>      
+</div>
+<br>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()"> 
+状态：<select  onchange="search()">
+            <option value='all' selected>全部</option>
+	    <option value='N'>未报产品</option>
+	    <option value='Y'>本月计划</option>
+	    <option value='O'>原报计划</option>
+	    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">        
+</form>
+</div>
+<div class="mainDiv" id="mdiv"> 
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+      <td height="19" bgcolor="#EFEFEF" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td height="19" bgcolor="#EFEFEF" width="15%" Name="pcode" >产品代码</td>
+      <td height="19" bgcolor="#EFEFEF" width="23%" Name="pname">产品名称</td>
+      <td height="19" bgcolor="#EFEFEF" width="9%" Name="pspec">产品规格</td>
+      <td height="19" bgcolor="#EFEFEF" width="9%" Name="oldnum">原报计划</td>
+      <td height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Int">本月计划</td>
+      <td height="19" bgcolor="#EFEFEF" bgcolor="#EFEFEF" width="10%" Name="costp" EditType="TextBox" DataType="Int">下月计划</td>
+    </tr>
+</table>
+ </div>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value=" 保  存 " id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value=" 提  交 " id="btnSave2">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:window.location='salePlan.aspx';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+btnSave.onclick=function()
+{
+   save(0,'N');	
+}
+//单击“提交”按钮
+btnSave2.onclick=function()
+{
+   save(0,'B');	
+}
+
+</script>
+<script>
+	 EditTables(table6);
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="newSalePlanSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

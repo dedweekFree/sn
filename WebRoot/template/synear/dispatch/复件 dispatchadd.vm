@@ -1,0 +1,1171 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>配送单添加</title>
+<script src="../../../js/sunnyfunc.js"></script>
+<script>
+var submitok=false;
+var ChosedList=new Array();
+var header=41;		//定单头的个数
+var thisCol=23;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=10;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+   var datatb;
+var data=new Array();//单个记录元素数据数组
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+
+
+function addRow() 
+{  
+     var tempR=document.all.tb.insertRow();
+	 tempR.bgcolor="#FFFFFF";
+	 var temp1=tempR.insertCell();	
+	 var temp2=tempR.insertCell();
+	 var temp3=tempR.insertCell();	
+	 var temp4=tempR.insertCell();	
+	 var temp5=tempR.insertCell();
+	 var temp6=tempR.insertCell();
+
+	 var temp9=tempR.insertCell();
+	 var temp10=tempR.insertCell();
+	 var temp13=tempR.insertCell();
+	 var temp14=tempR.insertCell();
+	 var temp12=tempR.insertCell();
+
+	 var temp7=tempR.insertCell();
+	 var temp8=tempR.insertCell();
+	 var temp11=tempR.insertCell();
+	 
+	 var st = parseInt(row)+parseInt(1);
+
+         temp1.innerHTML="<input name=\"invcode\" id='invcode"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onkeydown =\"togetinv("+row+",document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode"+row+"'))\" ><input type=\"hidden\" name=\"pk_invbasdoc\" id='pk_invbasdoc"+row+"'><input type=\"hidden\" name=\"pk_invmandoc\" id='pk_invmandoc"+row+"'><input type=\"hidden\" name=\"pk_measdoc\" id='pk_measdoc"+row+"'><input type=\"hidden\" name=\"fpk_measdoc\" id='fpk_measdoc"+row+"'><input type=\"button\" value=\"...\"  onclick=\"togetmont('cpquery.aspx?row="+row+"',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)\"><input type=hidden name=ct id='ct"+row+"' value='"+st+"'>";
+         temp2.innerHTML="<input name=\"invname\"  id='invname"+row+"'  type=\"text\" class=\"login3\" style=\"width:200\" readonly>";
+         temp3.innerHTML="<input name=\"invspec\" id='invspec"+row+"' type=\"text\" class=\"login3\" style=\"width:80\"  readonly>";
+	 temp4.innerHTML="<input name=\"nnumber\" id='nnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tochecknnumber("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\">";   
+	 temp5.innerHTML="<input name=\"fnnumber\" id='fnnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tockoutnnumber("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\"><input name=\"fnumber\" id='fnumber"+row+"' type=\"hidden\"><input name=\"mainmeasrate\" id='mainmeasrate"+row+"' type=\"hidden\">";
+	 temp6.innerHTML="<input name=\"taxrate\" id='taxrate"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"checktaxrate("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"><input name=\"pk_taxitems\" id='pk_taxitems"+row+"' type=\"hidden\">";
+
+	 temp9.innerHTML="<div align='center'><input name=\"money\" id='money"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changefmeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>";
+	 temp10.innerHTML="<div align='center'><input name=\"hmoney\" id='hmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changemeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>"; 
+	 temp13.innerHTML="<div align='center'><input name=\"notaxmoney\" id='notaxmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changenotaxmoney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>"; 
+	 temp14.innerHTML="<div align='center'><input name=\"taxmny\" id='taxmny"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changetaxmny("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>"; 
+	 temp12.innerHTML="<div align='center'><input name=\"taxmoney\" id='taxmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changetaxmoney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>"; 
+
+	 temp7.innerHTML="<div align='center'><input name=\"omoney\" id='omoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changeofmeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"></div>";
+	 temp8.innerHTML="<div align='center'><input name=\"ohmoney\" id='ohmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changeomeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"></div>"; 
+	 temp11.innerHTML="<div align='center'><input name=\"otaxmoney\" id='otaxmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changeotaxmoney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"></div>"; 
+	 
+	
+         document.form1.elements[row*thisCol+header].focus();
+	 row=row+1;
+     tempR=document.all.tb.insertRow();
+     temp1=tempR.insertCell(); 
+     temp1.innerHTML="<table id=\"dtb\"></table>";
+     temp1.colSpan=10; 
+}
+function spellStr(step,fstatus) 
+{
+    if(this.form1.opkcubasdoc.value == ""){
+        alert("原客户不能为空");
+	return false;
+    }
+    if(this.form1.odeptid.value == ""){
+        alert("原销售部门不能为空");
+	return false;
+    }
+    if(this.form1.osalezuzhicode.value == ""){
+        alert("原销售组织不能为空");
+	return false;
+    }
+    if(this.form1.pkcubasdoc.value == ""){
+        alert("目的客户不能为空");
+	return false;
+    }
+    if(this.form1.deptid.value == ""){
+        alert("目的销售部门不能为空");
+	return false;
+    }
+    if(this.form1.salezuzhicode.value == ""){
+        alert("目的销售组织不能为空");
+	return false;
+    }
+   var str="";
+   var spell_sql="";
+
+   var b_sql="";
+   var allmoney = 0;
+   for(i=0;i<row;i++){
+	if(document.getElementById("pk_invbasdoc"+i).value!="" && document.getElementById("nnumber"+i).value!=""){
+	   if(document.getElementById("nnumber"+i).value!=""){
+	      if(isNaN(document.getElementById("nnumber"+i).value))
+	      { 
+	         alert("订单件数必须为数字");
+	         document.getElementById("nnumber"+i).focus();
+	         return;
+	      }  
+           }else{
+	      document.getElementById("nnumber"+i).value=0;
+	   }
+	   if(document.getElementById("money"+i).value!=""){
+	      if(isNaN(document.getElementById("money"+i).value))
+              { 
+                 alert("无税单价必须为数字");
+                 document.getElementById("money"+i).focus();
+                 return;
+              } 
+	   }else{
+	      document.getElementById("money"+i).value=0;
+	   }
+	   if(document.getElementById("nnumber"+i).value!="0" || document.getElementById("money"+i).value!="0"){
+             b_sql="have";
+	   } 
+	}
+    }
+    if(b_sql==""){
+	  alert("您没有录入配送单明细，请录入！！！");
+          return false;
+   } 
+  document.form1.fstatus.value = step;
+  document.form1.csaleid.value = getTimeStr();
+  if(fstatus == 'N'){
+     document.getElementById('B2').disabled = true;
+     document.getElementById('B22').disabled = true;
+  }else if(fstatus == 'Y'){
+     document.getElementById('B2').disabled = true;
+     document.getElementById('B22').disabled = true;
+  }
+  //this.form1.action='dispatchsaveadd.aspx';
+  //this.form1.target='dataframe';
+  //document.form1.submit(); csaleid
+  this.form1.target='dataframe'
+  form1.action="testdispatchcode.aspx";
+  form1.submit();
+}
+
+function testok()
+{  
+   form1.action="dispatchsaveadd.aspx";
+   form1.submit();
+}
+
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   if(date.getHours()<10){
+	   str = str+"0"+date.getHours();
+   }else{
+	   str = str+date.getHours();
+   }
+   if(date.getMinutes()<10){
+	   str = str+"0"+date.getMinutes();
+   }else{
+	   str = str+date.getMinutes();
+   }
+   if(date.getSeconds()<10){
+	   str = str+"0"+date.getSeconds();
+   }else{
+	   str = str+date.getSeconds();
+   }
+   return str;  
+}
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ }
+ function osetVals(dm,mc,code) {
+      form1.osalezuzhicode.value=dm;
+      form1.osalezuzhi.value=mc;
+ }
+ function setVals(dm,mc,code) {
+      form1.salezuzhicode.value=dm;
+      form1.salezuzhi.value=mc;
+ }
+ function osetdept(dm,mc,code) {
+      form1.odeptid.value=dm;
+      form1.odeptname.value=mc;
+ }
+ function setdept(dm,mc,code) {
+      form1.deptid.value=dm;
+      form1.deptname.value=mc;
+ }
+ function tochecknnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("nnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("nnumber"+i).value!=""){
+      if(isNaN(document.getElementById("nnumber"+i).value))
+      { 
+	 alert("订单件数必须为数字");
+	 document.getElementById("nnumber"+i).select();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("nnumber"+i).value) >= 0){
+		 document.getElementById("fnnumber"+i).value = parseFloat(document.getElementById("nnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			   document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			   document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+	   }else{
+	        alert("订单件数不能为负数");
+	        document.getElementById("nnumber"+i).select();
+	        return false;
+	   }
+      }
+    }
+ }
+ function tockoutnnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("fnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("fnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("fnnumber"+i).value))
+      { 
+	 alert("订单袋数必须为数字");
+	 document.getElementById("fnnumber"+i).select();
+	 return false;
+      } else{
+          if(parseFloat(document.getElementById("fnnumber"+i).value) >= 0 && document.getElementById("fnnumber"+i).value.indexOf(".") == -1){
+		 document.getElementById("nnumber"+i).value = parseFloat(document.getElementById("fnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			     document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			     document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+           }else{
+	         alert("订单袋数不能为负数或者小数");
+	        document.getElementById("fnnumber"+i).select();
+	        return false;
+	   }
+      }
+    }
+ }
+ function changeofmeney(i,invname,custname){
+    if(document.getElementById("omoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("原客户不能为空");
+	       document.getElementById("omoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("omoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("omoney"+i).value)){
+	       alert("原客户无税单价必须为数字");
+	       document.getElementById("omoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("omoney"+i).value) < 0){
+	       alert("原客户无税单价不能小于0");
+               document.getElementById("omoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("ohmoney"+i).value =(parseFloat(document.getElementById("omoney"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4);
+    document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("omoney"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+ }
+ function changeomeney(i,invname,custname){
+    if(document.getElementById("ohmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("原客户不能为空");
+	       document.getElementById("ohmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("ohmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("ohmoney"+i).value)){
+	       alert("原客户含税单价必须为数字");
+	       document.getElementById("ohmoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("ohmoney"+i).value) < 0){
+	       alert("原客户含税单价不能小于0");
+               document.getElementById("ohmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+ }
+ function changeotaxmoney(i,invname,custname){
+    if(document.getElementById("otaxmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("原客户不能为空");
+	       document.getElementById("otaxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("otaxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("otaxmoney"+i).value)){
+	       alert("原客户含税金额必须为数字");
+	       document.getElementById("otaxmoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("otaxmoney"+i).value) < 0){
+	       alert("原客户含税金额不能小于0");
+               document.getElementById("otaxmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("ohmoney"+i).value = (parseFloat(document.getElementById("otaxmoney"+i).value)/parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+ }
+ function changefmeney(i,invname,custname){
+    if(document.getElementById("money"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("money"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("money"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("money"+i).value)){
+	       alert("目的客户无税单价必须为数字");
+	       document.getElementById("money"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("money"+i).value) < 0){
+	       alert("目的客户无税单价不能小于0");
+               document.getElementById("money"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("hmoney"+i).value =(parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+    document.getElementById("notaxmoney"+i).value =(parseFloat(document.getElementById("money"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2) ;
+    document.getElementById("taxmny"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value)-parseFloat(document.getElementById("notaxmoney"+i).value)).toFixed(2) ;
+ }
+ function changemeney(i,invname,custname){
+    if(document.getElementById("hmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("hmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("hmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("hmoney"+i).value)){
+	       alert("目的客户含税单价必须为数字");
+	       document.getElementById("hmoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("hmoney"+i).value) < 0){
+	       alert("目的客户含税单价不能小于0");
+               document.getElementById("hmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+    document.getElementById("notaxmoney"+i).value = (parseFloat(document.getElementById("money"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+    document.getElementById("taxmny"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value)-parseFloat(document.getElementById("notaxmoney"+i).value)).toFixed(2);
+ }
+ function checktaxrate(i,invname,custname){
+    if(document.getElementById("taxrate"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("taxrate"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("taxrate"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("taxrate"+i).value)){
+	       alert("税率必须为数字");
+	       document.getElementById("taxrate"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("taxrate"+i).value) < 0){
+	       alert("税率不能小于0");
+               document.getElementById("taxrate"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("notaxmoney"+i).value = (parseFloat(document.getElementById("money"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2) ;
+    document.getElementById("taxmny"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value)-parseFloat(document.getElementById("notaxmoney"+i).value)).toFixed(2);
+ }
+ function changenotaxmoney(i,invname,custname){
+     if(document.getElementById("notaxmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("notaxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("notaxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("notaxmoney"+i).value)){
+	       alert("目的客户无税金额必须为数字");
+	       document.getElementById("notaxmoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("notaxmoney"+i).value) < 0){
+	       alert("目的客户无税金额不能小于0");
+               document.getElementById("notaxmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("notaxmoney"+i).value)/parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4) ;
+    document.getElementById("hmoney"+i).value =(parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4);
+    document.getElementById("taxmoney"+i).value =(parseFloat(document.getElementById("notaxmoney"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(2) ;
+    document.getElementById("taxmny"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value) - parseFloat(document.getElementById("notaxmoney"+i).value)).toFixed(2);
+ }
+ function changetaxmny(i,invname,custname){
+     if(document.getElementById("taxmny"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("taxmny"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("taxmny"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("taxmny"+i).value)){
+	       alert("目的客户税额必须为数字");
+	       document.getElementById("taxmny"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("taxmny"+i).value) < 0){
+	       alert("目的客户税额不能小于0");
+               document.getElementById("taxmny"+i).select();
+	       return false;
+	    }
+	       if(parseFloat(document.getElementById("taxrate"+i).value) == "0"){
+                    if(parseFloat(document.getElementById("taxmny"+i).value) != "0"){
+                        alert("目的客户税额必须为0");
+                        document.getElementById("taxmny"+i).select();
+			return false;
+		    }
+		}else if(parseFloat(document.getElementById("taxrate"+i).value) != "0"){
+		    if(parseFloat(document.getElementById("taxmny"+i).value) == "0"){
+                        alert("目的客户税额不能为0");
+                        document.getElementById("taxmny"+i).select();
+			return false;
+		    }else{
+		        document.getElementById("taxmoney"+i).value =(parseFloat(document.getElementById("taxmny"+i).value)*(100+parseFloat(document.getElementById("taxrate"+i).value))/parseFloat(document.getElementById("taxrate"+i).value)).toFixed(2) ;
+		        document.getElementById("notaxmoney"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value) - parseFloat(document.getElementById("taxmny"+i).value)).toFixed(2);
+		        document.getElementById("money"+i).value =(parseFloat(document.getElementById("notaxmoney"+i).value)/parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4) ;
+		        document.getElementById("hmoney"+i).value =(parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4);
+		    }
+		}
+	   }
+    }
+    function changetaxmoney(i,invname,custname){
+     if(document.getElementById("taxmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("taxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("taxmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("taxmoney"+i).value)){
+	       alert("目的客户含税金额必须为数字");
+	       document.getElementById("taxmoney"+i).select();
+	       return false;
+	    }
+	    if(parseFloat(document.getElementById("taxmoney"+i).value) < 0){
+	       alert("目的客户含税金额不能小于0");
+               document.getElementById("taxmoney"+i).select();
+	       return false;
+	    }
+	    document.getElementById("hmoney"+i).value =(parseFloat(document.getElementById("taxmoney"+i).value)/parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+	    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+	    document.getElementById("notaxmoney"+i).value = (parseFloat(document.getElementById("money"+i).value) * parseFloat(document.getElementById("nnumber"+i).value)).toFixed(2);
+	    document.getElementById("taxmny"+i).value = (parseFloat(document.getElementById("taxmoney"+i).value) - parseFloat(document.getElementById("notaxmoney"+i).value)).toFixed(2);
+	 }
+    }
+ function togetmont(url,bb,cc){
+    if(bb == ""){
+       alert("原客户不能为空");
+       return false;
+    }
+    if(cc == ""){
+       alert("目的客户不能为空");
+       return false;
+    }
+    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+ }
+ function togetinv(i,bb,cc,dd){
+    key=event.keyCode;
+    if(dd.value != ""){
+       if(key == 13){
+           if(bb == ""){
+	       alert("原客户不能为空");
+	       dd.value = "";
+	       return false;
+	    }
+	    if(cc == ""){
+	       alert("目的客户不能为空");
+	       dd.value = "";
+	       return false;
+	    } 
+           document.form1.iii.value = i ;
+	   window.open('nccpquery.aspx?xtype=1&row='+i+'&zjmcode='+dd.value,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+       }
+    }
+ }
+ function togetoldcust(url){
+        key=event.keyCode;
+        if(document.form1.ocustname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetnewcust(url){
+        key=event.keyCode;
+        if(document.form1.custname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetoldsale(url){
+        key=event.keyCode;
+        if(document.form1.osaler.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetnewsale(url){
+        key=event.keyCode;
+        if(document.form1.osaler.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<form name="form1" method='post' action="">
+<input type="hidden" name="F_id">
+<input type="hidden" name="csaleid">
+<input type="hidden" name="iii">
+<input type="hidden" name="cpcode">
+<input type="hidden" name="fstatus">
+<input type="hidden" name="pk_pricegroupcorp" id="pk_pricegroupcorp">
+<input type="hidden" name="opk_pricegroupcorp" id="opk_pricegroupcorp">
+<input type="hidden" name="kppk_cumandoc" id="kppk_cumandoc">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">原客户</font></td>
+        <td><input type="text" name="ocustname" id="ocustname" onkeydown="togetoldcust('oldcustquery.aspx?invname='+document.form1.ocustname.value)"><input type="hidden" name="ocustcode" id="ocustcode"><input type="hidden" name="opkcubasdoc" id="opkcubasdoc"><input type="hidden" name="opkcumandoc" id="opkcumandoc"><input type="button" value="..." onclick="togetmont('okhquery.aspx')"></td>
+	<td height="24" nowrap align="right"><font color="blue">原销售部门</font></td>
+        <td><input type="text" name="odeptname" readonly><input type="hidden" name="odeptid"><input type="button" value="..." onclick="togetmont('odeptquery.aspx')"></td>
+	<td height="24" nowrap align="right">原业务员</td>
+	<td><input type="text" name="osaler" onkeydown="togetoldsale('oldsalequery.aspx?invname='+document.form1.osaler.value)"><input type="hidden" name="osalerid"><input type="button" value="..." onclick="togetmont('oywyquery.aspx')"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">原销售组织</font></td>
+	<td><input type="text" name="osalezuzhi" readonly><input type="hidden" name="osalezuzhicode" id="osalezuzhicode"><input type="button" value="..." onclick="togetmont('osalestruquery.aspx')"></td>
+        <td height="24" nowrap align="right"><font color="blue">目的客户</font></td>
+        <td><input type="text" name="custname" onkeydown="togetnewcust('newcustquery.aspx?invname='+document.form1.custname.value)"><input type="hidden" name="custcode" id="custcode"><input type="hidden" name="pkcubasdoc" id="pkcubasdoc"><input type="hidden" name="pkcumandoc" id="pkcumandoc"><input type="button" value="..." onclick="togetmont('khquery.aspx')"></td>
+	<td height="24" nowrap align="right"><font color="blue">目的销售部门</font></td>
+	<td><input type="text" name="deptname" readonly><input type="hidden" name="deptid"><input type="button" value="..." onclick="togetmont('deptquery.aspx')"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">目的业务员</td>
+	<td><input type="text" name="saler" onkeydown="togetnewsale('newsalequery.aspx?invname='+document.form1.saler.value)"><input type="hidden" name="salerid"><input type="button" value="..." onclick="togetmont('ywyquery.aspx')"></td>
+	<td height="24" nowrap align="right"><font color="blue">目的销售组织</font></td>
+	<td><input type="text" name="salezuzhi" readonly><input type="hidden" name="salezuzhicode" id="salezuzhicode"><input type="button" value="..." onclick="togetmont('salestruquery.aspx')"></td>
+        <td height="24" nowrap align="right"><font color="blue">币种</font></td>
+        <td><input type="text" name="currtypename" readonly><input type="hidden" name="pk_currtype"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">折本汇率</font></td>
+	<td><input type="text" name="zbhuilv" readonly value="1"></td>
+	<td height="24" nowrap align="right">备注</td>
+	<td><input type="text" name="remark"></td>
+	<td height="24" nowrap align="right">配送日期</td>
+	<td><input type="text" name="sendate" id="sendate" value="$!form_sendate"  style="width:100" onclick="ShowDate(sendate)" /></td>
+     </tr>
+</table>
+<br>
+
+<table id="tb" width="100%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <th width="10%" height="25" nowrap class="fCopy">存货编码</th>
+    <th width="12%" height="25" nowrap class="fCopy">存货名称</th>
+    <th width="12%" height="25" nowrap class="fCopy">规格</th>
+    <th width="8%" height="25" nowrap class="fCopy">订单件数</th>
+    <th width="12%" height="25" nowrap class="fCopy">订单袋数</th>
+    <th width="12%" height="25" nowrap class="fCopy">税率</th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">目的客户无税单价</font></th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">目的客户含税单价</font></th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">目的客户无税金额</font></th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">目的客户税额</font></th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">目的客户含税金额</font></th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户无税单价</th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户含税单价</th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户含税金额</th>
+    
+  </tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct" id="ct0" value="1"><input name="invcode" id="invcode0" type="text" class="login3" style="width:100" onkeydown ="togetinv(0,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode0'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc0"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc0"><input type="hidden" name="pk_measdoc" id="pk_measdoc0"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc0"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=0',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname0"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec0" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber0" type="text" class="login3" style="width:100" onblur="tochecknnumber(0,document.form1.pk_invbasdoc0.value,document.form1.invcode0.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber0" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(0,document.getElementById('pk_invbasdoc0').value,document.getElementById('invcode0').value)" >
+	<input name="fnumber" id="fnumber0" type="hidden"><input name="mainmeasrate" id="mainmeasrate0" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate0" type="text" class="login3" style="width:100" onblur="checktaxrate(0,document.form1.pk_invbasdoc0.value,document.form1.ocustname.value)">
+	<input name="pk_taxitems" id="pk_taxitems0" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money0" type="text" class="login3" style="width:100" onblur="changefmeney(0,document.form1.pk_invbasdoc0.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney0" type="text" class="login3" style="width:100" onblur="changemeney(0,document.form1.pk_invbasdoc0.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney0" type="text" class="login3" style="width:100" onblur="changenotaxmoney(0,document.form1.pk_invbasdoc0.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny0" type="text" class="login3" style="width:100" onblur="changetaxmny(0,document.form1.pk_invbasdoc0.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney0" type="text" class="login3" style="width:100" onblur="changetaxmoney(0,document.form1.pk_invbasdoc0.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney0" type="text" class="login3" style="width:100" onblur="changeofmeney(0,document.form1.pk_invbasdoc0.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney0" type="text" class="login3" style="width:100" onblur="changeomeney(0,document.form1.pk_invbasdoc0.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney0" type="text" class="login3" style="width:100" onblur="changeotaxmoney(0,document.form1.pk_invbasdoc0.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct1" value="2"><input name="invcode" id="invcode1" type="text" class="login3" style="width:100" onkeydown ="togetinv(1,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode1'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc1"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc1"><input type="hidden" name="pk_measdoc" id="pk_measdoc1"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc1"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=1',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname1"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec1" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber1" type="text" class="login3" style="width:100" onblur="tochecknnumber(1,document.form1.pk_invbasdoc1.value,document.form1.invcode1.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber1" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(1,document.getElementById('pk_invbasdoc1').value,document.getElementById('invcode1').value)">
+	<input name="fnumber" id="fnumber1" type="hidden"><input name="mainmeasrate" id="mainmeasrate1" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate1" type="text" class="login3" style="width:100" onblur="checktaxrate(1,document.form1.pk_invbasdoc1.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems1" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money1" type="text" class="login3" style="width:100" onblur="changefmeney(1,document.form1.pk_invbasdoc1.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney1" type="text" class="login3" style="width:100" onblur="changemeney(1,document.form1.pk_invbasdoc1.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney1" type="text" class="login3" style="width:100" onblur="changenotaxmoney(1,document.form1.pk_invbasdoc1.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny1" type="text" class="login3" style="width:100" onblur="changetaxmny(1,document.form1.pk_invbasdoc1.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney1" type="text" class="login3" style="width:100" onblur="changetaxmoney(1,document.form1.pk_invbasdoc1.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney1" type="text" class="login3" style="width:100" onblur="changeofmeney(1,document.form1.pk_invbasdoc1.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney1" type="text" class="login3" style="width:100" onblur="changeomeney(1,document.form1.pk_invbasdoc1.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney1" type="text" class="login3" style="width:100" onblur="changeotaxmoney(1,document.form1.pk_invbasdoc1.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct2" value="3"><input name="invcode" id="invcode2" type="text" class="login3" style="width:100" onkeydown ="togetinv(2,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode2'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc2"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc2"><input type="hidden" name="pk_measdoc" id="pk_measdoc2"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc2"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=2',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname2"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec2" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber2" type="text" class="login3" style="width:100" onblur="tochecknnumber(2,document.form1.pk_invbasdoc2.value,document.form1.invcode2.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber2" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(2,document.getElementById('pk_invbasdoc2').value,document.getElementById('invcode2').value)">
+	<input name="fnumber" id="fnumber2" type="hidden"><input name="mainmeasrate" id="mainmeasrate2" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate2" type="text" class="login3" style="width:100" onblur="checktaxrate(2,document.form1.pk_invbasdoc2.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems2" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money2" type="text" class="login3" style="width:100" onblur="changefmeney(2,document.form1.pk_invbasdoc2.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney2" type="text" class="login3" style="width:100" onblur="changemeney(2,document.form1.pk_invbasdoc2.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney2" type="text" class="login3" style="width:100" onblur="changenotaxmoney(2,document.form1.pk_invbasdoc2.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny2" type="text" class="login3" style="width:100" onblur="changetaxmny(2,document.form1.pk_invbasdoc2.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney2" type="text" class="login3" style="width:100" onblur="changetaxmoney(2,document.form1.pk_invbasdoc2.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney2" type="text" class="login3" style="width:100" onblur="changeofmeney(2,document.form1.pk_invbasdoc2.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney2" type="text" class="login3" style="width:100" onblur="changeomeney(2,document.form1.pk_invbasdoc2.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney2" type="text" class="login3" style="width:100" onblur="changeotaxmoney(2,document.form1.pk_invbasdoc2.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct3" value="4"><input name="invcode" id="invcode3" type="text" class="login3" style="width:100" onkeydown ="togetinv(3,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode3'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc3"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc3"><input type="hidden" name="pk_measdoc" id="pk_measdoc3"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc3"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=3',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname3"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec3" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber3" type="text" class="login3" style="width:100" onblur="tochecknnumber(3,document.form1.pk_invbasdoc3.value,document.form1.invcode3.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber3" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(3,document.getElementById('pk_invbasdoc3').value,document.getElementById('invcode3').value)">
+	<input name="fnumber" id="fnumber3" type="hidden"><input name="mainmeasrate" id="mainmeasrate3" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate3" type="text" class="login3" style="width:100" onblur="checktaxrate(3,document.form1.pk_invbasdoc3.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems3" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money3" type="text" class="login3" style="width:100" onblur="changefmeney(3,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney3" type="text" class="login3" style="width:100" onblur="changemeney(3,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney3" type="text" class="login3" style="width:100" onblur="changenotaxmoney(3,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny3" type="text" class="login3" style="width:100" onblur="changetaxmny(3,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney3" type="text" class="login3" style="width:100" onblur="changetaxmoney(3,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney3" type="text" class="login3" style="width:100" onblur="changeofmeney(3,document.form1.pk_invbasdoc3.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney3" type="text" class="login3" style="width:100" onblur="changeomeney(3,document.form1.pk_invbasdoc3.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney3" type="text" class="login3" style="width:100" onblur="changeotaxmoney(3,document.form1.pk_invbasdoc3.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct4" value="5"><input name="invcode" id="invcode4" type="text" class="login3" style="width:100" onkeydown ="togetinv(4,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode4'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc4"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc4"><input type="hidden" name="pk_measdoc" id="pk_measdoc4"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc4"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=4',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname4"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec4" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber4" type="text" class="login3" style="width:100" onblur="tochecknnumber(4,document.form1.pk_invbasdoc4.value,document.form1.invcode4.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber4" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(4,document.getElementById('pk_invbasdoc4').value,document.getElementById('invcode4').value)">
+	<input name="fnumber" id="fnumber4" type="hidden"><input name="mainmeasrate" id="mainmeasrate4" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate4" type="text" class="login3" style="width:100" onblur="checktaxrate(4,document.form1.pk_invbasdoc4.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems4" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money4" type="text" class="login3" style="width:100" onblur="changefmeney(4,document.form1.pk_invbasdoc4.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney4" type="text" class="login3" style="width:100" onblur="changemeney(4,document.form1.pk_invbasdoc4.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney4" type="text" class="login3" style="width:100" onblur="changenotaxmoney(4,document.form1.pk_invbasdoc4.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny4" type="text" class="login3" style="width:100" onblur="changetaxmny(4,document.form1.pk_invbasdoc4.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney4" type="text" class="login3" style="width:100" onblur="changetaxmoney(4,document.form1.pk_invbasdoc4.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney4" type="text" class="login3" style="width:100" onblur="changeofmeney(4,document.form1.pk_invbasdoc4.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney4" type="text" class="login3" style="width:100" onblur="changeomeney(4,document.form1.pk_invbasdoc4.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney4" type="text" class="login3" style="width:100" onblur="changeotaxmoney(4,document.form1.pk_invbasdoc4.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct5" value="6"><input name="invcode" id="invcode5" type="text" class="login3" style="width:100" onkeydown ="togetinv(5,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode5'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc5"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc5"><input type="hidden" name="pk_measdoc" id="pk_measdoc5"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc5"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=5',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname5"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec5" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber5" type="text" class="login3" style="width:100" onblur="tochecknnumber(5,document.form1.pk_invbasdoc5.value,document.form1.invcode5.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber5" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(5,document.getElementById('pk_invbasdoc0').value,document.getElementById('invcode5').value)">
+	<input name="fnumber" id="fnumber5" type="hidden"><input name="mainmeasrate" id="mainmeasrate5" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate5" type="text" class="login3" style="width:100" onblur="checktaxrate(5,document.form1.pk_invbasdoc5.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems5" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money5" type="text" class="login3" style="width:100" onblur="changefmeney(5,document.form1.pk_invbasdoc5.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney5" type="text" class="login3" style="width:100" onblur="changemeney(5,document.form1.pk_invbasdoc5.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney5" type="text" class="login3" style="width:100" onblur="changenotaxmoney(5,document.form1.pk_invbasdoc5.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny5" type="text" class="login3" style="width:100" onblur="changetaxmny(5,document.form1.pk_invbasdoc5.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney5" type="text" class="login3" style="width:100" onblur="changetaxmoney(5,document.form1.pk_invbasdoc5.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney5" type="text" class="login3" style="width:100" onblur="changeofmeney(5,document.form1.pk_invbasdoc5.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney5" type="text" class="login3" style="width:100" onblur="changeomeney(5,document.form1.pk_invbasdoc5.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney5" type="text" class="login3" style="width:100" onblur="changeotaxmoney(5,document.form1.pk_invbasdoc5.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct6" value="7"><input name="invcode" id="invcode6" type="text" class="login3" style="width:100" onkeydown ="togetinv(6,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode6'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc6"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc6"><input type="hidden" name="pk_measdoc" id="pk_measdoc6"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc6"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=6',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname6"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec6" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber6" type="text" class="login3" style="width:100" onblur="tochecknnumber(6,document.form1.pk_invbasdoc6.value,document.form1.invcode6.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber6" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(6,document.getElementById('pk_invbasdoc6').value,document.getElementById('invcode6').value)">
+	<input name="fnumber" id="fnumber6" type="hidden"><input name="mainmeasrate" id="mainmeasrate6" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate6" type="text" class="login3" style="width:100" onblur="checktaxrate(6,document.form1.pk_invbasdoc6.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems6" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money6" type="text" class="login3" style="width:100" onblur="changefmeney(6,document.form1.pk_invbasdoc6.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney6" type="text" class="login3" style="width:100" onblur="changemeney(6,document.form1.pk_invbasdoc6.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney6" type="text" class="login3" style="width:100" onblur="changenotaxmoney(6,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny6" type="text" class="login3" style="width:100" onblur="changetaxmny(6,document.form1.pk_invbasdoc3.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney6" type="text" class="login3" style="width:100" onblur="changetaxmoney(6,document.form1.pk_invbasdoc6.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney6" type="text" class="login3" style="width:100" onblur="changeofmeney(6,document.form1.pk_invbasdoc6.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney6" type="text" class="login3" style="width:100" onblur="changeomeney(6,document.form1.pk_invbasdoc6.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney6" type="text" class="login3" style="width:100" onblur="changeotaxmoney(6,document.form1.pk_invbasdoc6.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct7" value="8"><input name="invcode" id="invcode7" type="text" class="login3" style="width:100" onkeydown ="togetinv(7,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode7'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc7"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc7"><input type="hidden" name="pk_measdoc" id="pk_measdoc7"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc7"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=7',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname7"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec7" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber7" type="text" class="login3" style="width:100" onblur="tochecknnumber(7,document.form1.pk_invbasdoc7.value,document.form1.invcode7.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber7" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(7,document.getElementById('pk_invbasdoc7').value,document.getElementById('invcode7').value)">
+	<input name="fnumber" id="fnumber7" type="hidden"><input name="mainmeasrate" id="mainmeasrate7" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate7" type="text" class="login3" style="width:100" onblur="checktaxrate(7,document.form1.pk_invbasdoc7.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems7" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money7" type="text" class="login3" style="width:100" onblur="changefmeney(7,document.form1.pk_invbasdoc7.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney7" type="text" class="login3" style="width:100" onblur="changemeney(7,document.form1.pk_invbasdoc7.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney7" type="text" class="login3" style="width:100" onblur="changenotaxmoney(7,document.form1.pk_invbasdoc7.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny7" type="text" class="login3" style="width:100" onblur="changetaxmny(7,document.form1.pk_invbasdoc7.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney7" type="text" class="login3" style="width:100" onblur="changetaxmoney(7,document.form1.pk_invbasdoc7.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney7" type="text" class="login3" style="width:100" onblur="changeofmeney(7,document.form1.pk_invbasdoc7.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney7" type="text" class="login3" style="width:100" onblur="changeomeney(7,document.form1.pk_invbasdoc7.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney7" type="text" class="login3" style="width:100" onblur="changeotaxmoney(7,document.form1.pk_invbasdoc7.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct8" value="9"><input name="invcode" id="invcode8" type="text" class="login3" style="width:100" onkeydown ="togetinv(8,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode8'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc8"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc8"><input type="hidden" name="pk_measdoc" id="pk_measdoc8"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc8"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=8',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname8"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec8" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber8" type="text" class="login3" style="width:100" onblur="tochecknnumber(8,document.form1.pk_invbasdoc8.value,document.form1.invcode8.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber8" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(8,document.getElementById('pk_invbasdoc8').value,document.getElementById('invcode8').value)">
+	<input name="fnumber" id="fnumber8" type="hidden"><input name="mainmeasrate" id="mainmeasrate8" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate8" type="text" class="login3" style="width:100" onblur="checktaxrate(8,document.form1.pk_invbasdoc8.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems8" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money8" type="text" class="login3" style="width:100" onblur="changefmeney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney8" type="text" class="login3" style="width:100" onblur="changemeney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney8" type="text" class="login3" style="width:100" onblur="changenotaxmoney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny8" type="text" class="login3" style="width:100" onblur="changetaxmny(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney8" type="text" class="login3" style="width:100" onblur="changetaxmoney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney8" type="text" class="login3" style="width:100" onblur="changeofmeney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney8" type="text" class="login3" style="width:100" onblur="changeomeney(8,document.form1.pk_invbasdoc8.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney8" type="text" class="login3" style="width:100" onblur="changeotaxmoney(8,document.form1.pk_invbasdoc8.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input type="hidden" name="ct"  id="ct9" value="10"><input name="invcode" id="invcode9" type="text" class="login3" style="width:100" onkeydown ="togetinv(9,document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode9'))"><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc9"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc9"><input type="hidden" name="pk_measdoc" id="pk_measdoc9"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc9"><input type="button" value="..." onclick="togetmont('cpquery.aspx?row=9',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+     <td align="center" nowrap><input name="invname"  id="invname9"  type="text" class="login3" style="width:200" readonly></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec9" type="text" class="login3" style="width:80"  readonly>
+     </td>
+     <td align="center" nowrap>
+	<input name="nnumber" id="nnumber9" type="text" class="login3" style="width:100" onblur="tochecknnumber(9,document.form1.pk_invbasdoc9.value,document.form1.invcode9.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="fnnumber" id="fnnumber9" type="text" class="login3" style="width:100"  onblur="tockoutnnumber(9,document.getElementById('pk_invbasdoc9').value,document.getElementById('invcode9').value)">
+	<input name="fnumber" id="fnumber9" type="hidden"><input name="mainmeasrate" id="mainmeasrate9" type="hidden">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxrate" id="taxrate9" type="text" class="login3" style="width:100" onblur="checktaxrate(9,document.form1.pk_invbasdoc9.value,document.form1.ocustname.value)"><input name="pk_taxitems" id="pk_taxitems9" type="hidden">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="money" id="money9" type="text" class="login3" style="width:100" onblur="changefmeney(9,document.form1.pk_invbasdoc9.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="hmoney" id="hmoney9" type="text" class="login3" style="width:100" onblur="changemeney(9,document.form1.pk_invbasdoc9.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="notaxmoney" id="notaxmoney9" type="text" class="login3" style="width:100" onblur="changenotaxmoney(9,document.form1.pk_invbasdoc9.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmny" id="taxmny9" type="text" class="login3" style="width:100" onblur="changetaxmny(9,document.form1.pk_invbasdoc9.value,document.form1.custname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="taxmoney" id="taxmoney9" type="text" class="login3" style="width:100" onblur="changetaxmoney(9,document.form1.pk_invbasdoc9.value,document.form1.custname.value)">
+     </td>
+
+     <td align="center" nowrap>
+	<input name="omoney" id="omoney9" type="text" class="login3" style="width:100" onblur="changeofmeney(9,document.form1.pk_invbasdoc9.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="ohmoney" id="ohmoney9" type="text" class="login3" style="width:100" onblur="changeomeney(9,document.form1.pk_invbasdoc9.value,document.form1.ocustname.value)">
+     </td>
+     <td align="center" nowrap>
+	<input name="otaxmoney" id="otaxmoney9" type="text" class="login3" style="width:100" onblur="changeotaxmoney(9,document.form1.pk_invbasdoc9.value,document.form1.ocustname.value)">
+     </td>
+     
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+    
+  </table>
+   <div align="center">
+  <input type="button" class="login2" value=" 保  存 " id="B2" name="B2" onClick="spellStr(1,'N');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 提  交 " id="B22" name="B22" onClick="spellStr(2,'F');">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 返  回 " id="B2222" name="B2222" onClick="javascript:document.location.href='dispatch.aspx'">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 添加行 " id="B2222" name="B2222" onClick="addRow();">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

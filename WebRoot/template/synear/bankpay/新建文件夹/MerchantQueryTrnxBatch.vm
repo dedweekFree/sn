@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>		
+<title>客户网上付款</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../include/js/PopCalendar.js"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+</HEAD>
+<BODY>
+<FORM name=form1 action='MerchantQueryTrnxBatch.jsp' method=post>
+    <TABLE class="datatable">
+      <TR class="trcolor">
+          <TD align="right">交易状态</TD>
+      	  <TD align="left"><INPUT NAME='TrnxStatus' VALUE=''>默认为空,为全部查询;0000为成功,Other为失败</TD>
+      </TR>
+      #foreach($m in $getabcbanktime)
+      <TR class="trcolor">
+      	  <TD align="right">起始日期</TD>
+          <TD align="left"><INPUT NAME='StDate' VALUE='$m.NOWDATE'>格式为（MM/DD/YYYY）起始日期不大于截止日期</TD>
+      </TR>
+      <TR class="trcolor">
+      	  <TD align="right">截止日期</TD>
+          <TD align="left"><INPUT NAME='EndDate' VALUE='$m.NOWDATE'>格式为（MM/DD/YYYY）截止日期不大于当前日期</TD>
+      </TR>
+      #end
+      <TR class="trcolor"><TD colspan=2><INPUT type=submit>
+    </TABLE>
+  </FORM>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</HTML>

@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>职务补助查询</title>
+<script language="javascript">
+    function sub(){
+	document.thisform.submit();
+    }
+</script>
+</head>
+
+<body>
+<table class="datatable" cellspacing=0 cellpadding=0 border=0 id="tb">
+  <tr class="trcolor">
+    <td nowrap>职务</td>
+    <td nowrap>城市类别</td>
+    <td nowrap>补助金额</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $getlevelfeequery)
+  <tr class="trcolor">
+    <td>$!m.LEVELNAME</td>
+    <td>$!m.AREATYPE</td>
+    <td>$!m.SUBMONEY</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

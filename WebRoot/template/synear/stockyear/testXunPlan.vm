@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ #set($i = 0)
+ #foreach($m in $gettestxuntime)
+ #set($i = $i+1)
+ #end
+ #if($i == 0 )
+   alert("该月计划已过期，不能添加！");
+   parent.submitok=false;
+ #else
+	 #foreach($m in $testNewXunPlan)
+	   feenum='$m.PLANNUM';
+	 #end
+	 if(parseInt(feenum)>0) {
+	   alert("该月旬计划已经存在！");
+	   parent.submitok=false;
+	 }else if(feenum=='0'){
+	   parent.testok();
+	 }else{
+	   alert("出现未知错误！");
+	   parent.submitok=false;
+	 }
+ #end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

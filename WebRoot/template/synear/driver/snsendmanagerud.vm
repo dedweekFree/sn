@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>派车单明细</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+</head>
+<script language="javascript">
+var nnumber = 0;
+var nnumber1 = 0;
+</script>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+  <tr class="trcolor">
+    <td height="25" nowrap>单据号</td>
+    <td height="25" nowrap>派车单号</td>
+  </tr>
+  #foreach($m in $snsendmanagerdud)
+  <tr class="trcolor">
+     <td width="20%">$m.ID</td>
+     <td width="20%">$m.SENDID</td>
+  </tr>
+  #end
+</table>
+<br>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+  <tr class="trcolor">
+    <td height="25" nowrap>产品编码</td>
+    <td height="25" nowrap>产品名称</td>
+    <td height="25" nowrap>产品规格</td>
+    <td height="25" nowrap>应发数量</td>
+    <td height="25" nowrap>仓库</td>
+  </tr>
+  #foreach($m in $snsendmanagerduddetail)
+  <tr class="trcolor">
+    <td>$m.INVCODE</td>
+    <td>$m.INVNAME</td>
+    <td>$m.INVSPEC</td>
+    <td>$m.NSHOULDOUTNUM</td>
+    <td>$m.STORNAME</td>
+  </tr>
+  <script>
+     nnumber1 += $m.NSHOULDOUTNUM;
+  </script>
+  #end
+  <tr class="trcolor">
+     <td >合计</td>
+     <td>&nbsp;</td>
+     <td>&nbsp;</td>
+     <td><script>document.write(nnumber1);</script></td>
+     <td>&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="5"><input type="button" class="bt1" value="返&nbsp;回" onclick="history.back(-1)"></td>
+  </tr>
+</table>
+</body> 
+</html>      

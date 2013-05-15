@@ -1,0 +1,179 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>原始配送单明细</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script language="javascript">
+   var num1 = 0;
+   var num2 = 0;
+   var num3 = 0;
+   var num4 = 0;
+   var num5 = 0;
+   var num6 = 0;
+   var num7 = 0;
+   var num8 = 0;
+   var num9 = 0;
+   var num10 = 0;
+    function accAdd(arg1,arg2){ 
+	var r1,r2,m; 
+	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+	m=Math.pow(10,Math.max(r1,r2)) 
+	return (arg1*m+arg2*m)/m 
+ }
+</script>
+</head>
+<body>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">原始配送单明细</div></td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+  #foreach($mm in $dispatchquerybypagebycsaleid)
+    <tr height="20"  align="center" class="trtitle">
+        <td  nowrap align="right">单据号</td>
+        <td nowrap>$!mm.VRECEIPTCODE</td>
+	<td  nowrap align="right">日期</td>
+	<td nowrap>$!mm.DBILLDATE</td>
+	
+	<td nowrap align="right">原销售部门</td>
+	<td nowrap>$!mm.ODEPTNAME</td>
+	<td nowrap align="right">原业务员</td>
+	<td nowrap>$!mm.OPSNNAME</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">原客户</td>
+	<td nowrap>$!mm.OCUSTNAME</td>
+        <td  nowrap align="right">原销售组织</td>
+        <td nowrap>$!mm.OVSALESTRUNAME</td>
+	
+	<td nowrap align="right">目的销售组织</td>
+	<td nowrap>$!mm.VSALESTRUNAME</td>
+	<td nowrap align="right">目的销售部门</td>
+	<td nowrap>$!mm.DEPTNAME</td>
+	
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td  nowrap align="right">目的客户</td>
+	<td nowrap>$!mm.CUSTNAME</td>
+        <td nowrap align="right">目的业务员</td>
+	<td nowrap>#if($!mm.PSNNAME!="")$!mm.PSNNAME#else&nbsp;#end</td>
+	<td  nowrap align="right">配送日期</td>
+	<td nowrap>#if($!mm.SENDDATE!="")$!mm.SENDDATE#else&nbsp;#end</td>
+	<td nowrap align="right">状态</td>
+	<td nowrap> 
+	    #if($!mm.FSTATUS=="1")
+	      保存
+	    #elseif($!mm.FSTATUS=="2")
+	      提交
+	    #elseif($!mm.FSTATUS=="3")
+	      已确认
+	    #elseif($!mm.FSTATUS=="4")
+	       已验收
+	     #elseif($!mm.FSTATUS=="5")
+		      未确认   
+	    #end
+	</td>
+     </tr>
+  #end
+</table>
+<br>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+  <tr height="20"  align="center" class="trtitle">
+    <td height="25" nowrap>存货编码</td>
+    <td height="25" nowrap>存货名称</td>
+    <td  height="25" nowrap>规格</td>
+    <td  height="25" nowrap>订单件数</td>
+    <td height="25" nowrap>订单袋数</td>
+    <td  height="25" nowrap>出库件数</td>
+    <td  height="25" nowrap>出库袋数</td>
+    <td  height="25" nowrap>确认件数</td>
+    <td  height="25" nowrap>确认袋数</td>
+    <td height="25" nowrap>税率</td>
+    <td height="25" nowrap>原客户无税单价</td>
+    <td height="25" nowrap>原客户含税单价</td>
+    <td height="25" nowrap>原客户价税合计</td>
+    <td height="25" nowrap>目的客户无税单价</td>
+    <td height="25" nowrap>目的客户含税单价</td>
+    <td height="25" nowrap>目的客户价税合计</td>
+    <td  height="25" nowrap>出库金额</td>
+    <td  height="25" nowrap>确认金额</td>
+  </tr>
+  #set($i = 0 )
+  #foreach($mm in $dispatchdetailbycsaleid)
+  <tr #if($!mm.DJFLAG==1)style="color:red"#end>
+     <td>
+         $mm.INVCODE
+     </td>
+     <td>
+         $mm.INVNAME
+     </td>
+     <td>
+         $mm.INVSPEC
+     </td>
+     <td>
+         $mm.NNUMBER
+     </td>
+     <td>$mm.NPACKNUMBER</td>
+     <td>#if($mm.CUSTNNUMBER!="")$mm.CUSTNNUMBER#else&nbsp;#end</td>
+     <td>#if($mm.CUSTFNNUMBER!="")$mm.CUSTFNNUMBER#else&nbsp;#end</td>
+     <td>#if($mm.SURENNUMBER!="")$mm.SURENNUMBER#else&nbsp;#end</td>
+     <td>#if($mm.SUREFNNUMBER!="")$mm.SUREFNNUMBER#else&nbsp;#end</td>
+     <td>#if($mm.SURETAXRATE!="")$mm.SURETAXRATE#else$mm.NTAXRATE#end</td>
+     <td>#if($mm.O_NORIGINALCURPRICE=="")&nbsp;#else$mm.O_NORIGINALCURPRICE#end</td>
+     <td>#if($mm.O_NORIGINALCURTAXPRICE=="")&nbsp;#else$mm.O_NORIGINALCURTAXPRICE#end</td>
+     <td>#if($mm.O_NORIGINALCURSUMMNY=="")&nbsp;#else$mm.O_NORIGINALCURSUMMNY#end</td>
+     <td>#if($mm.SUREWPRICE=="")#if($mm.NORIGINALCURPRICE=="")&nbsp;#else$mm.NORIGINALCURPRICE#end#else$mm.SUREWPRICE#end</td>
+     <td>#if($mm.SUREPRICE=="")#if($mm.NORIGINALCURTAXPRICE=="")&nbsp;#else$mm.NORIGINALCURTAXPRICE#end#else$mm.SUREPRICE#end</td>
+     <td>#if($mm.SUREPRICE=="")#if($mm.NORIGINALCURSUMMNY=="")&nbsp;#else$mm.NORIGINALCURSUMMNY#end#else$mm.SURETAXMONEY#end</td>
+     <td>#if($mm.CUSTTAXMONEY=="")&nbsp;#else$mm.CUSTTAXMONEY#end</td>
+     <td>#if($mm.SURETAXMONEY=="")&nbsp;#else$mm.SURETAXMONEY#end</td>
+  </tr>
+  #set($i = $i+1 )
+  <script language="javascript">
+     num1=accAdd(num1,#if($mm.NNUMBER=="")0#else$mm.NNUMBER#end);
+     num4=accAdd(num4,#if($mm.NORIGINALCURMNY=="")0#else$mm.NORIGINALCURMNY#end);
+     num3=accAdd(num3,#if($mm.NPACKNUMBER=="")0#else$mm.NPACKNUMBER#end);
+     num2=accAdd(num2,#if($mm.O_NORIGINALCURSUMMNY=="")0#else$mm.O_NORIGINALCURSUMMNY#end);
+     num5=accAdd(num5,#if($mm.SURENNUMBER=="")0#else$mm.SURENNUMBER#end);
+     num6=accAdd(num6,#if($mm.SURETAXMONEY=="")0#else$mm.SURETAXMONEY#end);
+     num7=accAdd(num7,#if($mm.CUSTNNUMBER=="")0#else$mm.CUSTNNUMBER#end);
+     num8=accAdd(num8,#if($mm.CUSTFNNUMBER=="")0#else$mm.CUSTFNNUMBER#end);
+     num9=accAdd(num9,#if($mm.SUREFNNUMBER=="")0#else$mm.SUREFNNUMBER#end);
+     num10=accAdd(num10,#if($mm.CUSTTAXMONEY=="")0#else$mm.CUSTTAXMONEY#end);
+  </script>
+  #end
+  <tr>
+    <td align="center">合计</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><script language="javascript">document.write(num1);</script></td>
+    <td><script language="javascript">document.write(num3);</script></td>
+    <td><script language="javascript">document.write(num7);</script></td>
+    <td><script language="javascript">document.write(num8);</script></td>
+    <td><script language="javascript">document.write(num5);</script></td>
+    <td><script language="javascript">document.write(num9);</script></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><script language="javascript">document.write(num2);</script></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+   <!-- <td><script language="javascript">document.write(num4);</script></td>-->
+   <td><script language="javascript">document.write(num6);</script></td>
+    <td><script language="javascript">document.write(num10);</script></td>
+    <td><script language="javascript">document.write(num6);</script></td>
+  </tr>
+  </table>
+   <div align="center">
+<input type="button" class="bt1" value=" 返  回 " name="B222" onClick="history.back(-1);">
+  </div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

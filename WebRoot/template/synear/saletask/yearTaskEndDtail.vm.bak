@@ -1,0 +1,216 @@
+<html>
+<head>
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+</style> 
+<script>
+var undefined;
+var num1=0;
+var num2=0;
+var num3=0;
+var num4=0;
+var num5=0;
+var num6=0;
+var num7=0;
+var num8=0;
+var num9=0;
+var num10=0;
+var num11=0;
+var num12=0;
+function init(){
+  uniteCols(document.all.tb);//执行
+}
+
+function uniteTable(thistab,colLength){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=0;   
+  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[j].rowSpan;   
+        thistab.rows[i].deleteCell(j);   
+      }else{   
+        thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+        rowspann=0;   
+      }   
+    }   
+    //检测无表头的表   
+    if(i==0&&rowspann>0){   
+      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+      rowspann=0;   
+    }   
+    
+  }   
+}  
+//本业务合并
+function uniteCols(thistab){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=0;   
+  for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[0].innerText==thistab.rows[i-1].cells[0].innerText&&thistab.rows[i].cells[0].colSpan==thistab.rows[i-1].cells[0].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[0].rowSpan;   
+        thistab.rows[i].deleteCell(0);  
+	thistab.rows[i].deleteCell(13);
+	thistab.rows[i].deleteCell(13);
+      }else{   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[14].rowSpan+=rowspann;
+	thistab.rows[i].cells[15].rowSpan+=rowspann;
+        rowspann=0;   
+      }   
+  }   
+  //检测无表头的表   
+  if(i==0&&rowspann>0){   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+        thistab.rows[i].cells[14].rowSpan+=rowspann;
+        thistab.rows[i].cells[15].rowSpan+=rowspann;
+      rowspann=0;   
+  }   
+} 
+
+function setvalue(step,status){
+  parent.document.form1.periodno.value = "$form_periodno";
+  parent.document.form1.addstep.value=step;
+  parent.document.form1.status.value=status;
+  parent.document.form1.remark.value=document.form1.remark.value;
+  parent.document.all.form1.action="yearTaskEndSubmit.aspx";
+  parent.document.all.form1.target="saveframe";
+  parent.document.form1.submit();
+}
+
+//退回
+function RRow(bno)
+{     
+   parent.document.form1.periodno.value = "$form_periodno";
+   parent.document.form1.deptcode.value = bno;
+   parent.document.form1.addstep.value = "-1";
+   parent.document.form1.status.value = "R";
+   parent.document.form1.remark.value=document.form1.remark.value;
+   parent.document.all.form1.action="yearTaskEndSubmit.aspx";
+   parent.document.all.form1.target="saveframe";
+   parent.document.form1.submit();
+}
+</script>
+
+</head>
+<body onload="init()">
+<br>
+
+<div class="mainDiv" id="mdiv">  
+<table id="tb" width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="FixedTitleRow" bgcolor="abcdef">
+    <th width="18%" class="FixedTitleColumn" height="25" nowrap>大区名称</th>
+    <th width="18%" class="FixedTitleColumn" height="25" nowrap>规格名称</th>
+    <th width="8%" height="25" nowrap>7月任务</th>
+    <th width="8%" height="25" nowrap>8月任务</th>
+    <th width="8%" height="25" nowrap>9月任务</th>
+    <th width="8%" height="25" nowrap>10月任务</th>
+    <th width="8%" height="25" nowrap>11月任务</th>
+    <th width="8%" height="25" nowrap>12月任务</th>
+    <th width="8%" height="25" nowrap>1月任务</th>
+    <th width="8%" height="25" nowrap>2月任务</th>
+    <th width="8%" height="25" nowrap>3月任务</th>
+    <th width="8%" height="25" nowrap>4月任务</th>
+    <th width="8%" height="25" nowrap>5月任务</th>
+    <th width="8%" height="25" nowrap>6月任务</th>
+    <th width="40%" height="25" nowrap>备注</th>
+    <th width="8%" height="25" nowrap>操作</th>
+  </tr>
+ #set($i=0)
+ #foreach($m in $getYearTaskAreaDq)
+  <tr class="trcolor">
+      <td align="center" class="FixedDataColumn">$!m.DEPTNAME</td>
+      <td align="center" class="FixedDataColumn" nowrap>$!m.INVCLASSNAME/$!m.INVCLASSCODE</td>
+      <td align="center" nowrap>$!m.TASKNUM1</td>
+     <td align="center" nowrap>$!m.TASKNUM2</td>
+     <td align="center" nowrap>$!m.TASKNUM3</td>
+     <td align="center" nowrap>$!m.TASKNUM4</td>
+     <td align="center" nowrap>$!m.TASKNUM5</td>
+     <td align="center" nowrap>$!m.TASKNUM6</td>
+     <td align="center" nowrap>$!m.TASKNUM7</td>
+     <td align="center" nowrap>$!m.TASKNUM8</td>
+     <td align="center" nowrap>$!m.TASKNUM9</td>
+     <td align="center" nowrap>$!m.TASKNUM10</td>
+     <td align="center" nowrap>$!m.TASKNUM11</td>
+     <td align="center" nowrap>$!m.TASKNUM12</td>
+        <td align="center">$!m.REMARK &nbsp;</td>
+	<td align="center" nowrap="nowrap"><a style='cursor:hand' onclick="javascript:RRow('$!m.DEPTCODE')"><font color=blue>退回</font></a></td>
+ </tr>
+  <script>
+   num1+=$!m.TASKNUM1;
+   num2+=$!m.TASKNUM2;
+   num3+=$!m.TASKNUM3;
+   num4+=$!m.TASKNUM4;
+   num5+=$!m.TASKNUM5;
+   num6+=$!m.TASKNUM6;
+   num7+=$!m.TASKNUM7;
+   num8+=$!m.TASKNUM8;
+   num9+=$!m.TASKNUM9;
+   num10+=$!m.TASKNUM10;
+   num11+=$!m.TASKNUM11;
+   num12+=$!m.TASKNUM12;
+ </script>
+ #set($i=$i+1)
+ #end
+  <tr class="trcolor">
+      <td align="center" class="FixedDataColumn" nowrap>合计($form_allnum)</td>
+      <td align="center" class="FixedDataColumn" nowrap>&nbsp;</td>
+      <td align="center" nowrap><script>document.write(num1);</script></td>
+       <td align="center" nowrap><script>document.write(num2);</script></td>
+       <td align="center" nowrap><script>document.write(num3);</script></td>
+       <td align="center" nowrap><script>document.write(num4);</script></td>
+       <td align="center" nowrap><script>document.write(num5);</script></td>
+       <td align="center" nowrap><script>document.write(num6);</script></td>
+       <td align="center" nowrap><script>document.write(num7);</script></td>
+       <td align="center" nowrap><script>document.write(num8);</script></td>
+       <td align="center" nowrap><script>document.write(num9);</script></td>
+       <td align="center" nowrap><script>document.write(num10);</script></td>
+       <td align="center" nowrap><script>document.write(num11);</script></td>
+       <td align="center" nowrap><script>document.write(num12);</script></td>
+        <td align="center" nowrap>&nbsp;</td>
+	<td align="center" nowrap>&nbsp;</td>
+ </tr>
+  </table>
+   </div>
+ <br>
+
+<form name="form1" method='post' action="areafeeapplyaudisubmit.aspx" target="dataframe">  
+  <div align="center">
+  审核意见：<textarea name="remark" cols="120" rows="3"></textarea>
+  </div>
+ <div align="center">
+    <input type="button" class="login2" value=" 通  过 " name="B222" onClick="javascript:setvalue('1','K');">&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="button" class="login2" value=" 退  回 " name="B222" onClick="javascript:setvalue('-1','R');">
+ </div>
+ </form>
+</body> 
+</html>      

@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="./../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>转让</title>
+<script language="javascript">
+function tosubmit(){
+     var array = new Array();
+	array = [['num','phone','pk']
+	#set($i=0)
+	#foreach($!m in $selmoduser)
+	,['$i','$!m.PHONE','$!m.PK_SENDTYPE']
+	#set($i=$i+1)
+	#end
+	]
+	var phon="";
+	var probpk = document.getElementById("zprobtype").value;
+	for(var j=1;j<array.length;j++){
+		if(probpk==array[j][2]){
+		phon=phon+","+array[j][1];
+		}
+	}
+	document.getElementById('phones').value = phon.substr(1,phon.length);
+     document.form1.action="changeprobsub.aspx";
+     document.form1.submit();
+}
+</script>
+</head>
+
+<body>
+<form name="form1" method="post" target="saveframe">
+<table class="datatable">
+#foreach($!m in $changeprob)
+<input type="hidden" name="deptname" value="$!m.DETPNAME" />
+<input type="hidden" name="phone" value="$!m.MINPHONE" />
+<input type="hidden" name="name" value="$!m.NAME" />
+<input type="hidden" name="phones" id="phones" value="">
+<input type="hidden" name="Text" value="$!m.REMARK" />
+  <tr class="trcolor">
+    <td>报修人</td>
+    <td align="left">$!m.NAME [$!m.DETPNAME $!m.MINPHONE  ]</td>
+  </tr>
+  <tr class="trcolor">
+    <td>报修分类</td>
+    <td align="left">$!m.SENDTYPENAME<input type="hidden" name="aprobtype" value="$!m.PK_SENDTYPE"></td>
+  </tr>
+  <tr class="trcolor">
+    <td>报修内容</td>
+    <td align="left">$!m.REMARK<input type="hidden" name="sendcode" value="$!m.SENDCODE"></td>
+  </tr>
+  <tr class="trcolor">
+    <td>转到故障分类</td>
+    <td align="left"><select name="zprobtype" id="zprobtype">
+	#foreach($!n in $changeprobtype)
+	<option value="$!n.PK_SENDTYPE">$!n.SENDTYPENAME</option>
+	#end
+      </select></td>
+  </tr>
+  <tr class="trcolor">
+    <td>转让原因</td>
+    <td align="left"><textarea name="back" style="width: 300px; height: 150px"></textarea></td>
+  </tr>
+  #end
+  <tr class="trcolor">
+    <td><input type="button" name="b1" value="返回" class="bt1" onclick="javascript:history.go(-1)"/></td>
+    <td><input type="button" name="b2" value="提交" class="bt1" onclick="tosubmit()" /></td>
+  </tr>
+</table>
+<form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

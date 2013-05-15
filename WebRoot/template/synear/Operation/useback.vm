@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>============</title>
+<script language="javascript">
+	function showindow(m,code){
+	var b='PC'+code.substring(0,6);
+	var ReturnAllQualityValue=showModalDialog('Quality.aspx?code='+b+'&a='+1,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+		if(ReturnAllQualityValue!=null){
+			document.getElementById("res"+m).value=ReturnAllQualityValue;
+		}
+	}
+	function check(id,k){
+	 	var a = isNaN(parseFloat(document.getElementById(id).value))?0:parseFloat(document.getElementById(id).value);
+		var b = isNaN(parseFloat(document.getElementById("bvnum"+k).value))?0:parseFloat(document.getElementById("bvnum"+k).value);
+		var c = isNaN(parseFloat(document.getElementById("vnumber"+k).value))?0:parseFloat(document.getElementById("vnumber"+k).value);
+
+		if(a+b>c){
+			alert("输入超过上限!");
+			document.getElementById(id).value=0;
+			return false;
+		}
+}
+	function getvalue(m){
+		var a = parseFloat(document.getElementById("vnumber"+m).value);
+		var b = isNaN(parseFloat(document.getElementById("bvnum"+m).value))?0:parseFloat(document.getElementById("bvnum"+m).value);
+		if(document.getElementById("backall"+m).checked){
+			document.getElementById("backnum"+m).value=(a-b)
+		}else{
+			document.getElementById("backnum"+m).value=0
+		}
+	}
+</script>
+</head>
+
+<body>
+<form name="thisform" action="userbacksub.aspx" method="post" target="dataframe">
+<table class="datatable">
+  #set($i=0)
+  #foreach($!m in $selbackinvhead)
+  <tr class="trcolor">
+    <td>供应商</td>
+    <td><input type="text" name="custname" value="$!m.CUSTNAME" readonly/>
+	<input type="hidden" name="custcode" value="$!m.CUSTCODE">
+	<input type="hidden" name="hid" id="hid" value="">
+		<script language="javascript">
+		var a = "$!m.PK_CORP";
+		var b = "$!m.CUSTCODE";
+		var c = "TH";
+		var d = "$i";
+		var MyDate=new Date();
+		var e = MyDate.getMilliseconds();
+		var f = a+c+b+e+d;
+		document.getElementById("hid").value=f;
+	</script>
+    </td>
+    <td>订单号</td>
+    <td><input type="text" name="vodercode" value="$!m.VORDERCODE" readonly/></td>
+    <td>订单日期</td>
+    <td><input type="text" name="vodercodedate" value="$!m.DORDERDATE" readonly/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>单据状态</td>
+    <td>未审核</td>
+    <td>到货单号</td>
+    <td><input type="text" name="varrordercode" value="$!m.VARRORDERCODE" readonly/></td>
+    <td>到货时间</td>
+    <td><input type="text" name="varrordercodedate" value="$!m.VDEF10" readonly/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>制单人</td>
+    <td><input type="text" name="makeuser" value="$session_USERNAME" readonly/></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>类型</td>
+    <td><select name="backtype">
+	<option value="2">让步接收</option>
+    </select></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td><input type="submit" name="Submit" class="bt1" value="确认提交" /></td>
+    <td>&nbsp;</td>
+    <td><input type="button" name="reset" class="bt1" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/></td>
+    <td>整单</td>
+    <td align="left"><input type="checkbox" value="1" name="backall"></td>
+  </tr>
+</table>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>存货编码</td>
+    <td>存货名称</td>
+    <td>规格</td>
+    <td>到货数量</td>
+    <td>让步接收数量</td>
+    <td>已退数量</td>
+    <td>让步使用原因</td>
+    <td>原质检结果</td>
+    <td>整行全退</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selbackinvdetail)
+  <tr class="trcolor">
+  <input type="hidden" name="cariveroderb_id" value="$!m.CARRIVEORDER_BID">
+    <td>$i</td>
+    <td>$!m.INVCODE<input type="hidden" name="invcode" value="$!m.INVCODE">
+	<input type="hidden" name="bid" id="bid" value="">
+	<script language="javascript">
+		var a = "1002";
+		var b = "$!m.INVCODE";
+		var c = "TH";
+		var d = "$i";
+		var MyDate=new Date();
+		var e = MyDate.getMilliseconds();
+		var f = a+c+b+e+d;
+		document.getElementById("bid").value=f;
+	</script>
+    </td>
+    <td>$!m.INVNAME<input type="hidden" name="invname" value="$!m.INVNAME"></td>
+    <td>$!m.INVSPEC<input type="hidden" name="invspec" value="$!m.INVSPEC"></td>
+    <td>$!m.NARRVNUM<input type="hidden" name="vnumber" id="vnumber$i" value="$!m.NARRVNUM"></td>
+    <td><input type="text" name="backnum" id="backnum$i" style="width: 40px" value="0" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" onblur="check(this.id,$i)"/></td>
+    <td>$!m.BVNUM<input type="hidden" name="bvnum" id="bvnum$i" value="$!m.BVNUM"></td>
+    <td><input type="text" name="res" id="res$i" style="width: 300px"/><input type="button" class="bt1" name="selres" value="..." onclick="showindow($i,'$!m.INVCODE')"></td>
+    <td>$!m.VMEMO</td>
+    <td><input type="checkbox" value="" name="backall" id="backall$i" onclick="getvalue($i)"></td>
+  </tr>
+#set($i=$i+1)
+#end
+</table>
+</form>
+<div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>====</title>
+</head>
+
+<body>
+
+<form name="thisform" action="modfstatussub.aspx" method="post" target="dataframe">
+<table class="datatable">
+<tr>
+	<td colspan="4">
+库位代码:<input type="text" name="unitcode2" value="$!form_unitcode">
+<input type="hidden" name="unitcode" value="$!form_unitcode">
+	</td>
+</tr>
+  <tr class="trcolor">
+    <td>所处区域</td>
+    <td>所处甬道</td>
+    <td>所处层</td>
+    <td>库位类型</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selmodstockunit)
+  <tr class="trcolor">
+    <td><select name="areacode">
+	<option value="A" #if($!m.AREACODE=="A") selected #else #end>A</option>
+	<option value="B" #if($!m.AREACODE=="B") selected #else #end>B</option>
+	</select>
+	</td>
+    <td><select name="pathcode">
+    #foreach($!n in $selpathcode)
+	<option value="$!n.PATHCODE" #if($!m.PATHCODE=="$!n.PATHCODE") selected #else #end>$!n.PATHCODE</option>
+    #end
+	</select>
+	</td>
+    <td><select name="layercode">
+	<option value="1" #if($!m.LAYERCODE=="1") selected #else #end>1</option>
+	<option value="2" #if($!m.LAYERCODE=="2") selected #else #end>2</option>
+	<option value="3" #if($!m.LAYERCODE=="3") selected #else #end>3</option>
+	<option value="4" #if($!m.LAYERCODE=="4") selected #else #end>4</option>
+	</select>
+    </td>
+    <td><select name="fstyle">
+	<option value="0" #if($!m.FSTYLE=="0") selected #else #end>零托</option>
+	<option value="1" #if($!m.FSTYLE=="1") selected #else #end>整托</option>
+	</select>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+ <tr class="trcolor">
+    <td><input type="submit" name="b1" class="bt1" value="确认提交"></td>
+    <td>&nbsp;</td>
+    <td><input type="button" name="b2" class="bt1" value="返&nbsp;&nbsp;回"></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

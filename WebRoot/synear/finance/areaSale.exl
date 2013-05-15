@@ -1,0 +1,7 @@
+<web:page>
+  <web:sql>getAreaSaleFExcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>业务类型##区域##大区##存货编码##存货名称##大类品项##数量##出厂价##市场结算价##公司结算价##销售额##市场结算金额##公司结算金额</web:col>
+  <web:key>BUSINAME##DEPTNAME##DDEPTNAME##INVCODE##INVNAME##INVCLASSNAME##NNUMBER##NSUMPRICE##BRACCPRICE##ACCPRICE##NSUMMNY##BRACCMNY##ACCMNY</web:key>
+  <web:name>区域与分支销售报表</web:name>
+</web:page>

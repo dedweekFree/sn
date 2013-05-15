@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>上传文件</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function Trim(stringValue){
+    return stringValue.replace(/(^[\s]*)|([\s]*$)/g,'');
+}
+function delHtmlTag(str){   
+        return str.replace(/<[^>]+>/g,"");//去掉所有的html标记   
+    } 
+  function getValue1(){
+		if(document.form1.custnameid.value==""){
+		    alert("客户不能为空");
+		    return false;
+		}
+		if(document.form1.paper.value == ""){
+		    alert("文件路径不能为空");
+		    return false;
+		}else{
+		    if(document.form1.paper.value.indexOf(".xml")== -1 && document.form1.paper.value.indexOf(".xls")== -1){
+		    alert(document.form1.paper.value.indexOf(".xml")== -1);
+		    alert(document.form1.paper.value.indexOf(".xls")== -1);
+			alert("导入文件格式不正确");
+			return false;
+		    }
+		}
+		document.form1.bt2.disabled = true;
+		document.form1.action="/CustFileReadServlet";
+		document.form1.submit();
+	}
+		function testok2(){
+		document.form1.action="/CustFileReadServlet";
+		document.form1.submit();
+		}
+	function addfile(){
+		if(document.form1.custnameid.value == ""){
+			alert("客户不能为空");
+			document.form1.custnameid.focus();
+			return false;
+		}
+		window.open('orderpfile.jsp?formname=form1&myframeurl=myframe&picurl=paper&type=custfile&tendtypeid='+document.form1.custnameid.value,'','status=no,scrollbars=no,top=160,left=150,width=450,height=365');
+	}
+</script>
+</head>
+<body>
+<form name="form1" method="post">
+<table class="datatable" cellpadding=0 cellspacing=0>
+<tr class="trcolor">
+<td>
+客户：<select name="custnameid">
+	    <option value=""></option>
+	    #foreach($!m in $queryzhcust)
+	       #if($m.CUSTNAMEID != '1')
+	        <option value="$m.CUSTNAMEID">$m.CUSTNAME</option>
+	       #end
+            #end
+	</select>
+	<input type="hidden" name="unitname" value="#foreach($!m in $driverbdcorpbyusername)$m.PK_CORP#end">
+<input name="paper" type="text" size="40" value="" contenteditable="false"/>
+<input type="hidden" name="sysuser" value = "$session_USERNAME">
+</td>
+</tr>
+<tr class="trcolor">
+<td>
+<input type="button" name="bt1" class="bt1" value="文件上传" onClick="addfile()">
+<input type="button" class="bt1" name="bt2" value="确认无误，点击提交" onClick="getValue1()">
+</td>
+</tr>
+</table>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

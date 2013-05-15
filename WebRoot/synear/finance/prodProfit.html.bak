@@ -1,0 +1,454 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>产品毛利分析</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+		var dept=new Array(); 
+		dept=[
+		   ['区域主键','区域名称','大区主键']
+						  ,["1001V5100000000USXSR","安庆区","1001V51000000009ZMU7"]
+						  ,["100111100000000000SD","北京分公司","100111100000000000TD"]
+						  ,["100111100000000000SK","成都分公司","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000UPLQ5","川北区","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000UPLQ2","川东区","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000UPLQ4","川南区","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000UPLQ3","川西区","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000UQ2GL","东莞办事处","10011110000000000AGY"]
+						  ,["100111100000000000SJ","福州分公司","10011110000000000AGY"]
+						  ,["100111100000000000T3","甘青宁","100111100000000000TE"]
+						  ,["100111100000000000SC","广州分公司","10011110000000000AGY"]
+						  ,["1001V5100000000UQ2H5","贵阳办事处","1001V5100000000UPLQ1"]
+						  ,["100111100000000000SH","哈尔滨分公司","1001V51000000002YXN7"]
+						  ,["100111100000000000SF","杭州分公司","10011110000000000AFD"]
+						  ,["1001V5100000000USZCB","合肥区","1001V51000000009ZMU7"]
+						  ,["1001V51000000009ZMRX","湖北二","1001V51000000009ZMU4"]
+						  ,["100111100000000000SZ","湖北一","1001V51000000009ZMU4"]
+						  ,["1001V51000000002YXT3","湖南二","1001V51000000009ZMU4"]
+						  ,["1001V5100000000F2PI7","湖南三","1001V51000000009ZMU4"]
+						  ,["100111100000000000SY","湖南一","1001V51000000009ZMU4"]
+						  ,["1001V5100000000LRA20","吉林区","1001V51000000002YXN7"]
+						  ,["100111100000000000SQ","冀北区","100111100000000000TD"]
+						  ,["10011110000000005KH5","冀南区","100111100000000000TD"]
+						  ,["1001V5100000000V3ZTJ","江西二","1001V51000000009ZMU4"]
+						  ,["1001V5100000000V3ZTH","江西一","1001V51000000009ZMU4"]
+						  ,["100111100000000000SO","胶二","1001V51000000002YXN7"]
+						  ,["100111100000000000SN","胶一","1001V51000000002YXN7"]
+						  ,["100111100000000000TI","昆明办事处","1001V5100000000UPLQ1"]
+						  ,["1001V5100000000LRA1Y","兰州办事处","100111100000000000TE"]
+						  ,["100111100000000000T9","辽宁区","1001V51000000002YXN7"]
+						  ,["1001V5100000000LJ9FY","鲁北","1001V51000000002YXN7"]
+						  ,["100111100000000000SP","鲁西南","1001V51000000002YXN7"]
+						  ,["1001V5100000000ARDX1","洛阳办事处","1001V51000000009ZMU7"]
+						  ,["100111100000000000SG","南京分公司","1001V5100000000J62G4"]
+						  ,["100111100000000000TM","南宁分公司","10011110000000000AGY"]
+						  ,["1001V5100000000A5FDH","南通办","1001V5100000000J62G4"]
+						  ,["100111100000000000T4","内蒙","100111100000000000TE"]
+						  ,["1001V5100000000UTPMB","山西外围","100111100000000000TE"]
+						  ,["100111100000000000T5","陕西外围","100111100000000000TE"]
+						  ,["100111100000000000SB","上海分公司","1001V5100000000J62G4"]
+						  ,["1001V5100000000UQ2GX","深圳分公司","10011110000000000AGY"]
+						  ,["100111100000000000SI","沈阳KA","1001V51000000002YXN7"]
+						  ,["1001V5100000000JGNG9","沈阳恒润隆","1001V51000000002YXN7"]
+						  ,["1001V5100000000X4HUA","沈阳周转库虚拟客户","1001V51000000002YXN7"]
+						  ,["100111100000000000T0","苏北区","1001V5100000000J62G4"]
+						  ,["1001V5100000000A5OGG","苏南区","1001V5100000000J62G4"]
+						  ,["10011110000000000XO0","苏中区","1001V5100000000J62G4"]
+						  ,["100111100000000000T1","太原办事处","100111100000000000TE"]
+						  ,["100111100000000000SR","天津","100111100000000000TD"]
+						  ,["1001V5100000000YLWB7","天津虚拟客户","100111100000000000TD"]
+						  ,["100111100000000000SX","皖北","1001V51000000009ZMU7"]
+						  ,["100111100000000000SW","皖南","1001V51000000009ZMU7"]
+						  ,["1001V5100000000UQ2H7","温州办事处","10011110000000000AFD"]
+						  ,["100111100000000000SE","武汉分公司","1001V51000000009ZMU4"]
+						  ,["100111100000000000TJ","西安办事处","100111100000000000TE"]
+						  ,["100111100000000000TL","新疆分公司","100111100000000000TE"]
+						  ,["100111100000000000SV","豫北","1001V51000000009ZMU7"]
+						  ,["100111100000000000SS","豫东","1001V51000000009ZMU7"]
+						  ,["100111100000000000ST","豫南","1001V51000000009ZMU7"]
+						  ,["100111100000000000SU","豫西","1001V51000000009ZMU7"]
+						  ,["100111100000000000TH","郑州办事处","1001V51000000009ZMU7"]
+						  ,["1001V5100000000UQ2GM","中山办事处","10011110000000000AGY"]
+						  ,["100111100000000000SL","重庆分公司","1001V5100000000UPLQ1"]
+					   ];
+
+function setF(departid,objid)
+{
+    if(departid==""){
+          var obj = document.getElementById(objid);
+          var length = obj.length;
+          for (var j=length-1; j>0; j--)
+          {
+            obj.options.remove(j);
+          }
+    	  for(var i=1;i<dept.length;i++){   
+              var oOption = document.createElement("OPTION");
+              obj.options.add(oOption);
+              oOption.innerText = dept[i][1];
+              oOption.value = dept[i][0];
+          }	  
+    }else{
+      var obj = document.getElementById(objid);
+      var length = obj.length;
+      for (var j=length-1; j>0; j--)
+      {
+        obj.options.remove(j);
+      }
+         
+      for(var i=1;i<dept.length;i++){
+        if(dept[i][2]==departid){
+          var oOption = document.createElement("OPTION");
+          obj.options.add(oOption);
+          oOption.innerText = dept[i][1];
+          oOption.value = dept[i][0];
+        }
+      }
+    }
+}
+
+function fsubmit()
+{
+    thisform.page.value=1;
+    thisform.submit();
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+			<td align="center" nowrap="nowrap" id="NSUMMNY$m.INVCODE">$m.NSUMMNY</td>
+			<td align="center" nowrap="nowrap" id="NMNY$m.INVCODE">$m.NMNY</td>
+			<td align="center" nowrap="nowrap" id="NCOSTMNY$m.INVCODE">$m.NCOSTMNY</td>
+			<td align="center" nowrap="nowrap" id="ACCMNY$m.INVCODE">$m.ACCMNY</td>
+			<td align="center" nowrap="nowrap">$m.ACCMNY</td>
+			<td align="center" nowrap="nowrap" id="BRACCMNY$m.INVCODE">$m.BRACCMNY</td>
+			<td align="center" nowrap="nowrap" id="PRODMNY$m.INVCODE">$m.PRODMNY</td>
+			<td align="center" nowrap="nowrap" id="Pa$m.INVCODE"></td>
+			<td align="center" nowrap="nowrap id="Pav$m.INVCODE""></td>
+			<td align="center" nowrap="nowrap" id="Pb$m.INVCODE"></td>
+		        <td align="center" nowrap="nowrap" id="Pbv$m.INVCODE"></td>
+ function init()
+{
+   try{
+     	      eval("document.all.PN0302010112006.innerText='1380g猪肉荠菜水饺'");
+	      eval("document.all.PS0302010112006.innerText='1*1380*8'");
+	      eval("document.all.Pa0302010112006.innerText=parseFolat(document.all.NMNY0302010112006.innerText)-parseFolat(document.all.ACCMNY0302010112006.innerText)");
+	      if(parseFolat(document.all.NMNY0302010112006.innerText)>0){
+	         eval("document.all.Pav0302010112006.innerText=(parseFolat(document.all.NMNY0302010112006.innerText)-parseFolat(document.all.ACCMNY0302010112006.innerText))/parseFolat(document.all.NMNY0302010112006.innerText)");
+	      }
+	      eval("document.all.Pb0302010112006.innerText=parseFolat(document.all.ACCMNY0302010112006.innerText)-parseFolat(document.all.PRODMNY0302010112006.innerText)");
+	      if(parseFolat(document.all.ACCMNY0302010112006.innerText)>0){
+	         eval("document.all.Pbv0302010112006.innerText=(parseFolat(document.all.ACCMNY0302010112006.innerText)-parseFolat(document.all.PRODMNY0302010112006.innerText))/parseFolat(document.all.ACCMNY0302010112006.innerText)");
+	      }
+
+  }catch(e){}
+
+ }
+</script>
+<body  onload="init();">	
+  <form name="thisform" method="post" action="prodProfit.aspx">
+   <input type="hidden" name="pageSize" value="50">
+   <input type="hidden" name="page" value="">
+   <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+      <input type="hidden" name="first" value="1">	
+                      <input type="hidden" name="iscust" value="">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">开始时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate" type="text" class="login" id="billdate" value="" readonly><input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >
+			</td>
+                      <td class="tdlabel" width="10%">截止时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate2" type="text" class="login" id="billdate2" value="" readonly><input type="button" value="↓" onClick="ShowDate(billdate2);" class="button" name="button23" >
+			</td>
+                </tr>
+	        <tr class="search"> 
+			<td class="tdlabel" width="10%">所属大区</td>
+			<td class="tdinput" width="20%">
+				<select name=dq_pk  onchange="javascript:setF(this.value,'areapk');"><option value=''>请选择大区</option>
+                                                                   <option value="1001V51000000002YXN7" >东北大区</option>
+                                                                   <option value="100111100000000000TD" >华北大区</option>
+                                                                   <option value="1001V5100000000J62G4" >华东大区</option>
+                                                                   <option value="10011110000000000AGY" >华南大区</option>
+                                                                   <option value="1001V51000000009ZMU7" >华中大区</option>
+                                                                   <option value="100111100000000000TE" >西北大区</option>
+                                                                   <option value="1001V5100000000UPLQ1" >西南大区</option>
+                                                                   <option value="10011110000000000AFD" >浙江大区</option>
+                                                                   <option value="1001V51000000009ZMU4" >中南大区</option>
+                                                              </select>			
+			</td>
+			<td class="tdlabel" width="10%">所属区域</td>
+			<td class="tdinput" width="20%">
+				<select name=areapk><option value=''>请选择区域</option>
+                                                                   <option value="1001V5100000000USXSR">安庆区</option>
+                                                                   <option value="100111100000000000SD">北京分公司</option>
+                                                                   <option value="100111100000000000SK">成都分公司</option>
+                                                                   <option value="1001V5100000000UPLQ5">川北区</option>
+                                                                   <option value="1001V5100000000UPLQ2">川东区</option>
+                                                                   <option value="1001V5100000000UPLQ4">川南区</option>
+                                                                   <option value="1001V5100000000UPLQ3">川西区</option>
+                                                                   <option value="1001V5100000000UQ2GL">东莞办事处</option>
+                                                                   <option value="100111100000000000SJ">福州分公司</option>
+                                                                   <option value="100111100000000000T3">甘青宁</option>
+                                                                   <option value="100111100000000000SC">广州分公司</option>
+                                                                   <option value="1001V5100000000UQ2H5">贵阳办事处</option>
+                                                                   <option value="100111100000000000SH">哈尔滨分公司</option>
+                                                                   <option value="100111100000000000SF">杭州分公司</option>
+                                                                   <option value="1001V5100000000USZCB">合肥区</option>
+                                                                   <option value="1001V51000000009ZMRX">湖北二</option>
+                                                                   <option value="100111100000000000SZ">湖北一</option>
+                                                                   <option value="1001V51000000002YXT3">湖南二</option>
+                                                                   <option value="1001V5100000000F2PI7">湖南三</option>
+                                                                   <option value="100111100000000000SY">湖南一</option>
+                                                                   <option value="1001V5100000000LRA20">吉林区</option>
+                                                                   <option value="100111100000000000SQ">冀北区</option>
+                                                                   <option value="10011110000000005KH5">冀南区</option>
+                                                                   <option value="1001V5100000000V3ZTJ">江西二</option>
+                                                                   <option value="1001V5100000000V3ZTH">江西一</option>
+                                                                   <option value="100111100000000000SO">胶二</option>
+                                                                   <option value="100111100000000000SN">胶一</option>
+                                                                   <option value="100111100000000000TI">昆明办事处</option>
+                                                                   <option value="1001V5100000000LRA1Y">兰州办事处</option>
+                                                                   <option value="100111100000000000T9">辽宁区</option>
+                                                                   <option value="1001V5100000000LJ9FY">鲁北</option>
+                                                                   <option value="100111100000000000SP">鲁西南</option>
+                                                                   <option value="1001V5100000000ARDX1">洛阳办事处</option>
+                                                                   <option value="100111100000000000SG">南京分公司</option>
+                                                                   <option value="100111100000000000TM">南宁分公司</option>
+                                                                   <option value="1001V5100000000A5FDH">南通办</option>
+                                                                   <option value="100111100000000000T4">内蒙</option>
+                                                                   <option value="1001V5100000000UTPMB">山西外围</option>
+                                                                   <option value="100111100000000000T5">陕西外围</option>
+                                                                   <option value="100111100000000000SB">上海分公司</option>
+                                                                   <option value="1001V5100000000UQ2GX">深圳分公司</option>
+                                                                   <option value="100111100000000000SI">沈阳KA</option>
+                                                                   <option value="1001V5100000000JGNG9">沈阳恒润隆</option>
+                                                                   <option value="1001V5100000000X4HUA">沈阳周转库虚拟客户</option>
+                                                                   <option value="100111100000000000T0">苏北区</option>
+                                                                   <option value="1001V5100000000A5OGG">苏南区</option>
+                                                                   <option value="10011110000000000XO0">苏中区</option>
+                                                                   <option value="100111100000000000T1">太原办事处</option>
+                                                                   <option value="100111100000000000SR">天津</option>
+                                                                   <option value="1001V5100000000YLWB7">天津虚拟客户</option>
+                                                                   <option value="100111100000000000SX">皖北</option>
+                                                                   <option value="100111100000000000SW">皖南</option>
+                                                                   <option value="1001V5100000000UQ2H7">温州办事处</option>
+                                                                   <option value="100111100000000000SE">武汉分公司</option>
+                                                                   <option value="100111100000000000TJ">西安办事处</option>
+                                                                   <option value="100111100000000000TL">新疆分公司</option>
+                                                                   <option value="100111100000000000SV">豫北</option>
+                                                                   <option value="100111100000000000SS">豫东</option>
+                                                                   <option value="100111100000000000ST">豫南</option>
+                                                                   <option value="100111100000000000SU">豫西</option>
+                                                                   <option value="100111100000000000TH">郑州办事处</option>
+                                                                   <option value="1001V5100000000UQ2GM">中山办事处</option>
+                                                                   <option value="100111100000000000SL">重庆分公司</option>
+                                                              </select>
+			</td>
+                </tr>
+		<script>
+                    setF('$form_dq_pk','areapk');
+		    document.getElementById('areapk').value='$form_areapk';
+		</script>
+	        <tr class="search"> 
+			<td class="tdlabel" width="10%">库存组织</td>
+			<td class="tdinput" width="20%">
+				<select name=calbody><option value=''>请选择库存组织</option>
+                                                                      <option value="1001V5100000000N6JOP" >分厂库存组织</option>
+                                                                      <option value="1001V5100000000YLA95" >天津库存组织</option>
+                                                                      <option value="1001V5100000000ITFDI" >成都周转仓库存组织</option>
+                                                                      <option value="1001V5100000000BICHA" >洛阳库存组织</option>
+                                                                      <option value="1001V5100000000ZR1PP" >苏南中转仓库</option>
+                                                                      <option value="1001111000000000010R" >郑州总库存组织</option>
+                                                                      <option value="10011110000000000NJN" >昆明库存组织</option>
+                                                                      <option value="10011110000000000BNV" >郑州办事处库存组织</option>
+                                                                      <option value="10011110000000000BNX" >西安库存组织</option>
+                                                                      <option value="10011110000000000BNZ" >沈阳库存组织</option>
+                                                                      <option value="10011110000000000BO2" >兰州库存组织</option>
+                                                                      <option value="1001V5100000000N0BHV" >辽宁阜新库存组织</option>
+                                                                      <option value="1001V5100000000YZWN2" >南昌库存组织</option>
+                                                                      <option value="1001V5100000000KRDGX" >华东周转库存组织</option>
+                                                                      <option value="1001V5100000000LQ8BC" >富士康库存组织</option>
+                                                                 </select>			
+			</td>
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="cname" value="">
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">产品分类</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="ptypename" value="" readonly>
+				<input type="hidden" name="ptype" value="">
+				<input type='button' name=bt class='btn' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+				<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>				
+			</td>	
+			<td class="tdlabel" width="10%">产品名称</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="pname" value="">		
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">业务类型</td>
+			<td class="tdinput" width="20%">
+				<select name=busitype><option value=''>请选择业务类型</option>
+                                                                      <option value="1001V5100000000AO3GT" >宁夏涝河桥销售业务</option>
+                                                                      <option value="1001V5100000000QS7ZS" >总公司第三通路羊肉销售业务</option>
+                                                                      <option value="1001V5100000000SB2UO" >总公司餐饮乡村基销售业务</option>
+                                                                      <option value="1001V5100000000SB2Z2" >总公司餐饮华莱士销售业务</option>
+                                                                      <option value="1001V5100000000SB2Z3" >餐饮德克士销售业务</option>
+                                                                      <option value="1001V5100000000TA6LO" >总公司向分公司C类产品退货业务</option>
+                                                                      <option value="1001V5100000000HZG55" >销售测试流程</option>
+                                                                      <option value="1001V5100000000MIHGW" >总公司餐饮连锁销售业务</option>
+                                                                      <option value="1001V5100000000CK4FM" >总公司餐饮渠道批发销售业务</option>
+                                                                      <option value="1001V5100000000S4Q7T" >（冲）总公司向分公司销售业务</option>
+                                                                      <option value="1001V5100000000S4Q7V" >（冲）总公司向经销商销售业务</option>
+                                                                      <option value="1001V5100000000FZ8Y8" >福来食联销售业务</option>
+                                                                      <option value="1001V5100000000NYANE" >总公司餐饮渠道网吧销售业务</option>
+                                                                      <option value="1001V5100000000TG1X0" >原物料销售业务</option>
+                                                                      <option value="1001V5100000000TA6LM" >总公司向分公司A类产品退货业务</option>
+                                                                      <option value="1001V5100000000TA6LN" >总公司向分公司B类产品退货业务</option>
+                                                                      <option value="1001V5100000000TA6LQ" >总公司向区域经销商B类产品退货业务</option>
+                                                                      <option value="1001V5100000000SAY3Y" >总公司餐饮真功夫销售业务</option>
+                                                                      <option value="1001V5100000000TA6LP" >总公司向区域经销商A类产品退货业务</option>
+                                                                      <option value="1001V5100000000TA6LR" >总公司向区域经销商C类产品退货业务</option>
+                                                                      <option value="1001V5100000000CB7V0" >牛羊肉郑州销售业务</option>
+                                                                      <option value="0001AA1000000000045T" >贺寿面销售</option>
+                                                                      <option value="0001AA1000000000045U" >肯德基销售业务</option>
+                                                                      <option value="0001AA1000000000045V" >出口销售业务</option>
+                                                                      <option value="0001AA1000000000045W" >总公司第三通道常规销售业务</option>
+                                                                      <option value="0001AA1000000000045X" >向大经销商销售业务</option>
+                                                                      <option value="0001AA1000000000045Y" >向区域经销商销售业务</option>
+                                                                      <option value="0001AA1000000000045Z" >香港销售业务</option>
+                                                                      <option value="100111100000000008I1" >郑州办事处经销商销售业务</option>
+                                                                      <option value="100111100000000008I3" >郑州办事处铺货业务</option>
+                                                                      <option value="100111100000000008I4" >郑州办事处卖场订单销售业务</option>
+                                                                      <option value="100111100000000008SY" >郑州办事处向卖场配送业务</option>
+                                                                      <option value="100111100000000008SZ" >（冲经销商）郑州办事处经销商向卖场配送业务</option>
+                                                                      <option value="100111100000000008TM" >郑州办事处现款销售业务</option>
+                                                                      <option value="1001111000000000151R" >西安办事处销售业务</option>
+                                                                      <option value="1001111000000000151S" >昆明办销售业务</option>
+                                                                      <option value="1001V5100000000D1H92" >总公司餐饮渠道高速公路普通销售业务</option>
+                                                                      <option value="1001V5100000000AK0PN" >餐饮渠道富士康销售业务</option>
+                                                                      <option value="1001V5100000000CK4EN" >总公司餐饮渠道高速公路家佳思念销售业务</option>
+                                                                      <option value="1001V5100000000FT9A2" >湖州经销商销售业务</option>
+                                                                      <option value="1001V5100000000FT9AS" >湖州分公司销售业务</option>
+                                                                 </select>				
+			</td>	
+			<td class="tdlabel" width="10%"></td>
+			<td class="tdinput" width="20%">
+			</td>
+                </tr>
+                <tr>
+
+             			
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" value="查询" onclick="fsubmit()">&nbsp;	
+			</td>
+		</tr>	
+		
+</table>
+
+
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">产品分类</td>
+	<td nowrap="nowrap">产品代码</td>
+	<td nowrap="nowrap">产品名城</td>
+	<td nowrap="nowrap">规格</td>
+	<td nowrap="nowrap">数量</td>
+	<td nowrap="nowrap">实际成本价</td>
+	<td nowrap="nowrap">计划价</td>
+	<td nowrap="nowrap">结算价</td>
+	<td nowrap="nowrap">分支结算价</td>
+	<td nowrap="nowrap">销售价</td>
+	<td nowrap="nowrap">销售金额</td>
+	<td nowrap="nowrap">不含税销售收入</td>
+	<td nowrap="nowrap">成本金额</td>
+	<td nowrap="nowrap">结算金额</td>
+	<td nowrap="nowrap">不含税结算金额</td>
+	<td nowrap="nowrap">分支结算金额</td>
+	<td nowrap="nowrap">计划成本</td>
+	<td nowrap="nowrap">毛利(1)=(不含税)开票收入-结算金额</td>
+	<td nowrap="nowrap">毛利率(1)=毛利(1)/不含税开票收入</td>
+	<td nowrap="nowrap">毛利(2)=不含税结算金额-计划成本</td>
+	<td nowrap="nowrap">毛利率(2)=毛利(2)/不含税结算金额</td>
+</tr>
+      <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">请选择条件查询</td>
+     </tr>
+</table>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td"><div id='div1'>共 [380 ]条记录  每页显示[ 50 ]条 共 [ 8 ]页 第[ 1 ] 页 <script>
+function toPage(url,page,pagesize) {
+document.thisform.pageSize.value=pagesize
+document.thisform.action="http://192.168.60.30:8888/synear/finance/prodProfit.aspx?qxxkdm=null&page="+page;
+document.thisform.submit();
+}
+</script>
+  <a href="javascript:toPage('http://192.168.60.30:8888/synear/finance/prodProfit.aspx',2,50)">下一页</a>  <a href="javascript:toPage('http://192.168.60.30:8888/synear/finance/prodProfit.aspx',8,50)">末页</a> </div></td>
+   </tr>
+</table>
+</form>	
+</body>
+</html>

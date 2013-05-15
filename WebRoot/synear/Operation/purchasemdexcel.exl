@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>selPurchaseMoneyDetailExport</web:sql>
+  <web:db>Login</web:db>
+  <web:col>发票表体主键##供应商名称##发票号##发票日期##存货名称##规格##发票数量##金额##对应发票号码##发票含税金额</web:col>
+  <web:key>CINVOICE_BID##CUSTNAME##VINVOICECODE##DINVOICEDATE##INVNAME##INVSPEC##NINVOICENUM##NORIGINALSUMMNY</web:key>
+  <web:name>供应商发票明细</web:name>
+</web:page>
+
+
+

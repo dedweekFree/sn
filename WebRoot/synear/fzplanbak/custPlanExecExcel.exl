@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>getCustPlanExecEx</web:sql>
+  <web:db>Login</web:db>
+  <web:col>所属区域##客户名称##产品名称##产品代码##计划数量##追加数量##调整数量##下单数量##抢报数量##加货数量##安排数量##备货数量##发货数量##剩余计划</web:col>
+  <web:key>DEPTNAME##ORGDESC##INVNAME##INVCODE##PLANNUM##ZPLANNUM##TPLANNUM##PREORDERNUM##YJNUM##HHNUM##ARRNUM##ORDERNUM##SALENUM##PLUSPALNNUM</web:key>
+  <web:name>客户计划完成情况</web:name>
+</web:page>
+
+
+

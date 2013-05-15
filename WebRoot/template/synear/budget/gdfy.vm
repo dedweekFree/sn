@@ -1,0 +1,98 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+	<title>===预算===</title>
+	<script>
+		$(function(){
+			//计算固定费用小计
+			var $yearz = $("td[name='yearz']");
+			var $yearhj = $("td[name='yearhj']");
+			var $monthhj = $("td[name='monthhj']");
+			var $cy = $("td[name='cy']");
+			var $gdyearz = 0;
+			var $gdyearhj = 0;
+			var $gdmonthhj = 0;
+			var $gdcy = 0;
+			for(var i=0;i< $yearz.length;i++){
+				$gdyearz+=parseFloat($yearz[i].innerText);
+				$gdyearhj+=parseFloat($yearhj[i].innerText);
+				$gdmonthhj+=parseFloat($monthhj[i].innerText);
+				$gdcy+=parseFloat($cy[i].innerText);
+			}
+			$(".gdyearz")[0].innerText = $gdyearz;	
+			$(".gdyearhj")[0].innerText = $gdyearhj;	
+			$(".gdmonthhj")[0].innerText = $gdmonthhj;	
+			$(".gdcy")[0].innerText = $gdcy;	
+		});	
+	</script>
+</head>
+
+<body>
+	<input type="button" class="bt1" value=" 返   回 " onClick="javascript:window.location='report.aspx?code=$!form_deptcode&date=$!form_billdate';">
+	 <input type="button" class="bt1" value="导出Excel" onclick="javascript:exportMethod('tb');"> <br/> 
+	<!-- <label style="font-size:12px;">如果点击导出按钮后没有起效，请点击浏览器 工具--Internet选项--安全--自定义级别--对未标记为可安全执行脚本的ActiveX控件初始化并执行脚本   设置为启用 </label> -->
+	<table  border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+			<tr>
+				<td height="19" align="center" colspan="6"  style="font:25px; font-weight:bold;" >
+					$!form_billdate $!form_deptname 固定费用预算表
+				</td> 
+			</tr>
+			<tr>
+				<td height="19" align="center">费用明细</td> 
+				<td height="19" align="center">全年预算金额</td> 
+				<td height="19" align="center">年度月预算额</td> 
+				<td height="19" align="center">当月上报预算</td> 
+				<td height="19" align="center">差异</td> 
+				<td height="19" align="center">备注（特殊情况说明）</td> 
+			</tr>
+			#foreach($m in $reportgetYearBudgetByMonGD)
+			<tr >
+				<td height="19" align="center">$!m.NAME1</td> 
+				<td height="19" align="center" name="yearz">$!m.YEARZ</td> 
+				<td height="19" align="center" name="yearhj">$!m.YEARHJ</td> 
+				<td height="19" align="center" name="monthhj">$!m.MONTHHJ</td> 
+				<td height="19" align="center" name="cy">$!m.CY</td> 
+				<td height="19" align="center">无</td> 
+			</tr>
+			#end
+			<tr>
+				<td height="19" align="center">固定费用合计</td> 
+				<td height="19" align="center" class="gdyearz"></td> 
+				<td height="19" align="center" class="gdyearhj"></td> 
+				<td height="19" align="center" class="gdmonthhj"></td> 
+				<td height="19" align="center" class="gdcy"></td> 
+				<td height="19" align="center">无</td> 
+			</tr>
+		</table>      
+	<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</html>
+

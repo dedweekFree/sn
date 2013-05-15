@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=======</title>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+     <td colspan="4" align="left">到货单表</td>
+  </tr>
+  #foreach($!m in $selshowvarrorder)
+  <tr class="trcolor">
+    <td>到货单号</td>
+    <td align="left">$!form_varrordercode</td>
+    <td>到货时间</td>
+    <td align="left">$!m.VDEF10</td>
+  </tr>
+  <tr class="trcolor">
+    <td>供应商</td>
+    <td align="left">$!m.CUSTNAME</td>
+    <td><input type="button" class="bt1" name="button" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/></td>
+    <td align="left">&nbsp;</td>
+  </tr>
+  #end
+</table>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+   <td colspan="6" align="left">到货单明细</td>
+  </tr>
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>存货编码</td>
+    <td>存货名称</td>
+    <td>到货地点</td>
+    <td>数量</td>
+    <td>质检结果</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selshowvarrorderbody)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.INVCODE</TD>
+    <td>$!m.INVNAME</TD>
+    <td>$!m.VDEF4</TD>
+    <td>$!m.NARRVNUM</TD>
+    <td>#if($!m.QUALITYMOTO!="")$!m.QUALITYMOTO#else&nbsp;#end</TD>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</body>
+</html>

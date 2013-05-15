@@ -1,0 +1,224 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>========</title>
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function ShowTable(tid){
+	if(tid=='1'){
+		document.getElementById('tab1').style.display="none";
+		document.getElementById('tab2').style.display="block";
+	}else{
+		document.getElementById('tab2').style.display="none";
+		document.getElementById('tab1').style.display="block";
+	}
+}
+function check(id,k){
+	 	var a = isNaN(parseFloat(document.getElementById(id).value))?0:parseFloat(document.getElementById(id).value);
+		var b = isNaN(parseFloat(document.getElementById("nnum"+k).value))?0:parseFloat(document.getElementById("nnum"+k).value);
+		var c = parseFloat(document.getElementById("nordernum"+k).value);
+		if((a+b)>c*1.05){
+			alert("输入超过上限!");
+			document.getElementById(id).value=0;
+			return false;
+		}
+}
+function daohuo(vordercode,corp,pk_invbasdoc){
+ var ReturnAllQualityValue=showModalDialog('daohuodan.aspx?&vordercode='+vordercode+'&corp='+corp+'&pk_invbasdoc='+pk_invbasdoc,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+}
+function fapiao(vordercode,corp,pk_invbasdoc){
+ var ReturnAllQualityValue=showModalDialog('fapiao.aspx?&vordercode='+vordercode+'&corp='+corp+'&pk_invbasdoc='+pk_invbasdoc,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+}
+function showcode(){
+	var now = new Date(); //获取系统日期 
+		var yyy ="'"+now.getYear()+"'"; //截取年		
+		var yy = yyy.substring(3,5);
+		var mon = now.getMonth()+1; //截取月
+		var dd = now.getDate(); //截取日
+		//取时间 
+		var hh = now.getHours(); //截取小时 
+		var mm = now.getMinutes(); //截取分钟
+		var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+		var mil = now.getMilliseconds();//毫秒
+		ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+		var clock = yy; //将得到的各个部分连接成一个日期时间 
+		if (parseInt(mon) < 10) mon += '0'; //字符串 
+		clock += mon;  
+		if (parseInt(dd) < 10) dd += '0';  
+		clock += dd;
+		if (parseInt(hh) < 10) hh += '0';  
+		clock += hh; 
+		if (parseInt(mm) < 10) mm += '0';  
+		clock += mm;
+		if (parseInt(ss) < 10) ss += '0';  
+		clock += ss;
+		if (parseInt(mil) < 10){mil += '00';
+		}else if(10 <= parseInt(mil) < 100){mil += '0';}
+		clock += (mil.substr(0,3));
+		var BHcode = 'BH'+ clock;
+		document.all.operordercode.value=BHcode;
+		document.thisform.submit();
+}
+</script>
+</head>
+
+<body>
+<form name="thisform" action="PurchaseInfosub.aspx" method="post" target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="8" align="left">采购订单:$!form_vordercode #set($i=0) (备货单:#foreach($!m in $selOperOrderPrepare) <a href="showoperordercode.aspx?operordercode=$!m.OPERORDERCODE&vordercode=$!form_vordercode">$!m.OPERORDERCODE</a> #set($i=$i+1) #end )
+    <input type="hidden" name="OrderId" value="$!form_vordercode" readonly=true>
+    </td>
+  </tr>
+  <input type="hidden" name="operordercode" value="">
+  #foreach($!m in $PurchaseListDetailhead)
+  <tr class="trcolor">
+    <td>供应商:</td>
+    <td><input type="text" name="custname" value="$!m.CUSTNAME" readonly=true/>
+	<input type="hidden" name="OrderId_b" value="$!m.CORDERID">	
+    </td>
+    <td>采购组织:</td>
+    <td><input type="text" name="name" value="$!m.NAME" readonly=true/>
+    </td>
+    <td>库存组织:</td>
+    <td><input type="text" name="bodyname" value="$!m.BODYNAME" readonly=true/>
+    </td>
+    <td>业务员:</td>
+    <td><input type="text" name="psnname" value="$!m.PSNNAME" readonly=true/></td>
+  </tr>
+  #end
+</table>
+<table class="datatable" id="thistab">
+  <tr class="trcolor">
+    <td colspan="2">存货编码</td>
+    <td colspan="3">存货名称</td>
+    <td colspan="3">到货仓库</td>
+    <td colspan="3">到货地点</td>
+    <td>状态</td>
+  </tr>
+  <tr class="trcolor">
+    <td>单位</td>
+    <td>库存数量</td>
+    <td>请购数量</td>
+    <td>请够日期</td>
+    <td>需求日期</td>
+    <td>订单数量</td>
+    <td>含税单价</td>
+    <td>订单合计</td>
+    <td>累计供货量</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $PurchaseListDetail)
+  <tr class="trcolor">
+    <td colspan="2">$!m.INVCODE
+    <input type="hidden" name="invcode" value="$!m.INVCODE">
+    </td>
+    <td colspan="3">$!m.INVNAME</td>
+    <td colspan="3">$!m.STORNAME</td>
+    <td colspan="3">$!m.VDEF4</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td>$!m.MEASNAME</td>
+    <td>&nbsp;</td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.DORDERDATE</td>
+    <td>$!m.DDEMANDDATE</td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.NORGTAXPRICE</td>
+    <td>&nbsp;</td>
+    <td>$!m.SUMNUMBER</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><a href="#" onclick="daohuo('$!form_vordercode','$!form_corp','$!m.PK_INVBASDOC')">到货单</a>&nbsp;&nbsp;<a href="#" onclick="fapiao('$!form_vordercode','$!form_corp','$!m.PK_INVBASDOC')"">发票单</a></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan='2'>$i</td>
+    <td colspan="11"><table class="datatable">
+      <tr class="trcolor">
+        <td>备货数量</td>
+        <td>计划到货日期</td>
+        <td>备注(发货地点、发货时间、司机、车牌、联系方式)</td>
+        <td>修改时间</td>
+        <td>操作</td>
+      </tr>
+      <tr class="trcolor">
+        <td><input type="hidden" name="nordernum" id="nordernum$i" value="$!m.NORDERNUM">
+	    <input type="hidden" name="nnum" id="nnum$i" value="$!m.NNUMBER">
+	<input type="text" name="NNumber" id="NNumber$i" style="width: 40px" value="0" onblur="check(this.id,$i)" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"/></td>
+        <td><input type="text" name="PrepareDate" onclick="ShowDate(this)" style="width: 80px"/></td>
+        <td><input type="text" name="Remark" style="width: 300px"/></td>
+        <td>&nbsp;</td>
+        <td></td>
+      </tr>
+    </table></td>
+  </tr>
+    #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td colspan="11"><table class="datatable" id="tab1" style="display:none">
+      <tr class="trcolor">
+        <td>到货单号</td>
+        <td>到货日期</td>
+        <td>备注</td>
+      </tr>
+      #set($i=0)
+      #foreach($!m in $selDaoHuoDan)
+      <tr class="trcolor">
+        <td>$!m.VARRORDERCODE</td>
+        <td>$!m.TS</td>
+        <td>$!m.P_VMEMO</td>
+	<input type="hidden" name="carriveorderid" value="$!m.CARRIVEORDERID">
+      </tr>
+      #set($i=$i+1)
+      #end
+    </table></td>
+  </tr>
+  <tr>
+	<td colspan="13"><input type="button" class="bt1" name="button" value="确认数量" onclick='showcode()'>
+	<input type="button" class="bt1" name="button" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/>
+	<input type="button" class="bt1" name="excel" value="导出EXCEL表" onclick="javascript:method1('thistab');">
+	</td>
+  </tr>
+</table>
+</form>
+<div>
+ <iframe name="dataframe" src="" width="0" height="0"></iframe>
+</div>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

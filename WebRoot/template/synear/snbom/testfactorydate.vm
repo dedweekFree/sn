@@ -1,0 +1,23 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+#foreach($m in $testfactorydate)
+   feenum='$m.FEENUM';
+ #end
+ if(parseInt(feenum)>0) {
+   alert("存在相同的生效日期！");
+   parent.submitok=false;
+ }else if(feenum=='0'){
+   parent.testok();
+ }else{
+   alert("出现未知错误！");
+   parent.submitok=false;
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>
+

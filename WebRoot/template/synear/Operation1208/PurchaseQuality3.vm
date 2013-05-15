@@ -1,0 +1,201 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+	var lihua = new Array();
+		lihua = [['序号','理化考核ID','理化考核ID2','理化考核类型2','产品主键']
+		#set($i=0)
+		#foreach($!m in $selihua)
+		,['$i','$!m.QUALITYLIHUATYPE','$!m.ID','$!m.TXT','$!m.CBASEID']
+		#set($i=$i+1)
+		#end
+		]
+	var productdate = new Array();
+	productdate=[['序号','产品主键','入库类型','备注']
+	#set($i=0)
+	#foreach($!m in $selproductdate)
+	,['$i','$!m.CBASEID','$!m.QUALITYLIHUAINSTORAGETYPE','$!m.QUALITYJIEGUO']
+	#set($i=$i+1)
+	#end
+	]
+	function mat(){
+		var tb = document.getElementById('tb');		
+		for(var i=0;i<tb.rows.length-1;i++){ 
+		var s = document.getElementById("qualityinstoragetype"+i); //获取select标记
+		var ops= s.options;
+		var ContentQualityList=document.getElementById("ContentQualityList"+i);
+		var lihualeixing = document.getElementById("lihualeixing"+i).value;
+		ContentQualityList.innerHTML="";			
+		var count = 0;
+			for(var j=0;j<=lihua.length-1;j++){		
+				if(document.getElementById('cbaseid'+i).value==lihua[j][4]){
+				var NewDiv = document.createElement("DIV");
+				NewDiv.innerHTML=" *. "+lihua[j][3]+"<input id='TextSelectTypeIdL" + i + "_" + count + "' name='TextSelectTypeIdL' type='hidden' value='" + lihua[j][2] + "'/>";
+				ContentQualityList.appendChild(NewDiv);
+				lihualeixing = lihualeixing+"~"+lihua[j][2]+"~";
+				document.getElementById("lihualeixing"+i).value=lihualeixing;
+				count++;
+				}
+			}
+			for(var j=0;j<=productdate.length-1;j++){
+				if(document.getElementById('cbaseid'+i).value==productdate[j][1]){
+					for(var h=0; h<s.length; h++){
+					    if(ops[h].value==productdate[j][2]){
+					      s.options[h].selected=true;
+					    }
+					} 
+				document.getElementById("qualityjieguo"+i).value=productdate[j][3]
+				}
+			}
+		}
+	}
+		var m = 2;
+	function imp(code,k){
+		var ContentQualityList=document.getElementById("ContentQualityList"+k)
+		var showid="";
+		var lihualeixing = document.getElementById("lihualeixing"+k).value;
+		for(j=0;j<ContentQualityList.childNodes.length;j++){
+			var TextSelectTypeId=document.getElementById('TextSelectTypeIdL' + k + "_" + j);		
+			showid+=TextSelectTypeId.value+",";
+		}
+		var b='PC'+code.substring(0,6);
+		var ReturnAllQualityValue=showModalDialog('AllQuality.aspx?&code='+b+'&showid='+showid,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+		  if(ReturnAllQualityValue!=null){
+			ContentQualityList.innerHTML="";
+			var ReturnAllQualityValueInfo=ReturnAllQualityValue.split("|");
+			if(ReturnAllQualityValueInfo.length>1){ 
+			   for(i=0;i<ReturnAllQualityValueInfo.length-1;i++){
+				ReturnAllQualityValueInfoArray=ReturnAllQualityValueInfo[i].split("^");
+				    var NewDiv = document.createElement("DIV")
+				    NewDiv.innerHTML=" *. "+ReturnAllQualityValueInfoArray[1]+"<input id='TextSelectTypeIdL" + k + "_" + i + "' name='TextSelectTypeIdL' type='hidden' value='" + ReturnAllQualityValueInfoArray[0] + "'/>";
+				ContentQualityList.appendChild(NewDiv);
+					lihualeixing = lihualeixing+"~"+ReturnAllQualityValueInfoArray[0]+"~";
+					document.getElementById("lihualeixing"+k).value=lihualeixing;
+			   }
+			}
+		}
+	  }
+	  function hiddenquality(i){
+		if(document.getElementById("qualityinstoragetype"+i).value=='258'){
+			document.getElementById("qualityhidden"+i).value="理化:[合格]";
+		}else if(document.getElementById("qualityinstoragetype"+i).value=='259'){
+			document.getElementById("qualityhidden"+i).value="理化:[拒收]";
+		}else if(document.getElementById("qualityinstoragetype"+i).value=='260'){
+			document.getElementById("qualityhidden"+i).value="理化:[让步]";
+		}
+	}
+	function sub(){
+		if(document.getElementById("ibillstatus1").checked){
+		document.getElementById("ibillstatus").value="0";
+		}
+		form1.submit();
+	}
+</script> 
+</head>
+
+<body onload="mat()">
+<form name="form1" action="PurchaseQuality3update.aspx" method="post" target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">到货单</td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货单号:</td>
+    <td><input type="text" name="varrordercode" value="$form_varrordercode" readonly/></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  #set($i=0)
+  #foreach($m in $selPurchaseQualityhead)
+  <input type="hidden" name="cstoreorganization" value="$!m.CSTOREORGANIZATION">
+    <input type="hidden" name="carriveorderid" value="$!m.CARRIVEORDERID">
+  <tr class="trcolor">
+    <td>供应商编码:</td>
+    <td><input type="text" name="custcode" value="$!m.CUSTCODE" readonly/>
+	<input type="hidden" name="cvendorbaseid" value="$!m.CVENDORBASEID" readonly/>
+    </td>
+    <td>供应商:</td>
+    <td><input type="text" name="cvendorname" value="$!m.CUSTNAME" readonly/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>采购部门:</td>
+    <td><input type="text" name="deptname" value="$!m.DEPTNAME" readonly/>
+	<input type="hidden" name="cdeptid" value="$!m.CDEPTID">
+    </td>
+    <td>到货时间:</td>
+    <td><input type="text" name="cdate" value="$!m.TS" readonly/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>库存组织:</td>
+    <td><input type="text" name="cbodyname" value="$!m.BODYNAME" readonly/></td>
+    <td>理化:</td>
+    <td>
+    #foreach($!n in $isqualitydate)
+    <input type="checkbox" name="ibillstatus1" id="ibillstatus1" value="0" #if($!n.LIHUASTATUS=='10') checked disabled #end/>
+    #end
+    <input type="hidden" name="ibillstatus" id="ibillstatus" value="0"/>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+   <td colspan="2"><input type="button" class="bt1" name="button" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/></td>
+    <td colspan="2"><input type="button" class="bt1" name="button" value="确认提交" onclick="sub()"/></td>
+  </tr>
+</table>
+<br>
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td>存货编码</td>
+    <td>存货名称</td>
+    <td>到货数量</td>
+    <td>质量类型</td>
+  </tr>
+  #set($i=0)
+  #foreach($m in $selPurchaseQualityd)
+  <tr class="trcolor">
+  <input type="hidden" name="carriveorder_bid" value="$!m.CARRIVEORDER_BID">
+  <input type="hidden" name="cbaseid" id="cbaseid$i" value="$!m.CBASEID">
+  <input type="hidden" name="cbasename" value="$!m.INVNAME">
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.NARRVNUM
+    <input type="hidden" name="narrvnum" value="$!m.NARRVNUM">
+    <input type="hidden" name="pk_corp" value="$!m.PK_CORP">
+    <input type="hidden" name="lihualeixing" id="lihualeixing$i" value="">
+    </td>
+    <td>
+    <div id="ContentQualityList$i" align="left">
+    </div>
+    <div align="right">
+    <input type="button" class="bt1" name="button" value="添加或编辑质量问题" onclick="imp('$!m.INVCODE',$i)">
+    </div>
+    <table class="datatable">
+      <tr class="trcolor">
+        <td align="right">备注说明:</td>
+        <td align="left"><textarea name="qualityjieguo" id="qualityjieguo$i"></textarea></td>
+        </tr>
+      <tr class="trcolor">
+        <td align="right">入库类型:</td>
+	<input type="hidden" name="qualityhidden" id="qualityhidden$i" value="">
+        <td align="left"><select name="qualitylihuainstoragetype" id="qualityinstoragetype$i" onchange="hiddenquality($i)">
+	<option value="0">无</option>
+	<option value="258">合格</option>
+	<option value="259">拒收</option>
+	<option value="260">让步</option>
+          </select></td>
+        </tr>
+    </table></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</form>
+<div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</div>
+</body>
+</html>

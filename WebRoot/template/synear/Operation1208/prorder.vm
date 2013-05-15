@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>上传文件</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function toDBC(Str){   //转全角为半角
+ var DBCStr = "";      
+ for(var i=0; i<Str.length; i++){   
+  var c = Str.charCodeAt(i);   
+  if(c == 12288) {   
+      DBCStr += String.fromCharCode(32);   
+   continue;   
+  }   
+  if (c > 65280 && c < 65375) {   
+   DBCStr += String.fromCharCode(c - 65248);   
+   continue;   
+  }   
+  DBCStr += String.fromCharCode(c);   
+ }   
+ return DBCStr;   
+}  
+function Trim(stringValue){
+    return stringValue.replace(/(^[\s]*)|([\s]*$)/g,'');
+}
+function delHtmlTag(str){   
+        return str.replace(/<[^>]+>/g,"");//去掉所有的html标记   
+    } 
+function getValue(){
+  var hdatahtml="";
+  var datahtml="";
+	try{
+	var xx=document.frames("myframe").document.body.innerHTML;
+	document.getElementById("dv").innerHTML=xx;
+	var str = document.getElementById("dv");
+	var obj = document.getElementsByTagName("table");///获取所有的表格集
+		for(var j=0;j<obj.length;j++){
+			var tab = obj[j];           //表格
+			var row = tab.rows;         //行
+			for(var i=0;i<row.length;i++){   
+				    for(var n=0;n<tab.rows[i].cells.length;n++){
+					if(delHtmlTag(tab.rows[i].cells[n].innerHTML).indexOf("Purchase Order Number:")==0){
+						hdatahtml = "<input type=hidden name=ordercode value='"+(Trim(toDBC(tab.rows[i].cells[n+1].innerHTML)))+"'>";
+					}
+				        if((tab.rows[i].cells[n].innerHTML).indexOf("Item Description")==0){
+						var objb = tab.rows[i+1].cells[n].getElementsByTagName("table");
+							var tabb = objb[0];
+							var rowb = tabb.rows;
+							for(var x=2;x<rowb.length;x++){
+								var tiaoma = tab.rows[i-2].cells[2].innerHTML;
+								var spec = tab.rows[i-2].cells[6].innerHTML;
+								var price = tab.rows[i-2].cells[9].innerHTML;
+								var a1 = tab.rows[i].cells[n].innerHTML.replace("Item Description","").replace(/[ -~]/g,"");
+								datahtml+="<input type=hidden name=tiaoma value='"+tiaoma+"'>";
+								datahtml+="<input type=hidden name=spec value='"+spec+"'>";
+								datahtml+="<input type=hidden name=price value='"+price+"'>";
+								datahtml+="<input type=hidden name=invname value='"+Trim(toDBC(a1))+"'>";
+								datahtml+="<input type=hidden name=store value='"+tabb.rows[x].cells[0].innerHTML+"'>";
+								datahtml+="<input type=hidden name=qty value='"+tabb.rows[x].cells[1].innerHTML+"'>";
+							}
+					}
+				    }
+				}
+		}
+		subdata.innerHTML=hdatahtml+datahtml;
+		document.all.form2.action="test.aspx";
+		document.all.form2.target="dataframe";
+		document.all.form2.submit();
+		}catch(e){}
+	}
+		function testok2(){
+		document.all.form2.action="prordersub.aspx";
+		document.all.form2.submit();
+		}
+	
+</script>
+</head>
+<body>
+<form name="form1">
+<input name="paper" type="text" size="40" value="" contenteditable="false"/>
+<input type="button" name="bt1" class="bt1" value="文件上传" onClick="window.open('pfile.jsp?formname=form1&myframeurl=myframe&picurl=paper&type=woerma','','status=no,scrollbars=no,top=160,left=150,width=450,height=365')">
+<input type="button" class="bt1" name="bt2" value="确认无误，点击提交" onClick="getValue()">
+</form>
+<form name="form2" method="post" action="" target="dataframe">
+<span id="subdata"></span>
+</form>
+<div id="dv" style="display:none"></div>
+<iframe src="" name="myframe" id="myframe" width="100%" height="100%">
+</iframe>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

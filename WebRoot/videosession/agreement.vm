@@ -1,0 +1,133 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>视频会议$!form_text</title>
+<script LANGUAGE="JavaScript">
+	function checkSubmit(){
+		$submitType = $("#submitType").val();
+		$vnote = $("#vnote").val();
+		$subdata=$("#subdata");
+		$querydata="";
+		if($vnote==""){
+            alert($submitType+"备注不能为空");
+			return false;
+        }
+		if($submitType=="取消"){
+			thisform.action="testexit.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+			
+		if($submitType=="审核"){
+			thisform.action="testagree.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+		
+		if($submitType=="结束"){
+			thisform.action="testover.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+		
+	}
+		function submitformexit(str){  
+			thisform.action="updateVSexit.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+		function submitformagree(str){  
+			arr=str.split(",");
+			for(var i=0;i<arr.length;i++){
+				//alert(arr[i]);
+				$querydata=$querydata+"<input type=hidden name=pk_aids value='"+arr[i]+"'>";
+			}
+			$subdata.html($querydata);
+			thisform.action="updateVSagree.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+		function submitformover(str,maker){  
+			arr=str.split(",");
+			for(var i=0;i<arr.length;i++){
+				//alert(arr[i]);
+				$querydata=$querydata+"<input type=hidden name=pk_aids value='"+arr[i]+"'>";
+			}
+			$subdata.html($querydata);
+			thisform.action="updateVSover.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+</script>
+</head>
+<body>
+	视频会议$!form_text：
+	<form name="thisform" method="post" target="saveframe">
+	<span id="subdata"></span>
+	<input type="hidden" name="text" value="$!form_text" id="submitType"/>
+	<input type="hidden" name="pk_vid" value="$!form_pk_vid" id="submitType"/>
+	<input type="hidden" name="vmaker" value="$!form_vmaker"/>
+	#foreach($!n in $queryVaccouneByVid)
+		<input type="hidden" name="usernames" value="$!n.USERNAME" />
+		<input type="hidden" name="userphones" value="$!n.USERPHONE" />
+	#end
+	#foreach($!m in $queryVsessionByVid)
+		<table class="datatable">
+			<tr class="trcolor">
+				<td align="right">会议主题</td>
+				<td align="left">$!m.VNAME</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议概要</td>
+				<td align="left">$!m.VREMARK</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议时间</td>
+				<td align="left">$!m.VDATE</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议时长</td>
+				<td align="left">$!m.VDATESCOPE</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议室名称</td>
+				<td align="left">$!m.VADDRESS</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">所属部门名称</td>
+				<td align="left">$!m.DEPTNAME</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">申请人</td>
+				<td align="left">$!m.VMAKER</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">参会人员名单</td>
+				<td align="left">
+					#foreach($!n in $queryVaccouneByVid)
+						姓名：$!n.USERNAME||手机号码：$!n.USERPHONE|| 视频账号：$!n.ACODE|| 账号密码：$!n.APWD<br/>
+					#end
+				</td>
+			</tr>	
+			<tr class="trcolor">
+				<td align="right">$!form_text备注</td>
+				<td align="left"><textarea type="text" name="vnote" id="vnote" cols="60" rows="10"></textarea></td>
+			</tr>
+			<tr class="trcolor">	
+				<td align="right">&nbsp;</td>
+				<td align="left"><input type="button" name="b2" value="确认$!form_text" 
+					class="bt1" onClick="checkSubmit()" />  
+					<a name="b2" class="bt1" href="vsession.aspx" >返回</a></td>
+			</tr>
+		</table>
+		#end
+	</form>
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+ function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('varrorderdate1').value=Today;
+	document.getElementById('varrorderdate2').value=Today;
+    }
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" action="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">NC退货查询</td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货单时间</td>
+    <td align="left"><input type="text" name="varrorderdate1" value="$!form_varrorderdate1" onclick="ShowDate(varrorderdate1)"/> - <input type="text" name="varrorderdate2" value="$!form_varrorderdate2" onclick="ShowDate(varrorderdate2)"/></td>
+    <td>到货单号</td>
+    <td align="left"><input type="text" name="varrordercode" value="$!form_varrordercode"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货地点</td>
+    <td align="left"><input type="text" name="vdef4" value="$!form_vdef4"/></td>
+    <td>存货名称</td>
+    <td align="left"><input type="text" name="cbasename" value="$!form_cbasename"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td align="left"><input type="submit" class="bt1" name="bt1" value="查&nbsp;&nbsp;询" /></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>供应商名称</td>
+    <td>到货地点</td>
+    <td>到货单号</td>
+    <td>存货名称</td>
+    <td>到货数量</td>
+    <td>入库数量</td>
+    <td>退货数量</td>
+  </tr>
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

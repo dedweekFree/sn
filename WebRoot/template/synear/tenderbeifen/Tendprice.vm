@@ -1,0 +1,339 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>竞价模式</title>
+<script language="javascript">
+	function v(){
+		var aaa = new Array();
+		aaa = [['序号','值1','值2']
+		 #set($i=0)
+		#foreach ($!n in $selmaxnum)
+		,['$i','$!n.PID','$!n.TENDNUM']
+		#set($i=$i+1)
+		#end
+		]
+		if(aaa.length==1){
+		}else{
+			document.all.pids.value=aaa[1][1];
+			document.all.tendnum1.value=aaa[1][2];
+		}
+		var c = document.all.pic.value;
+		if(document.all.tendnum1.value==""){
+			document.all.tendnum.value=1;
+		}else{
+			var a = parseInt(document.all.tendnum1.value);
+			document.all.tendnum.value = a;
+		}
+		var b= new Date();
+		document.all.pid.value=b.getTime();
+		if(c=='l'){
+		    if(document.all.tendprice.value != ""){
+                        var re = /^[0-9]+.?[0-9]*$/;
+                        if (!re.test(document.all.tendprice.value)){
+			     alert("竞价价格不是数字!");
+			     document.all.tendprice.select();
+		             return false;
+			}else{
+				if(Number(document.all.tendprice.value)<=Number(document.all.newprice.value)||document.all.tendprice.value==""){
+					alert("竞价价格不能小于当前最高价格!");
+					document.all.tendprice.select();
+					return false;
+				}
+			}
+		    }else{
+			alert("竞价价格不能为空!");
+			document.all.tendprice.focus();
+			return false;
+		    }
+		}else{
+		    if(document.all.tendprice.value != ""){
+		        var re = /^[0-9]+.?[0-9]*$/;
+                        if (!re.test(document.all.tendprice.value)){
+			     alert("竞价价格不是数字!");
+			     document.all.tendprice.select();
+		             return false;
+			}else{
+				if(parseFloat(document.all.tendprice.value)>=parseFloat(document.all.newprice.value)||document.all.tendprice.value==""){
+					alert("竞价价格不能大于当前最低价格!");
+					document.all.tendprice.select();
+					return false;
+				}
+			}
+		    }else{
+			alert("竞价价格不能为空!");
+			document.all.tendprice.focus();
+			return false;
+		    }
+		}
+		if(document.all.quantity.value==""){
+		   alert("投标量不能为空！");
+		   document.all.quantity.focus();
+		   return false;
+		}else{
+		   var re = /^[0-9]*$/;
+		 if (!re.test(document.all.quantity.value))
+		 {
+		  alert("数量不是整数");
+		  document.all.quantity.select();
+		  return false;
+		 }else{
+		    if(parseInt(document.all.quantity.value) > parseInt(document.all.quantity1.value)){
+			alert("投标量不能大于招标量");
+			document.all.quantity.select();
+			return false;
+		    }
+		  }
+		}
+		if(document.all.tendnum1.value== $form_znum){
+		    //document.all.pid.value = document.all.pids.value;
+		    document.form1.iscast.value='Y';
+		    //document.form1.action = "uptendersub.aspx";
+		    document.form1.action = "testprice.aspx";
+		}else{
+		    document.form1.iscast.value='Y';
+		   // document.form1.action = "intendersub.aspx";
+		   document.form1.action = "testprice.aspx";
+		}
+		document.all.form1.target="saveframe";
+                form1.submit();
+	}
+	function testok(){   
+	        document.form1.iscast.value='Y';
+		document.form1.action = "intendersub.aspx";
+		/*if(document.all.tendnum1.value== $form_znum){ 
+		    document.all.pid.value = document.all.pids.value;
+		    document.form1.iscast.value='Y';
+		    document.form1.action = "uptendersub.aspx";
+		    //document.form1.action = "testprice.aspx";
+		}else{ 
+		    document.form1.iscast.value='Y';
+		    document.form1.action = "intendersub.aspx";
+		   //document.form1.action = "testprice.aspx";
+		}*/
+                form1.submit();
+	}
+	function show(){
+		document.form1.proid.value = '$form_proid';
+		document.form1.znum.value = '$form_znum';
+		if($form_znum == 1){ 
+		     var a = '#foreach ($!n in $seltendusertpid)$!n.USERID#end';
+		     var b = '#foreach ($!n in $seltendusertpidcount)$!n.USERID#end';
+		     var c = '#foreach ($!n in $querytender)$!n.ISACC#end';
+		     var d = '#foreach ($!n in $querytender)$!n.ZNUM #end'.replace(/(^\s*)|(\s*$)/g,"");
+		     if(d != $!form_znum){
+			     document.location.href='tenderCon.aspx';
+		     }else{
+			     if(c.replace(/(^\s*)|(\s*$)/g,"") == 'Y'){
+				     if(b.replace(/(^\s*)|(\s*$)/g,"") == 0){ 
+					     if(a.replace(/(^\s*)|(\s*$)/g,"") == ""){
+						document.getElementById('sp1').style.display="block";
+						document.getElementById('tab').style.display="none";
+					     }
+				      }else{
+					if(a == ""){
+					      document.getElementById('sp1').style.display="block";
+					      document.getElementById('tab').style.display="none";
+					}
+				      }
+			     }
+		      }
+		}else{
+			var a = '#foreach ($!n in $querytenderuserstatus1) $!n.PROID #end';
+			var c = '#foreach ($!n in $querytender) $!n.ISACC #end';
+			var b = '#foreach ($!n in $seltendusertpidcount) $!n.USERID #end';
+			var d = '#foreach ($!n in $querytender) $!n.ZNUM #end'.replace(/(^\s*)|(\s*$)/g,"");
+			if(d != $!form_znum){
+			     document.location.href='tenderCon.aspx';
+		        }else{
+				if(c.replace(/(^\s*)|(\s*$)/g,"") == 'Y'){
+					if(b.replace(/(^\s*)|(\s*$)/g,"") == 0){
+					     document.getElementById('sp1').style.display="block";
+					     document.getElementById('tab').style.display="none";
+					}else{
+					    if(a == ""){ 
+						    document.getElementById('sp').style.display="block";
+						    document.getElementById('tab').style.display="none";
+					    }
+					}
+				}else{
+				     if(a == ""){ 
+					    document.getElementById('sp').style.display="block";
+					    document.getElementById('tab').style.display="none";
+				    }
+				}
+			}
+		}
+	}
+</script>
+</head>
+
+<body onload="show()">
+<span id='sp1' style="display:none">
+<table>
+	<tr>
+		<td align="center">
+			没有授权，不能投标！！！！
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<input type="button" name="returnback" class="bt1" value="返回" onclick="history.back(-1)">
+		</td>
+	</tr>
+</table>
+</span>
+<span id='sp' style="display:none">
+<table>
+	<tr>
+		<td align="center">
+			没有进入下一轮，不能竞标！！！！
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<input type="button" name="returnback" class="bt1" value="返回" onclick="history.back(-1)">
+		</td>
+	</tr>
+</table>
+</span>
+<form name="form1" action="" method="post">
+<table class="datatable" id='tab'>
+#set($i=1)
+#foreach($!m in $selminprice2) 
+  <tr class="trcolor">
+    <td colspan="2" align="left">项目名称(竞价模式):$!m.PRONAME(第$form_znum轮)&nbsp;&nbsp;&nbsp;&nbsp;<!--离本轮开标时间还有<span id="timeid"></span>--></td>
+  </tr>
+  <tr class="trcolor">
+	<td align="right">限最#if($!m.PIC == 'h')高#else低#end招标价:<font color="red">$!m.PPIC</font>元/$!m.TYPENAME </td>
+	<td align="left">招标量:$!m.TENDQUANTITY$!m.TYPENAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#if($!m.AREANAME!="")到货目的地：<font color="red">$!m.AREANAME</font>#end</td>
+  </tr>
+  <tr class="trcolor">
+	<td align="right">招标开始时间:$!m.ATIME </td>
+	<td align="left"><font color="red">本轮投标截止时间:$!m.KTINE</font>  招标结束时间:$m.ZTIME</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">
+    #if($!m.PIC == 'P')
+        最新价格:
+    #end
+    #if($!m.PIC == 'h')
+        当前最低价格:
+    #end
+    #if($!m.PIC == 'l')
+        当前最高价格:
+    #end
+    </td>
+    <td align="left">
+	#if($!m.PIC == 'P')
+	    <input type="text" name="newprice" value="$!m.PPIC" readonly="true"/>
+	#end
+	#if($!m.PIC == 'h') 
+	    #if($!m.MAPRICE == '0') 
+                <input type="text" name="newprice" value="$!m.PPIC" readonly="true"/>
+	    #else 
+		#if($!m.TENDSTATUS == 'F') 
+                  <input type="text" name="newprice" value="$!m.MIPRICE" readonly="true"/>
+		#else 
+	          <input type="text" name="newprice" value="$!m.MAPRICE" readonly="true"/>
+		#end
+		<script language="javascript">
+	      var aa = $!m.MIPRICE > $!m.PPIC ? $!m.PPIC : $!m.MIPRICE;
+	      document.form1.newprice.value=aa;
+	      </script>
+	    #end
+	#end
+	#if($!m.PIC == 'l')  
+	    #if($!m.MIPRICE == '0')
+                <input type="text" name="newprice" value="$!m.PPIC" readonly="true"/>
+	    #else
+		#if($!m.TENDSTATUS == 'F')
+                  <input type="text" name="newprice" id="newprice" value="$!m.MAPRICE" readonly="true"/>
+		#else
+	          <input type="text" name="newprice" value="$!m.MIPRICE" readonly="true"/>
+		#end
+	    #end
+	    <script language="javascript">
+	      var aa = $!m.MAPRICE < $!m.PPIC ? $!m.PPIC : $!m.MAPRICE;
+	      document.form1.newprice.value=aa;
+	  </script>
+	#end
+    元/$!m.TYPENAME
+    </select>
+    <input type="hidden" name="proid" value="$form_proid">
+    <input type="hidden" name="pid" value="">
+    <input type="hidden" name="tendstatus" value="F">
+    <input type="hidden" name="maprice" value="$!m.MAPRICE">
+    <input type="hidden" name="miprice" value="$!m.MIPRICE">
+    <input type="hidden" name="pic" value="$!m.PIC">
+    <input type="hidden" name="ppic" value="$!m.PPIC">
+    <input type="hidden" name="tendnum2" value="$!m.TENDNUM">
+    <input type="hidden" name="pids" value="">
+    <input type="hidden" name="tendnum1" value="">
+    <input type="hidden" name="tendnum" value="">
+    <input type="hidden" name="iscast" value="">
+    <input type="hidden" name="znum" value="">
+    <input type="hidden" name="tendtypeid" value="$!m.TENDTYPEID">
+    <input type="hidden" name="ktine" value="$!m.KTINE">
+    </td>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right"><font color="red">竞价价格:</font></td>
+    <td align="left"><input type="text" name="tendprice" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"/>&nbsp;元/$!m.TYPENAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right"><font color="red">最大供货量:</font></td>
+    <td align="left"><input type="text" name="quantity" value="#if($!m.QUANTITY!="")$!m.QUANTITY#else$!m.TENDQUANTITY#end" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"><input type="hidden" name="quantity1" value="$!m.TENDQUANTITY">&nbsp;$!m.TYPENAME</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">说明:</td>
+    <td align="left"><textarea name="tendbak" cols="80" rows="6">$!m.TENDBAK</textarea>    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">投标附件</td>
+    <td align="left">
+         <input name="paper" type="text" size="40" value="$!m.TENDOTER" contenteditable="false"/>
+	<input type="button" name="Submit22" class="bt1" value="文件上传" onClick="window.open('pfile.jsp?formname=form1&picurl=paper&type=jingbiaoinfo&tendtypeid='+document.form1.tendtypeid.value,'','status=no,scrollbars=no,top=160,left=150,width=450,height=365')">
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="2" align="center">
+    <input type="button" name="button" class="bt1" value="提&nbsp;&nbsp;交" onclick="v()"/>
+    <input type="button" name="button" class="bt1" value="返&nbsp;&nbsp;回" onclick="javascript:location.href='tenderCon.aspx'"/>
+    <input type="button" name="button" class="bt1" value="刷&nbsp;&nbsp;新" onclick="javascript:location.reload()"/></td>
+  </tr>
+</table>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>
+<script language="javascript">
+    function show_date_time(){ 
+	window.setTimeout("show_date_time()", 1); 
+	BirthDay=new Date(new Date(document.form1.ktine.value.replace("-","/")));//设置日期 
+	today=new Date(); 
+	timeold=(BirthDay.getTime()-today.getTime()); 
+	sectimeold=timeold/1000 
+	secondsold=Math.floor(sectimeold); 
+	msPerDay=24*60*60*1000 
+	e_daysold=timeold/msPerDay 
+	daysold=Math.floor(e_daysold); 
+	e_hrsold=(e_daysold-daysold)*24; 
+	hrsold=Math.floor(e_hrsold); 
+	e_minsold=(e_hrsold-hrsold)*60;
+	minsold=Math.floor((e_hrsold-hrsold)*60); 
+	e_seconds = (e_minsold-minsold)*60;
+	seconds=Math.floor((e_minsold-minsold)*60); 
+	ms = e_seconds-seconds;
+	ms = new String(ms)
+	ms = ms.substr(2,3);
+	timeid.innerHTML="<b><align=center><font color=00CC00>"+daysold+"天"+hrsold+"小时"+minsold+"分"+seconds+"秒"+ms+"毫秒</b><br></font>";
+    } 
+</script>

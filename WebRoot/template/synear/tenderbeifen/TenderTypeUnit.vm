@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>项目类型</title>
+<script language="javascript">
+	function s(){
+	    if(document.form1.typename.value==""){
+		alert("类别名称不能为空！");
+		document.form1.typename.focus();
+		return false;
+	    }
+	    form1.action="insertentdtypeunit.aspx";
+	    form1.submit();
+	}
+	function todelete(url){
+	    if(confirm("确定要删除吗？")){
+                 document.form1.action=url;
+		 form1.submit();
+	    }
+	}
+</script>
+</head>
+
+<body>
+<form name="form1" method="post"  target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>新增招标项目单位:<input type="text" name="typename" value="" onkeydown="if(event.keyCode==13){s();}"/>
+    </td>
+    <td><input type="button" name="button" value="提交" onclick="s()" class="bt1"/>
+    </td>
+  </tr>
+  </table>
+  </form>
+  <br>
+  <form name="form2" post="method" action="">
+  <table class="datatable">
+  <tr class="trcolor">
+    <td>类别ID</td>
+    <td>类别名称</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selecttendtypeunit)
+  <tr>
+    <td align="center">$!m.ID</td>
+    <td align="center">$!m.TYPENAME</td>
+    <td><a href='modtenderTypeUnit.aspx?id=$!m.ID'>修改</a>&nbsp;&nbsp;
+        <a href='#' onclick="todelete('deltendtypeUnit.aspx?id=$!m.ID')">删除</a>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</form>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

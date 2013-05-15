@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../include/js/string.js"></script>
+	<script type="text/javascript">
+        #set($i=1)
+        #foreach($m in $sql0)
+		 #set($i=$i+1)
+        #end  
+        #if($i==1)
+            //parent.form1.action="editProdSubmit.aspx";
+	    //parent.form1.submit();
+	    parent.fsubmit();
+	#else
+	    alert("采集编码$form_pcode已经存在");
+        #end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

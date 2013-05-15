@@ -1,0 +1,27 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../js/string.js"></script>
+	<script type="text/javascript">
+	    //mTarget转向目标窗口，空为不作处理
+      var message="$!app_message";
+	var mTarget="$!app_target";
+	var mUrl="$!app_url?sendcorpname=$!form_sendcorpname";
+        if(mTarget==""){
+          alert(message);
+	}else{
+          if(mUrl==""){
+            mUrl=top.oldurl+"";
+	  }
+	  if(!mUrl.haveChar(")"))
+	   mUrl=mTarget+".location.replace('"+mUrl+"')";
+	  alert(message);
+          eval(mUrl);	
+	}
+
+	</script>
+</head>
+<body>
+</body>
+</html>
+

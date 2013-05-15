@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ #foreach($m in $selenteraccountallcount)
+   feenum='$m.CO';
+ #end
+ if(parseInt(feenum)>0) {
+    #foreach($m in $selenteraccountallcountbyday)
+       feenum='$m.SS';
+    #end
+    if(parseInt(feenum)>0) {
+    //if(parseInt(feenum)<0) {
+       alert("超过15日，本月不能修改企业往来对账单");
+       parent.submitok=false;
+    }else{
+	    #foreach($m in $selenteraccountischecked)
+		if('$m.ISCHECKED' == '1'){
+		   alert("通过审核，不能修改");
+		   parent.submitok=false;
+		}else{
+		   parent.testok();
+		}
+	    #end 
+    }
+ }else if(feenum=='0'){
+    alert("本月没有添加企业往来对账单，不能修改");
+    parent.submitok=false;
+ }else{
+   alert("出现未知错误！");
+   parent.submitok=false;
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>
+

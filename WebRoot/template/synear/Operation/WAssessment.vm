@@ -1,0 +1,71 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>OEM厂制单追踪</title>
+<script language="javascript">
+	function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('orderdate1').value=Today;
+	document.getElementById('orderdate2').value=Today;
+    }
+</script>
+</head>
+
+<body onload="GetDateString()">
+<form name="thisform" method="post" action="WAssessmentdetail.aspx">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>订单时间</td>
+    <td align="left"><input type="text" name="orderdate1" onclick="ShowDate(orderdate1)"/>-<input type="text" name="orderdate2" onclick="ShowDate(orderdate2)"/></td>
+    <td>订单号</td>
+    <td align="left"><input type="text" name="ordercode" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货单时间</td>
+    <td align="left"><input type="text" name="varrorderdate1" onclick="ShowDate(varrorderdate1)" />-<input type="text" name="varrorderdate2" onclick="ShowDate(varrorderdate2)" /></td>
+    <td>到货单号</td>
+    <td align="left"><input type="text" name="varrordercode" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货地点</td>
+    <td align="left"><select name="vdef4">
+	<option value=''>无</option>
+	#set($i=0)
+	#foreach($!m in $seldefwaixieOEM)
+	<option value='$!m.DOCNAME'>$!m.DOCNAME</option>
+	#set($i=$i+1)
+	#end
+      </select></td>
+  <td>供应商名称:</td>
+      <td align="left"><input type="text" name="custname" value="$!form_custname"></td>
+    </tr>
+    <tr>
+    <td colspan="4"><input type="submit" class="bt1" name="btn" value="查&nbsp;&nbsp;询" /></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

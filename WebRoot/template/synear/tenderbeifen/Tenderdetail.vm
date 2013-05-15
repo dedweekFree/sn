@@ -1,0 +1,40 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>竞标明细</title>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="5" align="left">项目名称</td>
+  </tr>
+  <tr class="trcolor">
+    <td>竞标商</td>
+    <td>价格</td>
+    <td>备注(说明)</td>
+    <td>附件</td>
+    <td>操作</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $selTenderdetail)
+  <tr class="trcolor">
+    <td>$!m.COMPANY</td>
+    <td>$!m.TENDPRICE</td>
+    <td>$!m.TENDBAK</td>
+    <td>&nbsp;</td>
+    <td><a href="upstatusub.aspx?tendstatus=P&proid=$!m.PROID&pid=$!m.PID" target="dataframe">退回</a>&nbsp;<a href="upstatusub.aspx?tendstatus=F&proid=$!m.PROID&pid=$!m.PID" target="dataframe">进入下一轮</a>&nbsp;<a href="upstatusub2.aspx?tendstatus=K&proid=$!m.PROID&pid=$!m.PID" target="dataframe">中标</a></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr>
+	<td colspan="5" align="center"><input type="button" name="back" value="返&nbsp;&nbsp;回" onclick="javascript:location.href='tenderinfo.aspx'">&nbsp;&nbsp;<input type="button" name="button" value="刷&nbsp;&nbsp;新" onclick="javascript:location.reload()"></td>
+  </tr>
+</table>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

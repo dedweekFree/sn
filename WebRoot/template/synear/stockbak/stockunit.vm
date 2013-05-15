@@ -1,0 +1,152 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<title>====</title>
+<script language="javascript">
+	 function sub(){
+	   document.thisform.page.value =1;
+	   document.thisform.submit();
+	} 
+</script>
+</head>
+
+<body>
+<form name="thisform" action="stockunit.aspx" method="post">
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="center"><h3>库位管理</h3></td>
+  </tr>
+  <tr class="trcolor">
+    <td>库位代码:</td>
+    <td><input type="text" name="unitcode" value="$!form_unitcode"></td>
+    <td>所处区域:</td>
+    <td><input type="text" name="areacode" value="$!form_areacode"></td>
+  </tr>
+  <tr class="trcolor">
+    <td>所处甬道:</td>
+    <td><select name="pathcode">
+	<option value="">全部</option>
+	#set($i=0)
+	#foreach($!m in $selpathcode)
+	<option value="$!m.PATHCODE" #if($!form_pathcode==$!m.PATHCODE) selected #else #end >$!m.PATHCODE</option>
+	#set($i=$i+1)
+	#end
+	</select></td>
+    <td>所处层:</td>
+    <td><select name="layercode">
+	<option value="">全部</option>
+	<option value="1" #if($!form_layercode=='1') selected #else #end >1</option>
+	<option value="2" #if($!form_layercode=='2') selected #else #end >2</option>
+	<option value="3" #if($!form_layercode=='3') selected #else #end >3</option>
+	<option value="4" #if($!form_layercode=='4') selected #else #end >4</option>
+	</select></td>
+  </tr>
+  <tr class="trcolor">
+    <td>使用状态:</td>
+    <td><select name="fstatus">
+	<option value="">全部</option>
+	<option value="1" #if($!form_fstatus=='1') selected #else #end >使用</option>
+	<option value="2" #if($!form_fstatus=='2') selected #else #end >盘点</option>
+	<option value="3" #if($!form_fstatus=='3') selected #else #end >停用</option>
+	</select></td>
+    <td>库位类型:</td>
+    <td><select name="fstyle">
+	<option value="">全部</option>
+	<option value="0" #if($!form_fstyle=='0') selected #else #end >零托</option>
+	<option value="1" #if($!form_fstyle=='1') selected #else #end >整托</option>
+	</select></td>
+  </tr>
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td><input type="button" class="bt1" name="b1" value="查  询" onclick="sub()"/></td>
+    <td>&nbsp;</td>
+    <td><input type="button" name="adduser" id="adduser" class="bt1" value="新   增" onclick="show()"/></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>库位代码</td>
+    <td>所处区域</td>
+    <td>所处甬道</td>
+    <td>使用状态</td>
+    <td>库位类型</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selstockunit)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.UNITCODE</td>
+    <td>$!m.AREACODE</td>
+    <td>$!m.PATHCODE</td>
+    <td>#if($!m.FSTATUS=="1") 正常使用 #else #end
+	#if($!m.FSTATUS=="2") 正在盘点  #else #end
+	#if($!m.FSTATUS=="3") 停止使用 #else #end
+    </td>
+    <td>#if($!m.FSTYLE=='0') 零托 #else 整托 #end</td>
+    <td>#if($!m.FSTATUS!='1')<a href="upfstatus.aspx?fstatus=1&unitcode=$!m.UNITCODE" target="dataframe">正常使用</a> #else #end &nbsp;&nbsp;#if($!m.FSTATUS!='3')<a href="upfstatus.aspx?fstatus=3&unitcode=$!m.UNITCODE" target="dataframe">停用</a>&nbsp;&nbsp;#if($!m.FSTATUS!='2')<a href="upfstatus.aspx?fstatus=2&unitcode=$!m.UNITCODE" target="dataframe">盘点</a>#else #end #else #end  &nbsp;&nbsp;#if($!m.FSTATUS!='1'&& $!m.FSTATUS!='2')<a href="modfstatus.aspx?unitcode=$!m.UNITCODE">修改</a>  &nbsp;&nbsp;<a href="delfstatus.aspx?unitcode=$!m.UNITCODE" target="dataframe">删除</a>#else #end</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+   <tr >
+        <td class="tdlabel" colspan="7">$pagecode</td>
+   </tr>
+</table>
+<form name="addform" action="addfstatussub.aspx" method="post" target="dataframe">
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+      <td>所处区域:<input type="text" name="areacode" value="">
+         <input type="hidden" name="unitcode" value=""></td>
+  </tr>
+  <tr class="trcolor">
+    <td>所处甬道:<input type="text" name="pathcode" value=""></td>
+  </tr>
+  <tr class="trcolor">
+    <td>所处层:<select name="layercode">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		</select></td>
+  </tr>
+  <tr class="trcolor">
+    <td>库位类型:<select name="fstyle">
+		<option value="0">零托</option>
+		<option value="1">整托</option>
+		</select></td>
+  </tr>
+    <tr class="trcolor">
+    <td>库位容量:<input type="text" name="uvalue" value=""></td>
+  </tr>
+</table>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>
+<script language='javascript'>
+	function h(){
+		var a = document.addform.areacode.value;
+		var b = document.addform.pathcode.value;
+		var c = document.addform.layercode.value;
+		var d = a+b+'0'+c;
+		document.addform.unitcode.value=d;
+		winMove.hide();
+		addform.submit();
+	}
+function show(){
+	winMove.show()
+	}
+	var b = document.getElementsByName("adduser")[0];
+	var btnMove = b.id;
+	document.getElementById("tb").style.display="block"
+	var winMove=new alai_win_xp(tb,"增加新库位",400,250)
+	var btn = winMove.addButton("确定","js","h()")
+</script>

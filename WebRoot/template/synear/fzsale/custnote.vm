@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>		
+<title>客户库存盘底记录</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../include/js/PopCalendar.js"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var bData1=new Array(); 
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   thisform.page.value=1;
+   thisform.submit();
+}
+
+function checkinput2(){
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择客户！");
+	 return false;
+}else{
+      //document.all.form1.action="testPreorder.aspx";
+      document.all.form1.target="saveframe";
+      document.all.form1.submit();
+      thisform.action="newcustnote.aspx";
+      thisform.submit();
+      }
+}
+function testok()
+{  
+   thisform.action="newcustnote.aspx";
+   thisform.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" action="custnote.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate" type="text" class="login" id="billdate" value="$!form_billdate"><input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >
+			</td>	
+			
+			<td class="tdlabel" width="10%">&nbsp;</td>
+			<td class="tdinput" width="20%">&nbsp;</td>
+			
+			</td>	
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%"><span class="style3 style1">
+		#if($session_ROLES=="R1465")
+			#foreach($n in $getCustomerInfo)
+			      $!n.CUSTNAME<input type=hidden name=custpk value="$!n.PK_CUBASDOC" >
+			      <input type=hidden name=custdocpk value="$!n.PK_CUMANDOC" >
+			      <input type="hidden" name="custname" value="$!n.CUSTNAME">
+			#end		   
+		#else
+			<select name="custpk"><option value=''>请选择客户</option>
+			   #foreach($m in $getCustomerDoc)
+			      <option value="$m.PK_CUBASDOC"  #if($form_custpk==$m.PK_CUBASDOC) selected #end>$m.CUSTNAME</option>
+			   #end
+			</select>
+			      <input type=hidden name=custdocpk value="">
+			      <input type="hidden" name="custname" value="">
+	        #end
+		<input type="hidden" name="scroll" value="">
+              </span>		
+			</td>	
+			<td class="tdlabel" width="10%">客户代码</td>
+			<td class="tdinput" width="20%">
+		#if($session_ROLES=="R1465")
+			  #foreach($n in $getCustomerInfo)
+			      $!n.CUSTCODE<input type=hidden name=custcode value="$!n.CUSTCODE">	
+			   #end	
+		#else
+			 <input type=text name=custcode value="$!form_custcode" >
+	        #end
+			       	  		
+			</td>
+                </tr>
+		<tr>
+		  <td>
+		  </td><td align="left" colsapn="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;</td>
+		  <td>
+		  </td><td align="left"><input type="button" id="newc" value="新 建" onclick="checkinput2()"  class="bt1"></td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+class="datatable">
+<tr height="20"  align="center" class="FixedTitleRow">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">客户名称</td>
+	<td nowrap="nowrap">制表人</td>
+	<td nowrap="nowrap">时间</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $selcustnote)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.CUSTNAME</td>
+		        <td align="center" nowrap="nowrap">$m.ENTERNAME</td>
+			<td align="center" nowrap="nowrap">$m.ENTERTIME</td>
+			<td align="center" nowrap="nowrap">
+			#if($m.STATUS=="1")
+			<a href="editCustnote.aspx?custcode=$m.CUSTCODE&time=$m.ENTERTIME"><font color=blue>修改</font></a>&nbsp;&nbsp;
+			<a href="delcustsub.aspx?custcode=$m.CUSTCODE&time=$m.ENTERTIME"><font color=blue>删除</font></a>&nbsp;&nbsp;
+			#else
+			<a href="viewCustnote.aspx?custcode=$m.CUSTCODE&time=$m.ENTERTIME"><font color=blue>查看</font></a>&nbsp;&nbsp;
+			#end
+			</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="people" value="">
+  <input type="hidden" name="time" value="">
+  <input type="hidden" name="custname" value="">
+  <input type="hidden" name="custcode" value="">
+  <input type="hidden" name="invent" value="">
+  <input type="hidden" name="custpk" value="">
+
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</HTML>

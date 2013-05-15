@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=====</title>
+<script language="javascript">
+	function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function showindow(){
+	var ReturnAllQualityValue=showModalDialog('Quality.aspx',"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+		if(ReturnAllQualityValue!=null){
+			document.getElementById("vemo").value=ReturnAllQualityValue;
+		}
+	}
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" action="Backvarrorderdetail.aspx">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">退货查询</td>
+  </tr>
+  <tr class="trcolor">
+    <td>退货日期</td>
+    <td align="left"><input type="text" name="backdate1" value="$!form_backdate1" onclick="ShowDate(backdate1)"/>-<input type="text" name="backdate2" value="$!form_backdate2" onclick="ShowDate(backdate2)" /></td>
+    <td>到货单号</td>
+    <td align="left"><input type="text" name="vordercode" value="$!form_vordercode"/></td>
+  </tr>
+      <tr class="trcolor">
+    <td>供应商名称:</td>
+    <td align="left"><input type="text" name="custname" value="$!form_custname"></td>
+    <td>产品名称:</td>
+    <td align="left"><input type="text" name="invname" value="$!form_invname"/></td>
+  </tr>
+  <tr class="trcolor">
+  <td>退货原因</td>
+    <td align="left"><input type="text" name="vemo" value="$!form_vemo"><input type="button" class="bt1" name="selres" value="..." onclick="showindow()"></td>
+    <td>&nbsp;</td>
+    <td><input type="submit"  class="bt1" name="b1" value="查&nbsp;&nbsp;询" /></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>供应商名称</td>
+    <td>存货名称</td>
+    <td>订单号</td>
+    <td>订单数量</td>
+    <td>订单日期</td>
+    <td>订单关闭</td>
+    <td>到货单号</td>
+    <td>到货数量</td>
+    <td>到货日期</td>
+    <td>到货地点</td>
+    <td>退货数量</td>
+    <td>退货制单人</td>
+    <td>退货制单时间</td>
+    <td>退货原因</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selbackvarorder)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.CUSTNAME</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.VORDERCODE</td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.DORDERDATE</td>
+    <td>#if ($!m.CDR =='1' ) 已关闭 #else 未关闭 #end</td>
+    <td>$!m.VARRORDERCODE</td>
+    <td>$!m.NARRVNUM</td>
+    <td>$!m.DRECEIVEDATE</td>
+    <td>$!m.VDEF4</td>
+    <td>$!m.BVNUM</td>
+    <td>$!m.MAKEUSER</td>
+    <td>$!m.TS</td>
+    <td>$!m.VEMO</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</body>
+</html>

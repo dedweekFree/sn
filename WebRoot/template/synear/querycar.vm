@@ -1,0 +1,347 @@
+<HTML>
+<HEAD>		
+<title>仓库派车情况表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<style>
+.changecolor{
+font: 13px/200% 宋体;
+}
+.one{
+ background:#fff;
+ text-align:left;
+}
+.two{
+ background:#eeeeee;
+ text-align:left;
+}
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function set(id){
+  var obj=eval("document.all."+id);
+  var num=obj.rows.length-1
+  for(var i=1;i<num;i++){
+	if(i%2==1){
+		obj.rows[i].className="one";
+		}		
+	else{
+		obj.rows[i].className="two";
+	}
+  }
+}
+
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form1.PID.value = paras[0];
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+alert("功能暂不开放");
+return;
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.PID.value = paras[0];
+	   //document.form1.submit();
+   }
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+function clearVals() {
+      thisform.ptype.value='';
+      thisform.ptypename.value='';
+}
+
+function checkinput()
+{  
+  thisform.action="../dayinbillList.aspx";
+  thisform.page.value=1;
+  thisform.submit();
+}
+
+function checkinput2()
+{  
+  
+  thisform.page.value=1;
+  thisform.action="inbillList.aspx";
+  thisform.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+
+function printpage(x){
+ x.parentElement.style.visibility='hidden'
+ document.all.WebBrowser.ExecWB(6,1);
+ x.parentElement.style.visibility='visible'
+}
+function closepage(){
+ document.all.WebBrowser.ExecWB(45,1);
+ 
+}
+
+setTimeout("self.location.reload();",60000);//
+
+  function   init()   {   
+          var   asSeriesNames   =   new   Array();   
+          var   asCategories   =   new   Array();   
+          var   aiValues   =   new   Array(); 
+          var   aiValuesu   =   new   Array();
+	   var   aiValuesu2   =   new   Array();
+    
+          asSeriesNames[0]   =   "装车趋势";   
+
+
+        #set($i=0)
+        #foreach($m in $querycar)
+          asCategories[$i]   = "$m.STORNAME";   
+          aiValues[$i]   =  $m.ALLOUTNUM;
+	  aiValuesu[$i]   =  $m.UPNUM;
+	  
+	  aiValuesu2[$i]   =  $m.SOUTING;
+          #set($i=$i+1)
+        #end
+
+                var myChart=ChartSpace1; 
+
+                 
+
+                myChart.Clear();                 
+
+                var a=myChart.Charts.Add(0);   // 就是图对象的实例化 
+
+                var c=myChart.Constants;       //          
+
+                a.Type=c.chChartTypeColumnClustered; 
+
+                 
+
+                //添加 上月销售 
+
+                var cs=a.SeriesCollection.Add(0); 
+
+                cs.Caption="未出库数量（件）"; 
+
+                cs.SetData(c.chDimCategories,c.chDataLiteral,asCategories); 
+
+                cs.SetData(c.chDimValues,c.chDataLiteral,aiValues);  
+
+                //cs.Type=8;  
+//cs.Type=c.chChartTypeLineMarkers;        // 折线图
+cs.Type=c.chChartTypeColumnClustered;  // 柱状图
+//cs.Type=c.chChartTypeSmoothLine;       // 平滑曲线图
+//cs.Type=c.chChartTypeRadarLine;       // 雷达线图
+//cs.Type=c.chChartTypeDoughnut;       // 环形图
+//cs.Type=c.chChartTypePie;       // 饼图
+//cs.Type=c.chChartTypeBarClustered;       // 条形图
+//cs.Type=c.chChartTypeArea;       // 面积图
+
+                 
+
+                //添加 去年同期销量 
+
+                cs=a.SeriesCollection.Add(1); 
+
+                cs.Caption="等待装车数量（件）"; 
+
+                //cs.SetData(c.chDimCategories,c.chDataLiteral,asCategories); 
+
+                cs.SetData(c.chDimValues,c.chDataLiteral,aiValuesu); 
+
+
+
+		cs=a.SeriesCollection.Add(2); 
+
+                cs.Caption="正在装车数量（件）"; 
+
+                //cs.SetData(c.chDimCategories,c.chDataLiteral,asCategories); 
+
+                cs.SetData(c.chDimValues,c.chDataLiteral,aiValuesu2); 
+
+                 
+              
+
+                //添加右侧的百分比坐标,其中左侧和下面的坐标默认情况下，已经存在 
+
+                //cs.Ungroup(true);     //表明是独立的坐标系统，否则将共用左侧坐标 
+
+                //ax=a.Axes.Add(cs.Scalings(c.chDimValues)); 
+
+                //ax.NumberFormat="0.00%"; 
+
+                //ax.Position=c.chAxisPositionRight; 
+
+                 
+
+                myChart.HasSelectionMarks=true; 
+
+                myChart.AllowFiltering=true; 
+
+                myChart.AllowPropertyToolbox=true; 
+
+                 
+
+                //定义柱状图的坐标系统的意义 
+
+                a.Axes(c.chAxisPositionLeft).HasTitle=true;             //左坐标代表 "Amount" 数量 
+
+                a.Axes(c.chAxisPositionLeft).Title.Caption="出库数量"; 
+
+                a.Axes(c.chAxisPositionLeft).Title.Font.Size=8; 
+
+                a.Axes(c.chAxisPositionBottom).HasTitle=true;           //下坐标代表 "Product" 名称 
+
+                a.Axes(c.chAxisPositionBottom).Title.Caption="仓库"; 
+
+                a.Axes(c.chAxisPositionBottom).Title.Font.Size=8; 
+
+                //a.Axes(c.chAxisPositionRight).HasTitle=true;            //右坐标代表 "Ratio" 比率 
+
+                //a.Axes(c.chAxisPositionRight).Title.Caption="Ratio"; 
+
+                //a.Axes(c.chAxisPositionRight).Title.Font.Size=8; 
+
+                //a.Axes(c.chAxisPositionRight).MajorUnit=0.1;     
+
+
+
+                a.HasLegend=true; 
+
+                a.Legend.Position=c.chLegendPositionTop; 
+  }
+
+
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#E0F4FC" style="SCROLLBAR-HIGHLIGHT-COLOR:#73C5E8;SCROLLBAR-SHADOW-COLOR:#73C5E8;SCROLLBAR-3DLIGHT-
+
+COLOR:#73C5E8;SCROLLBAR-TRACK-COLOR: #C2E8F8;SCROLLBAR-DARKSHADOW-COLOR:#73C5E8;scrollbar-Base-Color:#73C5E8;"  onLoad="init();">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr bgcolor="#E0F4FC" height="5"><td height="5"></td></tr>
+<tr bgcolor="#E0F4FC"><td>
+	<table border="0" cellspacing="0" cellpadding="0" width="98%" align="center" >
+	  <tr height="23">
+	    <td align=left height="20">
+		   <table border="0" cellspacing="3" cellpadding="0">
+		      <tr>
+			     <td height=20>&nbsp;<div id="qx"></div></td>
+			  </tr>
+		   </table>
+		</td>
+		<td align="right">&nbsp;</td>
+	   </tr>
+      </table>
+     </td>
+</tr>
+<tr>
+  <form name="thisform" method="post" action="dayinbillList.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+      
+   </td></form>
+</tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+        <td nowrap="nowrap">行号</td>
+	<td nowrap="nowrap">仓库名称</td>
+	<td nowrap="nowrap">未出库单据数（张）</td>
+	<td nowrap="nowrap">未出库数量（件）</td>
+	<td nowrap="nowrap">等待车辆（辆）</td>
+	<td nowrap="nowrap">等待装车数量（件）</td>
+	<td nowrap="nowrap">正在装车车辆（辆）</td>
+	<td nowrap="nowrap">开装时间</td>
+	<td nowrap="nowrap">正在装车数量（件）</td>
+	
+	<td nowrap="nowrap">预计结束时间</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $querycar)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		    <td align="center" nowrap="nowrap">$!m.STORNAME</td>
+			<td align="center" nowrap="nowrap">$!m.ALLNUM  &nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.ALLOUTNUM  &nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.WAITNUM  &nbsp;</td>
+            <td align="center" nowrap="nowrap">$!m.SOUT  &nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.UPNUM  &nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.STARTDATE  &nbsp;</td>
+		     <td align="center" nowrap="nowrap">$!m.SOUTING  &nbsp;</td>
+	
+			<td align="center" nowrap="nowrap">$!m.PLANENDDATE  &nbsp;</td>
+			
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="10"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+
+
+   #end
+<tr  height="500" >
+   <td colspan="10" >
+   <div align="center"> <object   id=ChartSpace1   classid=CLSID:0002E556-0000-0000-C000-000000000046   style="width:96%;height:70%"></object> </div>
+   </td>
+   </tr>
+</table>
+</td></tr>
+<tr><td height=5></td></tr>
+<tr><td>
+ 
+</td></tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+<form name="form1" method="post" action="viewDayInbill.aspx">
+  <input type="hidden" name="PID">
+</form>
+
+<form name="form2" method="post" action="editInbill2.aspx">
+   <input type="hidden" name="vbillcode" value="">
+   <input type="hidden" name="vbatchcode" value="">
+   <input type="hidden" name="indate" value="">
+   <input type="hidden" name="pdate" value="">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

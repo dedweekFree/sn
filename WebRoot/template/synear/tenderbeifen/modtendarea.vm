@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>项目类型修改</title>
+</head>
+
+<body>
+<form name="form1" method="post" action="modtendareasave.aspx" target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td align="left">供货地区修改</td>
+  </tr>
+  <tr class="trcolor">
+    <td>供货地区:
+    #foreach($!m in $selecttendarea)
+    <input type="text" name="typename1" value="$!m.AREANAME" readonly>
+    #end
+	<br>新名称:<input type="text" name="typename" value=""/>
+		<input type="hidden" name="id" value="$!form_id">
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>      
+      <input type="submit" name="b1" value="提&nbsp;&nbsp;交" />
+      <input type="button" name="b2" value="返&nbsp;&nbsp;回" onclick="javascript:location.href='tendarea.aspx'"/></td>
+  </tr>
+</table>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

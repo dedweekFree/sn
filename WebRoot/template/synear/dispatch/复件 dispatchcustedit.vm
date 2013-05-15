@@ -1,0 +1,720 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>配送单添加</title>
+<script src="../../../js/sunnyfunc.js"></script>
+<script>
+var accountdata=new Array();
+accountdata = [['产品编码','产品名称']
+#foreach($!m in $dispatchdetaileditbycsaleid)
+,['$m.INVCODE','$m.INVNAME']
+#end
+];
+var submitok=false;
+var ChosedList=new Array();
+var header=26;		//定单头的个数
+var thisCol=24;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=accountdata.length-1;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+   var datatb;
+var data=new Array();//单个记录元素数据数组
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+
+
+function addRow() 
+{ 
+     var tempR=document.all.tb.insertRow();
+	 tempR.bgcolor="#FFFFFF";
+	 var temp1=tempR.insertCell();	
+	 var temp2=tempR.insertCell();
+	 var temp3=tempR.insertCell();	
+	 var temp4=tempR.insertCell();	
+	 var temp5=tempR.insertCell();
+	 var temp9=tempR.insertCell();
+	 var temp10=tempR.insertCell();
+	 var temp6=tempR.insertCell();
+	 var temp7=tempR.insertCell();
+	 var temp8=tempR.insertCell();
+	 var temp11=tempR.insertCell();
+	 var st = parseInt(row)+1;
+
+         temp1.innerHTML="<input name=\"invcode\" id='invcode"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onkeydown =\"togetinv("+row+",document.form1.opkcubasdoc.value,document.form1.document.form1.pkcubasdoc.value,document.getElementById('invcode"+row+"'))\" ><input type=\"hidden\" name=\"pk_invbasdoc\" id='pk_invbasdoc"+row+"'><input type=\"hidden\" name=\"pk_invmandoc\" id='pk_invmandoc"+row+"'><input type=\"hidden\" name=\"pk_measdoc\" id='pk_measdoc"+row+"'><input type=\"hidden\" name=\"fpk_measdoc\" id='fpk_measdoc"+row+"'><input type=\"button\" value=\"...\"  onclick=\"togetmont('cpquery.aspx?row="+row+"',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)\"><input type=hidden name=ct id='ct"+row+"' value='"+st+"'>";
+         temp2.innerHTML="<input name=\"invname\"  id='invname"+row+"'  type=\"text\" class=\"login3\" style=\"width:200\" readonly>";
+         temp3.innerHTML="<input name=\"invspec\" id='invspec"+row+"' type=\"text\" class=\"login3\" style=\"width:80\"  readonly>";
+	 temp4.innerHTML="<input name=\"nnumber\" id='nnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tochecknnumber("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\" readonly>";   
+	 temp5.innerHTML="<input name=\"fnnumber\" id='fnnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tocheckoutnnumber("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\" readonly><input name=\"fnumber\" id='fnumber"+row+"' type=\"hidden\"><input name=\"mainmeasrate\" id='mainmeasrate"+row+"' type=\"hidden\">";
+	 temp9.innerHTML="<input name=\"outnnumber\" id='outnnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tockoutnnumber1("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\">";
+	 temp10.innerHTML="<input name=\"outfnnumber\" id='outfnnumber"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"tockoutfnnumber1("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.invcode"+row+".value)\">";
+	 temp6.innerHTML="<input name=\"taxrate\" id='taxrate"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"checktaxrate("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"><input name=\"pk_taxitems\" id='pk_taxitems"+row+"' type=\"hidden\">";
+	 temp7.innerHTML="<div align='center'><input name=\"omoney\" id='omoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changeofmeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"></div>";
+	 temp8.innerHTML="<div align='center'><input name=\"ohmoney\" id='ohmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" onblur=\"changeomeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.ocustname.value)\"></div>"; 
+	 temp11.innerHTML="<div align='center'><input name=\"otaxmoney\" id='otaxmoney"+row+"' type=\"text\" class=\"login3\" style=\"width:100\" readonly><input name=\"money\" id='money"+row+"' type=\"hidden\" class=\"login3\" style=\"width:100\" onblur=\"changefmeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"><input name=\"hmoney\" id='hmoney"+row+"' type=\"hidden\" class=\"login3\" style=\"width:100\" onblur=\"changemeney("+row+",document.form1.pk_invbasdoc"+row+".value,document.form1.custname.value)\"><input name=\"taxmoney\" id='taxmoney"+row+"' type=\"hidden\" class=\"login3\" style=\"width:100\" readonly><input name='djflag' id='djflag"+row+"' type='hidden' class='login3' value='1'></div>"; 
+         document.form1.elements[row*thisCol+header].focus();
+	 row=row+1;
+     tempR=document.all.tb.insertRow();
+     temp1=tempR.insertCell(); 
+     temp1.innerHTML="<table id=\"dtb\"></table>";
+     temp1.colSpan=10; 
+}
+
+function delRow() 
+{ 
+   if(document.getElementById("djflag"+(row-1)).value == 0){
+     alert("不能删除");
+     return false;
+   }else{
+     var tempR=document.all.tb.deleteRow();
+     row=row-1;
+     tempR=document.all.tb.deleteRow();
+   }
+    
+}
+
+function spellStr(step,fstatus) 
+{
+    if(this.form1.opkcubasdoc.value == ""){
+        alert("原客户不能为空");
+	return false;
+    }
+    if(this.form1.odeptid.value == ""){
+        alert("原销售部门不能为空");
+	return false;
+    }
+    if(this.form1.osalezuzhicode.value == ""){
+        alert("原销售组织不能为空");
+	return false;
+    }
+    if(this.form1.pkcubasdoc.value == ""){
+        alert("目的客户不能为空");
+	return false;
+    }
+    if(this.form1.deptid.value == ""){
+        alert("目的销售部门不能为空");
+	return false;
+    }
+    if(this.form1.salezuzhicode.value == ""){
+        alert("目的销售组织不能为空");
+	return false;
+    }
+   var str="";
+   var spell_sql="";
+
+   var b_sql="";
+   var allmoney = 0;
+   for(i=0;i<row;i++){
+	if(document.getElementById("invcode"+i).value!="" && document.getElementById("nnumber"+i).value!=""){
+	   if(document.getElementById("nnumber"+i).value!=""){
+	      if(isNaN(document.getElementById("nnumber"+i).value))
+	      { 
+	         alert("数量必须为数字");
+	         document.getElementById("nnumber"+i).focus();
+	         return;
+	      }  
+           }else{
+	      document.getElementById("nnumber"+i).value=0;
+	   }
+	   if(document.getElementById("money"+i).value!=""){
+	      if(isNaN(document.getElementById("money"+i).value))
+              { 
+                 alert("原币无税单价必须为数字");
+                 document.getElementById("money"+i).focus();
+                 return;
+              } 
+	   }else{
+	      document.getElementById("money"+i).value=0;
+	   }
+	   if(document.getElementById("nnumber"+i).value!="0" || document.getElementById("money"+i).value!="0"){
+             b_sql="have";
+	   } 
+	}
+    }
+    if(b_sql==""){
+	  alert("您没有录入差旅费，请录入！！！");
+          return false;
+   }
+  document.form1.fstatus.value = step;
+  this.form1.action='dispatchcustsavedit.aspx';
+  this.form1.target='dataframe';
+  this.form1.submit();
+}
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ }
+ function osetVals(dm,mc,code) {
+      form1.osalezuzhicode.value=dm;
+      form1.osalezuzhi.value=mc;
+ }
+ function setVals(dm,mc,code) {
+      form1.salezuzhicode.value=dm;
+      form1.salezuzhi.value=mc;
+ }
+ function osetdept(dm,mc,code) {
+      form1.odeptid.value=dm;
+      form1.odeptname.value=mc;
+ }
+ function setdept(dm,mc,code) {
+      form1.deptid.value=dm;
+      form1.deptname.value=mc;
+ }
+ function tochecknnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("nnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("nnumber"+i).value!=""){
+      if(isNaN(document.getElementById("nnumber"+i).value))
+      { 
+	 alert("订单件数必须为数字");
+	 document.getElementById("nnumber"+i).focus();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("nnumber"+i).value) >= 0){
+		 document.getElementById("fnnumber"+i).value = parseFloat(document.getElementById("nnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+		 document.getElementById("outnnumber"+i).value = document.getElementById("nnumber"+i).value;
+		 document.getElementById("outfnnumber"+i).value = parseFloat(document.getElementById("nnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			     document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			     document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+	  }else{
+	        alert("订单件数不能为负数");
+	        document.getElementById("nnumber"+i).select();
+	        return false;
+	  }
+      }
+    }
+ }
+ function tocheckoutnnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("fnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("fnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("fnnumber"+i).value))
+      { 
+	 alert("订单袋数必须为数字");
+	 document.getElementById("fnnumber"+i).focus();
+	 return false;
+      } else{
+          if(parseFloat(document.getElementById("fnnumber"+i).value) >= 0 && document.getElementById("fnnumber"+i).value.indexOf(".") == -1){
+		 document.getElementById("nnumber"+i).value = parseFloat(document.getElementById("fnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+		 document.getElementById("outfnnumber"+i).value = document.getElementById("fnnumber"+i).value;
+		 document.getElementById("outnnumber"+i).value = parseFloat(document.getElementById("fnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			     document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			     document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+	   }else{
+	        alert("订单袋数不能为负数或者小数");
+	        document.getElementById("fnnumber"+i).select();
+	        return false;
+	   }
+      }
+    }
+ }
+
+ function tockoutnnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("outnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("outnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("outnnumber"+i).value))
+      { 
+	 alert("出库件数必须为数字");
+	 document.getElementById("outnnumber"+i).focus();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("outnnumber"+i).value) > parseFloat(document.getElementById("nnumber"+i).value)){
+	      alert("出库件数不能大于订单件数");
+              document.getElementById("outnnumber"+i).select();
+	      return false;
+	 }else{
+	      if(parseFloat(document.getElementById("outnnumber"+i).value) >= 0){
+                  document.getElementById("outfnnumber"+i).value = parseFloat(document.getElementById("outnnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+	      }else{
+	          alert("出库件数不能为负数");
+	          document.getElementById("outnnumber"+i).select();
+	          return false;
+	      }
+	 }
+      }
+    }
+ }
+ function tockoutfnnumber(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("outfnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("outfnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("outfnnumber"+i).value))
+      { 
+	 alert("出库袋数必须为数字");
+	 document.getElementById("outfnnumber"+i).focus();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("outfnnumber"+i).value) > parseFloat(document.getElementById("fnnumber"+i).value)){
+	      alert("出库袋数不能大于订单袋数");
+              document.getElementById("outfnnumber"+i).select();
+	      return false;
+	 }else{
+	      if(parseFloat(document.getElementById("outfnnumber"+i).value) >= 0 && document.getElementById("outfnnumber"+i).value.indexOf(".") == -1){
+                   document.getElementById("outnnumber"+i).value = parseFloat(document.getElementById("outfnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+	      }else{
+                   alert("出库袋数不能为负数或者小数");
+	           document.getElementById("outfnnumber"+i).select();
+	           return false;
+	      }
+	 }
+      }
+    }
+ }
+ function tockoutnnumber1(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("outnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("outnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("outnnumber"+i).value))
+      { 
+	 alert("出库件数必须为数字");
+	 document.getElementById("outnnumber"+i).focus();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("outnnumber"+i).value) >= 0){
+		 document.getElementById("outfnnumber"+i).value = parseFloat(document.getElementById("outnnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+		 document.getElementById("nnumber"+i).value = document.getElementById("outnnumber"+i).value;
+		 document.getElementById("fnnumber"+i).value = parseFloat(document.getElementById("outnnumber"+i).value)*parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			     document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			     document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+	   }else{
+	        alert("出库件数不能为负数");
+	        document.getElementById("outnnumber"+i).select();
+	        return false;
+	   }
+      }
+    }
+ }
+ function tockoutfnnumber1(i,pk_invbasdoc,invcode){
+    if(document.getElementById("pk_invbasdoc"+i).value ==""){
+        alert("存货名称不能为空");
+	document.getElementById("outfnnumber"+i).value = "";
+	return false;
+    }
+    if(document.getElementById("outfnnumber"+i).value!=""){
+      if(isNaN(document.getElementById("outfnnumber"+i).value))
+      { 
+	 alert("出库袋数必须为数字");
+	 document.getElementById("outfnnumber"+i).focus();
+	 return false;
+      } else{
+         if(parseFloat(document.getElementById("outfnnumber"+i).value) >= 0 && document.getElementById("outfnnumber"+i).value.indexOf(".") == -1){
+		 document.getElementById("outnnumber"+i).value = parseFloat(document.getElementById("outfnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+		 document.getElementById("fnnumber"+i).value = document.getElementById("outfnnumber"+i).value;
+		 document.getElementById("nnumber"+i).value = parseFloat(document.getElementById("outfnnumber"+i).value)/parseFloat(document.getElementById("fnumber"+i).value);
+		 if(document.getElementById("omoney"+i).value != ""){
+			 if(confirm("是否重新询价")){
+			   document.form1.iii.value = i ;
+			   document.form1.cpcode.value = invcode;
+			   document.form1.action = "testcustgroup.aspx";
+			   document.form1.target="dataframe";
+			   document.form1.submit();
+			 }else{
+			     document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);  
+			     document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4); 
+			 }
+		 }else{
+		     document.form1.iii.value = i ;
+		     document.form1.cpcode.value = invcode;
+		     document.form1.action = "testcustgroup.aspx";
+		     document.form1.target="dataframe";
+		     document.form1.submit();
+		 }
+	   }else{
+	        alert("出库袋数不能为负数或者小数");
+	        document.getElementById("outfnnumber"+i).select();
+	        return false;
+	   }
+      }
+    }
+ }
+ function changeofmeney(i,invname,custname){
+    if(document.getElementById("omoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("原客户不能为空");
+	       document.getElementById("omoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("omoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("omoney"+i).value)){
+	       alert("原客户原币无税单价必须为数字");
+	       document.getElementById("omoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("ohmoney"+i).value =(parseFloat(document.getElementById("omoney"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4);
+    document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("omoney"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+ }
+ function changeomeney(i,invname,custname){
+    if(document.getElementById("ohmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("原客户不能为空");
+	       document.getElementById("ohmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("ohmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("ohmoney"+i).value)){
+	       alert("原客户原币含税单价必须为数字");
+	       document.getElementById("ohmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("otaxmoney"+i).value = (parseFloat(document.getElementById("ohmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+ }
+ function changefmeney(i,invname,custname){
+    if(document.getElementById("money"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("money"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("money"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("money"+i).value)){
+	       alert("目的客户原币无税单价必须为数字");
+	       document.getElementById("money"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("hmoney"+i).value =(parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("money"+i).value)*(1+parseFloat(document.getElementById("taxrate"+i).value)/100)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+ }
+ function changemeney(i,invname,custname){
+    if(document.getElementById("hmoney"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       document.getElementById("hmoney"+i).value = "";
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       document.getElementById("hmoney"+i).value = "";
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("hmoney"+i).value)){
+	       alert("目的客户原币含税单价必须为数字");
+	       document.getElementById("hmoney"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("taxmoney"+i).value = (parseFloat(document.getElementById("hmoney"+i).value)*parseFloat(document.getElementById("nnumber"+i).value)).toFixed(4);
+ }
+ function checktaxrate(i,invname,custname){
+    if(document.getElementById("taxrate"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("taxrate"+i).value)){
+	       alert("税率必须为数字");
+	       document.getElementById("taxrate"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+ }
+ function checktaxrate(i,invname,custname){
+    if(document.getElementById("taxrate"+i).value !=""){
+	    if(custname == ""){
+	       alert("目的客户不能为空");
+	       return false;
+	    }
+	    if(invname == ""){
+	       alert("存货编码不能为空");
+	       return false;
+	    }
+	    if(isNaN(document.getElementById("taxrate"+i).value)){
+	       alert("税率必须为数字");
+	       document.getElementById("taxrate"+i).select();
+	       return false;
+	    }
+    }
+    document.getElementById("omoney"+i).value =(parseFloat(document.getElementById("ohmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    document.getElementById("money"+i).value =(parseFloat(document.getElementById("hmoney"+i).value)/(1+parseFloat(document.getElementById("taxrate"+i).value)/100)).toFixed(4) ;
+    
+ }
+ function togetmont(url,bb,cc){
+    if(bb == ""){
+       alert("原客户不能为空");
+       return false;
+    }
+    if(cc == ""){
+       alert("目的客户不能为空");
+       return false;
+    }
+    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+ }
+ function togetinv(i,bb,cc,dd){
+    key=event.keyCode;
+    if(dd.value != ""){
+       if(key == 13){
+           if(bb == ""){
+	       alert("原客户不能为空");
+	       dd.value = "";
+	       return false;
+	    }
+	    if(cc == ""){
+	       alert("目的客户不能为空");
+	       dd.value = "";
+	       return false;
+	    } 
+           document.form1.iii.value = i ;
+	   window.open('nccpquery.aspx?xtype=1&row='+i+'&zjmcode='+dd.value,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+       }
+    }
+ }
+ function togetoldcust(url){
+        key=event.keyCode;
+        if(document.form1.ocustname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetnewcust(url){
+        key=event.keyCode;
+        if(document.form1.custname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetoldsale(url){
+        key=event.keyCode;
+        if(document.form1.osaler.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetnewsale(url){
+        key=event.keyCode;
+        if(document.form1.osaler.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<form name="form1" method='post' action="">
+#foreach($m in $dispatchquerybypagebycsaleid)
+<input type="hidden" name="F_id" value="$!m.CSALEID">
+<input type="hidden" name="vreceiptcode" value="$!m.VRECEIPTCODE">
+<input type="hidden" name="iii">
+<input type="hidden" name="cpcode">
+<input type="hidden" name="fstatus"  value="$!m.FSTATUS">
+<input type="hidden" name="pk_pricegroupcorp" value="$!m.PK_PRICEGROUPCORP">
+<input type="hidden" name="opk_pricegroupcorp" value="$!m.OPK_PRICEGROUPCORP">
+<input type="hidden" name="kppk_cumandoc" id="kppk_cumandoc">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">原客户</font></td>
+        <td nowrap>$!m.OCUSTNAME<input type="hidden" name="ocustname" id="ocustname" value="$!m.OCUSTNAME"><input type="hidden" name="ocustcode" id="ocustcode"  value="$!m.OCUSTCODE"><input type="hidden" name="opkcubasdoc" id="opkcubasdoc" value="$!m.O_CCUSTBASID"><input type="hidden" name="opkcumandoc" id="opkcumandoc"  value="$!m.O_CCUSTOMERID"></td>
+	<td height="24" nowrap align="right"><font color="blue">原销售部门</font></td>
+        <td>$!m.ODEPTNAME<input type="hidden" name="odeptid" value="$!m.OCDEPTID"></td>
+	<td height="24" nowrap align="right">原业务员</td>
+	<td nowrap>$!m.OPSNNAME<input type="hidden" name="osalerid" value="$!m.OCEMPLOYEEID"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">原销售组织</font></td>
+	<td>$!m.OVSALESTRUNAME<input type="hidden" name="osalezuzhicode" id="osalezuzhicode"  value="$!m.OCSALECORPID"></td>
+        <td height="24" nowrap align="right"><font color="blue">目的客户</font></td>
+        <td nowrap>$!m.CUSTNAME<input type="hidden" name="custname" id="custname" value="$!m.CUSTNAME"><input type="hidden" name="custcode" id="custcode" value="$!m.CUSTCODE"><input type="hidden" name="pkcubasdoc" id="pkcubasdoc" value="$!m.CCUSTBASID"><input type="hidden" name="pkcumandoc" id="pkcumandoc" value="$!m.CCUSTOMERID"></td>
+	<td height="24" nowrap align="right"><font color="blue">目的销售部门</font></td>
+	<td>$!m.DEPTNAME<input type="hidden" name="deptid" value="$!m.CDEPTID"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">目的业务员</td>
+	<td>$!m.PSNNAME<input type="hidden" name="salerid" value="$!m.CEMPLOYEEID"></td>
+	<td height="24" nowrap align="right"><font color="blue">目的销售组织</font></td>
+	<td>$!m.VSALESTRUNAME<input type="hidden" name="salezuzhicode" id="salezuzhicode" value="$!m.CSALECORPID"></td>
+        <td height="24" nowrap align="right"><font color="blue">币种</font></td>
+        <td>$!m.CURRTYPENAME<input type="hidden" name="pk_currtype" value="$!m.CCURRENCYTYPEID"></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">折本汇率</font></td>
+	<td>$!m.NEXCHANGEOTOBRATE<input type="hidden" name="zbhuilv" value="$!m.NEXCHANGEOTOBRATE"></td>
+	<td height="24" nowrap align="right">备注</td>
+	<td>$!m.VNOTE<input type="hidden" name="remark" value="$!m.VNOTE"></td>
+	<td height="24" nowrap align="right">配送日期</td>
+	<td>$!m.SENDDATE<input type="hidden" name="sendate" id="sendate" value="$!m.SENDDATE"  style="width:100" /></td>
+     </tr>
+</table>
+#end
+<br>
+
+<table id="tb" width="100%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <th width="10%" height="25" nowrap class="fCopy">存货编码</th>
+    <th width="12%" height="25" nowrap class="fCopy">存货名称</th>
+    <th width="12%" height="25" nowrap class="fCopy">规格</th>
+    <th width="8%" height="25" nowrap class="fCopy">订单件数</th>
+    <th width="12%" height="25" nowrap class="fCopy">订单袋数</th>
+    <th width="8%" height="25" nowrap class="fCopy"><font color="red">出库件数</font></th>
+    <th width="12%" height="25" nowrap class="fCopy"><font color="red">出库袋数</font></th>
+    <th width="12%" height="25" nowrap class="fCopy">税率</th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户原币无税单价</th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户原币含税单价</th>
+    <th width="12%" height="25" nowrap class="fCopy">原客户原币含税金额</th>
+  </tr>
+  #set($i = 0 )
+  #foreach($mm in $dispatchdetaileditbycsaleid)
+  #set($j = $i+1 )
+      <tr bgcolor="#FFFFFF" class="fCopy">
+	     <td align="center" nowrap><input type="hidden" name="ct"  id="ct$i" value="$j"><input name="invcode" id="invcode$i" type="text" class="login3" style="width:100"  value="$mm.INVCODE" #if($!mm.DJFLAG == 0) readonly #else onkeydown ="togetinv($i,document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value,document.getElementById('invcode$i'))" #end ><input type="hidden" name="pk_invbasdoc" id="pk_invbasdoc$i"  value="$mm.CINVBASDOCID"><input type="hidden" name="pk_invmandoc" id="pk_invmandoc$i"  value="$mm.CINVENTORYID"><input type="hidden" name="pk_measdoc" id="pk_measdoc$i"  value="$mm.PK_MEASDOC"><input type="hidden" name="fpk_measdoc" id="fpk_measdoc$i"  value="$mm.FPK_MEASDOC"><input type="button" value="..." #if($!mm.DJFLAG == 0) disabled #end onclick="togetmont('cpquery.aspx?row=$i',document.form1.opkcubasdoc.value,document.form1.pkcubasdoc.value)"></td>
+	     <td align="center" nowrap><input name="invname"  id="invname$i"  value="$mm.INVNAME" type="text" class="login3" style="width:200" readonly></td>
+	     <td align="center" nowrap>
+		<input name="invspec" id="invspec$i" type="text" class="login3" style="width:80"  value="$mm.INVSPEC" readonly>
+	     </td>
+	     <td align="center" nowrap>
+		<input name="nnumber" id="nnumber$i" type="text" class="login3" style="width:100"  value="$mm.NNUMBER" #if($!mm.DJFLAG == 0) readonly #else onblur="tochecknnumber('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #end >
+	     </td>
+	     <td align="center" nowrap>
+		<input name="fnnumber" id="fnnumber$i" type="text" class="login3" style="width:100"  value="$mm.NPACKNUMBER"  #if($!mm.DJFLAG == 0) readonly #else onblur="tocheckoutnnumber('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #end>
+		<input name="fnumber" id="fnumber$i" type="hidden"  value="$mm.ZHL"><input name="mainmeasrate" id="mainmeasrate$i" type="hidden" value="$mm.SCALEFACTOR">
+	     </td>
+	     <td align="center" nowrap>
+		<input name="outnnumber" id="outnnumber$i" type="text" class="login3" style="width:100"  value="#if($mm.CUSTNNUMBER=="")$mm.NNUMBER#else$mm.CUSTNNUMBER#end" #if($!mm.DJFLAG == 0) onblur="tockoutnnumber('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #else onblur="tockoutnnumber1('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #end >
+	     </td>
+	     <td align="center" nowrap>
+		<input name="outfnnumber" id="outfnnumber$i" type="text" class="login3" style="width:100"  value="#if($mm.CUSTFNNUMBER=="")$mm.NPACKNUMBER#else$mm.CUSTFNNUMBER#end"  #if($!mm.DJFLAG == 0) onblur="tockoutfnnumber('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #else onblur="tockoutfnnumber1('$i',document.getElementById('pk_invbasdoc$i').value,document.getElementById('invcode$i').value)" #end>
+	     </td>
+	     <td align="center" nowrap>
+		<input name="taxrate" id="taxrate$i" type="text" class="login3" style="width:100"  value="$mm.NTAXRATE"  #if($!mm.DJFLAG == 0) readonly #else onblur="checktaxrate($i,document.getElementById('pk_invbasdoc$i').value,document.form1.ocustname.value)" #end><input name="pk_taxitems" id="pk_taxitems$i" type="hidden" value="$mm.CTAXITEMID">
+	     </td>
+	     <td align="center" nowrap>
+		<input name="omoney" id="omoney$i" type="text" class="login3" style="width:100"  value="$mm.O_NORIGINALCURPRICE"  #if($!mm.DJFLAG == 0) readonly #else onblur="changeofmeney($i,document.getElementById('invcode'+$i).value,document.form1.ocustname.value)" #end>
+	     </td>
+	     <td align="center" nowrap>
+		<input name="ohmoney" id="ohmoney$i" type="text" class="login3" style="width:100"   value="$mm.O_NORIGINALCURTAXPRICE"  #if($!mm.DJFLAG == 0) readonly #else onblur="changeomeney($i,document.getElementById('invcode'+$i).value,document.form1.ocustname.value)" #end>
+	     </td>
+	     <td align="center" nowrap>
+		<input name="otaxmoney" id="otaxmoney$i" type="text" class="login3" style="width:100" value="$mm.O_NORIGINALCURSUMMNY" readonly><input name="money" id="money$i" type="hidden" class="login3" style="width:100"  value="$mm.NORIGINALCURPRICE"  #if($!mm.DJFLAG == 0) readonly #else onblur="changefmeney($i,document.getElementById('invcode'+$i).value,document.form1.custname.value)" #end><input name="hmoney" id="hmoney$i" type="hidden" class="login3" style="width:100"  value="$mm.NORIGINALCURTAXPRICE"  #if($!mm.DJFLAG == 0) readonly #else onblur="changemeney($i,document.getElementById('invcode'+$i).value,document.form1.custname.value)" #end><input name="taxmoney" id="taxmoney$i" type="hidden" class="login3" style="width:100" value="$mm.NORIGINALCURSUMMNY" readonly><input name="djflag" id="djflag$i" type="hidden" class="login3" style="width:100" value="$mm.DJFLAG">
+	     </td>
+	</tr>
+	<tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  #set($i = $i+1 )
+  #end
+  
+  </table>
+   <div align="center">
+<input type="button" class="login2" value=" 提  交 " name="B222" onClick="spellStr(2,'F');">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="history.back(-1);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 添加行 " name="B222" onClick="addRow();">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 删除行 " name="B2222" onClick="delRow();">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

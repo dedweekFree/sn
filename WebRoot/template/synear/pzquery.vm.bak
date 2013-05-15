@@ -1,0 +1,177 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script type="text/javascript" src="../../../inc/js/array2.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<title>入库统计报表</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+
+function fsubmit()
+{
+   //if(thisform.factory.value!='') thisform.facname.value=thisform.factory.options[thisform.factory.options.selectedIndex].innerText;
+   //if(thisform.storname.value!='') thisform.stor.value=thisform.storname.options[thisform.storname.options.selectedIndex].innerText;
+   // thisform.page.value=1;
+   thisform.submit();
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      form1.ptype.value=code;
+      form1.ptypename.value=mc;
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+var hj=0;
+function init() {
+}
+</script>
+<body onload="init()">	
+  <form name="thisform" method="post" action="pzquery.aspx">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">生产分厂</td>
+			<td class="tdinput" width="20%">
+				<select name=factory onchange="javascript:setF(this.value,'storname');"><option value=''>请选择生产分厂</option>
+                           #foreach ($name in $getStockPur)
+				<option value="$name.PK_UCODE"  #if($form_factory==$name.PK_UCODE) selected  #else unselected   #end>$name.UNAME</option>
+                           #end
+                                </select><input type="hidden" name="facname" value="">			
+			</td>	
+			<td class="tdlabel" width="10%">仓库</td>
+			<td class="tdinput" width="20%">
+				<select name=scode><option value=''>请选择仓库</option>
+                           #foreach ($name in $getStorePur)
+				<option value="$name.PK_SCODE"  #if($form_scode==$name.PK_SCODE) selected  #else unselected   #end>$name.SNAME</option>
+                           #end
+                                </select>		  		
+			</td>
+                </tr>
+			<tr class="search"> 
+			<td class="tdlabel" width="10%">产品分类号</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="ptypename" value="$!form_ptypename" readonly>
+				<input type="hidden" name="ptype" value="$!form_ptype">
+				<input type='button' name=bt class='btn' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+				<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>				
+			</td>	
+			<td class="tdlabel" width="10%"></td>
+			<td class="tdinput" width="20%">
+						
+			</td>
+                </tr>
+
+                <tr height="5" bgcolor="#A6DDF4"> 
+		  <td colspan=4 height="5"></td>
+		</tr>
+		<tr bgcolor="#f3f3f3">
+		  <td colspan=4 >
+		<input type="button" name="submit1" value="搜 索" onclick="fsubmit()" class="bt1">
+                	</td>
+		</tr>
+		<tr>
+		 <td colspan=5 height="0">
+		 </td>
+		</tr>
+	  </table>
+   </td></form>
+</tr>
+
+</table>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">分厂</td>
+	<td nowrap="nowrap">仓库</td>
+	<td nowrap="nowrap">品名</td>
+        <td nowrap="nowrap">规格</td>
+	<td nowrap="nowrap">批号</td>
+	<td nowrap="nowrap">当前结存</td>
+
+</tr>
+    #set($i=1) 
+    #foreach($m in $qzquery)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		        <td align="center" nowrap="nowrap">$m.UNAME</td>
+			<td align="center" nowrap="nowrap">$m.SNAME</td>
+			<td align="center" nowrap="nowrap">$m.ITEMDESC</td>
+				<td align="center" nowrap="nowrap">$m.ITEMSPEC</td>
+				
+                        <td align="center" nowrap="nowrap">$m.VBATCHCODE</td>
+		
+			<td align="center" nowrap="nowrap">$m.NNUM</td>
+			
+		 </tr>
+		 #set($i=$i+1)
+		 <script>hj=hj+($m.NNUM)</script>
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #else
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="6"  bgcolor="#eeeeee" align="center" class="trcolor">合计</td><td></td>
+     </tr>
+   #end
+</table>
+</td></tr>
+<tr><td height=5></td></tr>
+<tr><td>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td"></td>
+   </tr>
+</table>
+</td></tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+<form name="form1" method="post" action="viewDayInbill.aspx">
+  <input type="hidden" name="PID">
+</form>
+
+<form name="form2" method="post" action="editInbill2.aspx">
+   <input type="hidden" name="vbillcode" value="">
+   <input type="hidden" name="vbatchcode" value="">
+   <input type="hidden" name="indate" value="">
+   <input type="hidden" name="pdate" value="">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</form>	
+</body>
+</html>

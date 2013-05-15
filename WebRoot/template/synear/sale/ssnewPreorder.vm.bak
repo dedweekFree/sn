@@ -1,0 +1,816 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===预订单===</title>
+<script language="javascript" src="../../../js/ssPreOrderGridEdit.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+.Info
+{
+	font-size:12px;
+	color:#009900;
+}
+.Info2
+{
+	font-size:12px;
+	color:red;
+}
+.InfoHui
+{
+	font-size:12px;
+	color:#1363A2;
+}
+.ListNoneColor {
+	border-collapse: collapse;
+	font-size:12px;
+	border: #FFFFFF 0px solid; 
+	background-color:Transparent;
+}
+.ListNoneColor th 
+{
+	border: #FFFFFF 0px solid; 
+	color:Green;
+	text-align:left;
+}
+.ListNoneColor td 
+{
+	border: #FFFFFF 0px solid; 
+	background-color:Transparent;
+	color:Green;
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var strMsg="";
+var bData1=new Array(); 
+bData1=[
+      ['产品代码','产品名称','产品规格','价格','可报数量','预订数量','状态','nc主键','0','金额','nc档案主键','辅单位','主单位','价格项目ID','价格政策ID','价目表ID','单位换算','配车折算','体积']
+ #set($i=1)
+ #foreach($m in $ssgetProdInPlan)
+      ,['$m.INVCODE','$m.INVNAME','$m.INVSPEC','$m.NPRICE0','$m.PLUSPLANNUM','0','N','$m.PK_INVBASDOC','$i','0','$m.PK_INVMANDOC','$m.PK_MEASDOCF','$m.PK_MEASDOC','$m.CPRICETYPEID','$m.PRICEPOLICYID','$m.CPRICETARIFFID','$m.MAINMEASRATE','$m.NEWDISNUM','$m.NEWVALNUM']
+   #set($i=$i+1)
+ #end
+]
+
+var pageSize=10;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked onclick=\"javascript:setStatus("+i+")\">";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' onclick=\"javascript:setStatus("+i+")\">";
+	  }
+	  //row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  //row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  //row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  //row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  //row.insertCell().innerText=rdata[(page-1)*pageSize+i][4]
+	  for(var j=0;j<6;j++){
+	     with (row.insertCell())
+             {
+	       innerHTML=rdata[(page-1)*pageSize+i][j];
+	       Value=rdata[(page-1)*pageSize+i][j];
+	       if(rdata[(page-1)*pageSize+i][j]!='0' && j==5){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	     }
+	 }
+	 row.insertCell().innerText=rdata[(page-1)*pageSize+i][9]
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="O")
+        bstatus=(bData1[i][5]>0);
+    else
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+	//alert(bstatus)
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ toPage(1);
+}
+
+function save(bst)
+{
+  savepage(pageno);
+  /*if(parseFloat(document.all.jhqj.innerText)<0){
+     alert("信用余额不够！");
+     if(bst=='3')  return false;
+  }*/
+  if(document.all.linkman.value==""){
+         alert("请填写联系人！");
+	 return false;
+      }
+  if(document.all.tel.value==""){
+         alert("请填写联系电话！");
+	 return false;
+      }
+  var hdatahtml="";
+  #foreach($m in $getCustomerInfo)
+	   var bno="PK${m.BNO}${m.PK2}"
+	  // hdatahtml+="<input type=hidden name=pk_preorder value='${m.PK}PK${m.BNO}'>";
+	   hdatahtml+="<input type=hidden name=scroll value='$form_scroll'>";
+	   hdatahtml+="<input type=hidden name=bdeliver value='N'>";
+	   hdatahtml+="<input type=hidden name=custpk value='$form_custpk'>";
+	   hdatahtml+="<input type=hidden name=custdocpk value='$form_custdocpk'>";
+	   hdatahtml+="<input type=hidden name=cbiztype value='$m.PK_DEFBUSITYPE'>";//业务类型
+	   hdatahtml+="<input type=hidden name=ccurrencytypeid value='$m.PK_CURRTYPE1'>";//币种 $m.CURRTYPENAME
+	   hdatahtml+="<input type=hidden name=ccustomerid value='$m.PK_CUMANDOC'>";//客户档案主键
+	   hdatahtml+="<input type=hidden name=cdeptid value='$m.PK_RESPDEPT1'>";//部门主键
+	   hdatahtml+="<input type=hidden name=cemployeeid value='$m.PK_RESPPSN1'>";//业务员 $m.PSNNAME
+	   hdatahtml+="<input type=hidden name=coperatorid value='0001AG100000000000U2'>";//制单人
+	   hdatahtml+="<input type=hidden name=creceiptareaid value='$m.PK_AREACL'>";//收货地区 $m.AREACLNAME
+	   hdatahtml+="<input type=hidden name=creceiptcorpid value='$m.PK_CUMANDOC'>";//开票单位
+	   hdatahtml+="<input type=hidden name=creceiptcustomerid value='$m.PK_CUMANDOC'>";//收货单位
+	   hdatahtml+="<input type=hidden name=csalecorpid value='$m.PK_SALESTRU'>";//销售组织 $m.VSALESTRUNAME
+	   hdatahtml+="<input type=hidden name=vreceiveaddress value='$m.ADDRNAME'>";//收货地址
+	   hdatahtml+="<input type=hidden name=creceipttype value='38'>";//单据类型
+	   hdatahtml+="<input type=hidden name=dabatedate value='$m.ENDDATE'>";//失效日期
+	   hdatahtml+="<input type=hidden name=dbilldate value='$m.DBILLDATE'>";//订货日期
+	   hdatahtml+="<input type=hidden name=dmakedate value='$m.MAKEDATE'>";//制单日期
+	   hdatahtml+="<input type=hidden name=dreceivetime value='00:00:00'>";//到货时间
+	   hdatahtml+="<input type=hidden name=dr value='0'>";//
+	   hdatahtml+="<input type=hidden name=fstatus value='"+bst+"'>";//状态:1自由 2审批 3提交 4关闭 5作废 
+	   hdatahtml+="<input type=hidden name=nexchangeotobrate value='1.00000000'>";//折辅汇率
+	   hdatahtml+="<input type=hidden name=pk_corp value='$m.PK_CORP'>";//
+	   hdatahtml+="<input type=hidden name=vdef10 value='$m.LDATE'>";//
+	   hdatahtml+="<input type=hidden name=vdef11 value='$m.DEF2'>";//小客户标记
+	   //hdatahtml+="<input type=hidden name=vreceiptcode value='"+bno+"'>";//单据号
+	   hdatahtml+="<input type=hidden name=linkman value='"+document.form9.linkman.value+"'>";//联系人
+	   hdatahtml+="<input type=hidden name=tel value='"+document.form9.tel.value+"'>";//联系电话
+	   hdatahtml+="<input type=hidden name=vnote value='"+document.form9.remark.value+"'>";
+
+	   hdatahtml+="<input type=hidden name=ccalbodyid value='$m.PK_CALBODY'>";//发货库存组织 $m.BODYNAME
+
+	   hdatahtml+="<input type=hidden name=proc value='insert'>";  //业务操作
+  #end
+  var datahtml="";
+  var num=0;
+  var nextnum=0;
+  var rno=0;
+  var billno="";
+  var packnumber=0;
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' && bData1[i][5]>0){
+       rno++;
+       billno=bno+(1000+rno);
+       datahtml+="<input type=hidden name=pk_preorder_b value='"+billno+"'>";//主键
+
+       datahtml+="<input type=hidden name=cinvbasdocid value='"+bData1[i][7]+"'>"; //存货主键
+       datahtml+="<input type=hidden name=cinventoryid value='"+bData1[i][10]+"'>"; //存货档案主键
+       datahtml+="<input type=hidden name=cpackunitid value='"+bData1[i][11]+"'>"; //辅单位
+       datahtml+="<input type=hidden name=cunitid value='"+bData1[i][12]+"'>"; //主单位
+       datahtml+="<input type=hidden name=cporjectid value='"+bData1[i][13]+"'>"; //价格项目ID
+       datahtml+="<input type=hidden name=cpriceid value='"+bData1[i][14]+"'>"; //价格政策ID
+       datahtml+="<input type=hidden name=cpriceitemtableid value='"+bData1[i][15]+"'>"; //价目表ID
+       datahtml+="<input type=hidden name=nprice value='"+parseFloat(bData1[i][3]).toFixed(2)+"'>";
+       datahtml+="<input type=hidden name=nnumber value='"+parseInt(bData1[i][5])+"'>";
+       //datahtml+="<input type=hidden name=nmny value='"+parseFloat(bData1[i][9]).toFixed(2)+"'>";
+       packnumber=parseInt(bData1[i][5])/parseFloat(bData1[i][16])+'';
+       datahtml+="<input type=hidden name=npacknumber value='"+parseInt(packnumber)+"'>";
+       datahtml+="<input type=hidden name=crowno value='"+parseInt(rno)+"'>"; //行号
+       datahtml+="<input type=hidden name=disnum value='"+bData1[i][17]+"'>"; //折算率
+       num+=parseInt(bData1[i][5]);
+    }
+ }
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ subdata.innerHTML=hdatahtml+datahtml;
+      document.all.form1.action="testPreorder.aspx";
+      document.all.form1.target="saveframe";
+      document.all.form1.submit();
+}
+
+function testok()
+{  
+   //form_submit.action="newPreorderSubmit.aspx";
+   //form_submit.submit();
+   form_submit.action="newPreorderSubmittest.nc";
+   form_submit.submit();
+}
+
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][6]='Y';
+      else  rdata[(page-1)*pageSize+i][6]='N';
+      for(var j=5;j<6;j++){
+        if(table6.rows[i].cells[j+1].innerText==""){
+	  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+        }
+      }
+      rdata[(page-1)*pageSize+i][9]=table6.rows[i].cells[7].innerText;
+      bData1[rdata[(page-1)*pageSize+i][8]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function document.onkeydown(){
+   key=event.keyCode;
+   if(key==83 && event.ctrlKey){
+    save();
+    return;
+   }
+   if(key==38)   //向上箭头
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+        var ly=event.srcElement.parentNode.offsetTop;
+	var hy=mdiv.scrollTop;
+	if(ly>hy && (ly-hy<2*ftr.offsetHeight)) mdiv.scrollTop=mdiv.scrollTop-ftr.offsetHeight*2; 
+  	//window.status=event.y+","+mdiv.offsetTop;
+	//form2.elements[0].value=ftr.offsetHeight;
+     }
+     return;
+   }
+   if(key==34)   //page down
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }else{
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }
+     return;
+   }
+   if(key==33)   //page up
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }else{
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }
+   }
+   return;
+}
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+
+function init()     
+{  
+   //var pno="$form_begintime".split("-");
+   //document.all.jhqj.innerHTML='M'+pno[0]+pno[1];
+}
+
+function setStatus(lineno)
+{
+    allPlan(event.srcElement,lineno)
+}
+//['产品代码','产品名称','产品规格','价格','可报数量','预订数量','状态','nc主键','0','金额','nc档案主键','辅单位','主单位','价格项目ID',
+//'价格政策ID','价目表ID','单位换算','配车折算','体积']
+
+function allPlan(element,oldvalue)
+{
+  var LastNumber=0;
+  var zsLastNumber=0;
+  var money=0;
+  var val=0;
+  savepage(pageno);
+  for(var i=1;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' && bData1[i][5]>0){
+       zsLastNumber+=parseInt(bData1[i][5]);
+       LastNumber+=parseInt(bData1[i][5])*parseFloat(bData1[i][17]);
+       val+=parseInt(bData1[i][5])*parseFloat(bData1[i][18]);
+       money+=parseFloat(bData1[i][9]);
+    }
+  }
+  document.all.byjh.innerHTML=zsLastNumber;
+  document.all.xyjh.innerHTML=money.toFixed(2);
+  document.all.jhqj.innerHTML=(lmoney-money).toFixed(2);
+  
+/*        if(LastNumber>=280&&LastNumber<=300){
+            document.all.pcck.innerHTML="<font class='Info2'>4.2</font>米车型(亏空"+parseInt((280-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=460&&LastNumber<=500){
+            document.all.pcck.innerHTML="<font class='Info2'>5</font>米车型(亏空"+parseInt((460-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=900&&LastNumber<=1000){
+            document.all.pcck.innerHTML="<font class='Info2'>7.2</font>米车型(亏空"+parseInt((900-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=1200&&LastNumber<=1300){
+            document.all.pcck.innerHTML="<font class='Info2'>8.6</font>米车型(亏空"+parseInt((1200-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=1450&&LastNumber<=1600){
+            document.all.pcck.innerHTML="<font class='Info2'>9.6</font>米车型(亏空"+parseInt((1450-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=2000&&LastNumber<=2200){
+            document.all.pcck.innerHTML="<font class='Info2'>12.5</font>米车型(亏空"+parseInt((2000-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>2200&&LastNumber<=2400){
+            document.all.pcck.innerHTML="<font class='Info2'>13.7</font>米车型(亏空"+parseInt((2200-LastNumber)*100)/100+"件)";
+        }else if(LastNumber>=0&&LastNumber<280){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((280-LastNumber)*100)/100+"</font>件适合<font class='Info2'>4.2</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((280-LastNumber)*100)/100+"件，适合4.2米车型！";
+        }else if(LastNumber>300&&LastNumber<460){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((460-LastNumber)*100)/100+"</font>件适合<font class='Info2'>5</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((460-LastNumber)*100)/100+"件，适合5米车型！";
+        }else if(LastNumber>500&&LastNumber<900){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((900-LastNumber)*100)/100+"</font>件适合<font class='Info2'>7.2</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((900-LastNumber)*100)/100+"件，适合7.2米车型！";
+        }else if(LastNumber>1000&&LastNumber<1200){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((1200-LastNumber)*100)/100+"</font>件适合<font class='Info2'>8.6</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((1200-LastNumber)*100)/100+"件，适合8.6米车型！";
+        }else if(LastNumber>1300&&LastNumber<1450){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((1450-LastNumber)*100)/100+"</font>件适合<font class='Info2'>9.6</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((1450-LastNumber)*100)/100+"件，适合9.6米车型！";
+        }else if(LastNumber>1600&&LastNumber<2000){
+            document.all.pcck.innerHTML="无适合车型(加<font class='Info2'>"+parseInt((2000-LastNumber)*100)/100+"</font>件适合<font class='Info2'>12.5</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！再加"+parseInt((2000-LastNumber)*100)/100+"件，适合12.5米车型！";
+        }else if(LastNumber>2400){
+            document.all.pcck.innerHTML="无适合车型(减<font class='Info2'>"+parseInt((LastNumber-2400)*100)/100+"</font>件适合<font class='Info2'>13.7</font>米车型)";
+            document.all.pcck.innerHTML+="不够整车！减"+parseInt((LastNumber-2400)*100)/100+"件，适合13.7米车型！";
+        }
+ */
+
+	document.all.pcck.innerHTML='报货折算为'+LastNumber.toFixed(2)+'件，体积约合'+val.toFixed(2)+'立方;';
+	val=parseInt(val);
+	if(val>=6&&val<=8){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>4.2</font>米车型";
+        }else if(val>=11&&val<=13){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>5</font>米车型";
+        }else if(val>=26&&val<=28){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>7.2</font>米车型";
+        }else if(val>=31&&val<=33){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>8.6</font>米车型";
+        }else if(val>=39&&val<=41){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>9.6</font>米车型";
+        }else if(val>=51&&val<=53){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>12.5</font>米车型";
+        }else if(val>=56&&val<=58){
+            document.all.pcck.innerHTML+="适合<font class='Info2'>13.7</font>米车型";
+        }else if(val<6){
+            document.all.pcck.innerHTML+="无适合车型，不够整车！请参考配车参考表！";
+        }else if(val>8&&val<11){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>13&&val<26){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>28&&val<31){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>33&&val<39){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>39&&val<41){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>41&&val<51){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>53&&val<56){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }else if(val>58){
+            document.all.pcck.innerHTML+="无适合车型！请依据以往发货车型并参照有效体积区间调整产品数量，以免出现亏空或溢车！";
+        }
+}
+
+function MyAlert(){
+    var AlertInfo=document.getElementById("AlertInfo");
+    if(AlertInfo.style.display=='none')
+        AlertInfo.style.display='block';
+    else
+        AlertInfo.style.display='none';
+}
+
+</script>
+
+
+<body onload="init()">
+
+<p align="left"><font size="4"><b>新建预订单</b></font>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+ #foreach($m in $getCustomerInfo)
+ <script>
+   var lmoney=parseFloat('$m.ORDAWMNY')-parseFloat('$m.PREMNY');
+ </script>
+  <form name="form9">
+<table  border="0" cellpadding="0" cellspacing="2" width="100%">
+    <tr>
+      <td height="19" width="7%">客户名称/代码</td> <td height="19" width="15%">$m.CUSTNAME/$m.CUSTCODE</td>
+      <td height="19" width="7%">送货地址</td> <td height="19" width="15%">$m.ADDRNAME</td>
+    </tr>
+    <tr>
+      <td height="19" width="7%">剩余额度</td> <td height="19" width="15%"><span id="jhqj">$m.ORDAWMNY</span></td>
+      <td height="19" width="7%">预订单占用</td> <td height="19" width="15%">$m.PREMNY</td>
+    </tr>
+    <script>
+      document.all.jhqj.innerHTML=lmoney.toFixed(2);
+    </script>
+    <tr>
+      <td height="19" width="7%">订单总量</td> <td height="19" width="15%"><span id="byjh">0</span></td>
+      <td height="19" width="7%">订单总额</td> <td height="19" width="15%"><span id="xyjh">0</span></td>
+     </tr>
+    <tr>
+      <td height="19" width="7%">联系人</td> <td height="19" width="15%"><input name="linkman" type="text" size="20"> </td>
+      <td height="19" width="7%">联系电话</td> <td height="19" width="15%"><input name="tel" type="text" size="20"></td>
+     </tr>
+     <tr>
+      <td height="19" width="7%">备注(不超过60个汉字)</td> <td height="19" colspan=3><textarea name="remark" cols="80" rows="2"></textarea></td>
+    </tr>
+     <tr>
+      <td height="19" width="7%"><a style="cursor:hand" onclick="MyAlert()"><U>配车参考</U></a></td> <td height="19" colspan=3><span id="pcck"></span></td>
+    </tr>
+</table>  
+</form>
+#end
+
+</div>
+    <div id="AlertInfo" style="display: none;">
+        <table class="ListNoneColor">
+            <tr>
+                <th colspan="5" style="text-align: center;">
+                    不同车型对应区间
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    车型
+                </th>
+                <th>
+                    有效利用容积(立方米)
+                </th>
+                <th>
+                    件数区间(件)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    4.2<font class="Stress2">(400km内)</font>
+                </td>
+                <td>
+                    6-8
+                </td>
+                <td>
+                    280-300
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    5<font class="Stress2">(400km内)</font>
+                </td>
+                <td>
+                    11-13
+                </td>
+                <td>
+                    460-500
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    7.2
+                </td>
+                <td>
+                    26-28
+                </td>
+                <td>
+                    900-1000
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    8.6米
+                </td>
+                <td>
+                    31-33
+                </td>
+                <td>
+                    1200-1300
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    9.6
+                </td>
+                <td>
+                    39-41
+                </td>
+                <td>
+                    1450-1600
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    12.5
+                </td>
+                <td>
+                    51-53
+                </td>
+                <td>
+                    2000-2200
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    13.7
+                </td>
+                <td>
+                    56-58
+                </td>
+                <td>
+                    2200-2400
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    单机（车皮）
+                </td>
+                <td>
+                    86-90
+                </td>
+                <td>
+                    3000-3300
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    机列（车皮）
+                </td>
+                <td>
+                    344-360
+                </td>
+                <td>
+                    12000-13000
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <br>
+                    需要注意事项：<br>
+                    1、参考车型有效利用体积区间提交订单数量（参照上表）。
+                    <br>
+                    2、每张单子中体积按1：1.5折合的产品总件数不能超过500件。<br>
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 1：1.5折合的产品包括早八点（除144早八点和2000克早八点）、金牌加托水饺、600克汤圆。<br>
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 1：1.7折合的产品包括国宴汤圆。<br>
+                    3、客户在报货时，应根据区域实际情况，选择合适车型（参照以往发车车型）。<br>
+                    <br>
+                    <font style="font-weight: bold;">上述三个条件为参考条件，不影响订单提交。</font>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<br>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()"> 
+状态：<select  onchange="search()">
+            <option value='all' selected>全部</option>
+	    <option value='N'>未报产品</option>
+	    <option value='Y'>已报产品</option>
+	    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">        
+</form>
+</div>
+<!--<div class="mainDiv" id="mdiv"> -->
+<div>
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+      <td height="19" bgcolor="#abcdef" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td height="19" bgcolor="#abcdef" width="15%" Name="pcode" >产品代码</td>
+      <td height="19" bgcolor="#abcdef" width="23%" Name="pname">产品名称</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="pspec">产品规格</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price">产品售价</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="oldnum">可订数量</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Amount" EditType="TextBox" DataType="Int">预订数量</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="ordernum2" Expression="Price*Amount">金额</td>
+    </tr>
+</table>
+ </div>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value=" 保  存 " id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value=" 提  交 " onClick="javascript:save('3');">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:window.location='preorder.aspx';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+//单击“保存”按钮
+btnSave.onclick=function()
+{
+   save('1');	
+}
+
+</script>
+<script>
+	 EditTables(table6);
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="newPreorderSubmittest.nc">
+<span id="subdata"></span>
+</form>
+<form name="form1" method="post" action=""  target="saveframe">
+  <input type="hidden" name="custdocpk" value="$form_custdocpk">
+  <input type="hidden" name="maxmoney" value="$form_maxmoney">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

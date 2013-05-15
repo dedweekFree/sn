@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../include/js/string.js"></script>
+	<script type="text/javascript">
+        var trHtml = '<tr class="trcolor addtr"><td>$!form_username<input type="hidden" name="pkuserid" value="$!form_pkuserid"/></td><td>';
+        #foreach($!m in $getdeptforvsessionbyusername)
+				#if($!m.STATE == 1)  
+					trHtml += '<input type="checkbox" name="vdeptid" value="$!m.DEPTID" checked="checked"/>${m.DEPTNAME}<br/>';
+				#else
+					trHtml += '<input type="checkbox" name="vdeptid" value="$!m.DEPTID" />${m.DEPTNAME}<br/>';
+				#end
+        #end 
+		trHtml+= '</td><td><input type="submit" value="保存" /><input type="hidden" name="vdeptid" value="1000"/></td></tr>';
+		parent.submitform(trHtml);
+	</script>
+</head>
+<body>
+</body>
+</html>
+

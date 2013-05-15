@@ -1,0 +1,20 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../include/js/string.js"></script>
+	<script type="text/javascript">
+        #set($i=1)
+        #foreach($m in $testmccpbm)
+			#set($i=$i+1)
+        #end  
+		#if($i==1)
+			parent.submitforms();
+		#else
+			alert("卖场编码$!form_mccpbm已经存在！");
+		#end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

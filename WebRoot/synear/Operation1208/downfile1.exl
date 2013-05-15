@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>querysnsaleinvnameall</web:sql>
+  <web:db>Login</web:db>
+  <web:col>库存组织主键##库存组织##产品主键##产品名称##产品编码##25-31生产计划##满足当月订单调出量##满足当月订单调入量</web:col>
+  <web:key>PK_CALBODY##BODYNAME##PK_INVBASDOC##INVNAME##INVCODE</web:key>
+  <web:name>产品计划完成情况</web:name>
+</web:page>
+
+
+

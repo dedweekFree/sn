@@ -1,0 +1,278 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>销售政策查询</title>
+
+<script type="text/javascript">
+var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(3,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon = '0'+mon; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd = '0'+dd;  
+clock += dd;
+if (parseInt(hh) < 10) hh = '0'+hh;  
+clock += hh; 
+if (parseInt(ss) < 10) ss = '0'+ss;  
+clock += ss;
+if (parseInt(mil) < 10){mil = '00'+mil;
+}else if(10 <= parseInt(mil) < 100){mil = '0'+mil;}
+clock += (mil.substr(0,3));
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function m(){
+   if(document.n1.styname.value==""){
+		     alert("政策名不能为空");
+		     document.n1.styname.focus();
+		     return false;
+		   }
+     if(document.n1.stycode.value==""){
+		     alert("政策编号不能为空");
+
+		     document.n1.styname.focus();
+		     return false;
+		   }
+    if(isNaN(document.n1.stycode.value)){ 
+    
+    　　 alert("政策编号必须为数字！"); 　　
+         return false; 　
+       
+       　} 
+      if(document.n1.allowance.value==""){
+		     alert("补贴额不能为空");
+
+		     document.n1.allowance.focus();
+		     return false;
+		   }
+     if(isNaN(document.n1.allowance.value)){ 
+    
+    　　 alert("补贴额必须为数字！"); 　　
+         return false; 　
+       
+       　} 
+		   var a=document.getElementById("type");
+		
+	        var b = a.options[a.selectedIndex].text
+       if(b==""){
+		     alert("类型不能为空");
+
+		     document.n1.type.focus();
+		     return false;
+		   }
+
+    if(document.n1.starttime.value==""){
+		     alert("起始时间不能为空");
+
+		     document.n1.starttime.focus();
+		     return false;
+		   }
+     if(document.n1.endtime.value==""){
+		     alert("结束时间不能为空");
+
+		     document.n1.endtime.focus();
+		     return false;
+		   } 
+    
+      if(document.n1.starttime.value<document.n1.endtime.value){
+ 
+       }else{
+          alert("起始时间必须小于结束时间");
+         document.n1.starttime.value="";
+	   document.n1.endtime.value="";
+          document.n1.starttime.focus();
+	   
+		     return false;
+          
+       }
+   document.n1.styid.value="ZC"+clock;
+   document.n1.name1.disabled = true;
+   document.n1.target="dataframe";
+   document.n1.action="stysaveadd.aspx";
+   document.n1.submit();
+
+}
+var bData1=new Array(); 
+	bData1=[['政策编号','政策名','补贴额','类型','起始时间','结束时间']
+		#set($i=1)
+		#foreach($!m in $selstydetail)
+		,['$m.STYCODE','$m.STYNAME','$!m.ALLOWANCE','$!m.TYPE','$m.STARTTIME','$m.ENDTIME','$m.STYID']
+		#set($i=$i+1)
+		#end
+		]
+var pageSize=10000;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2(){
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page){
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][4]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][5]
+	  
+	  row.insertCell().innerHTML="<a href='delsty.aspx?styid="+ rdata[(page-1)*pageSize+i][6] + "' target='dataframe'>删除</a>&nbsp;&nbsp;<a href='stynum.aspx?styid="+rdata[(page-1)*pageSize+i][6]+"&stycode="+ rdata[(page-1)*pageSize+i][0] + "'>关联大区</a>"
+	   row.insertCell().innerHTML="<a href='stynotedetail.aspx?stycode="+ rdata[(page-1)*pageSize+i][6] + "'>备注</a>"
+	
+	 }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;<br>";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function savepage(page){
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      for(var j=0;j<3;j++) rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+      bData1[rdata[(page-1)*pageSize+i][0]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch(){
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj){
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+ 
+function showindow(){
+	if(document.getElementById("oermstore").value==""){
+		var b="";
+	}else{
+	var b = document.getElementById("oermstore").value;
+	}
+	var ReturnAllQualityValue=showModalDialog('seloermstore.aspx?&oermstore='+b,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+		  if(ReturnAllQualityValue!=null){
+			document.getElementById("oermstore").value=ReturnAllQualityValue;
+		}
+	}
+function q(){	
+document.n1.b1.disabled = true;
+document.n1.action="sty.aspx";
+document.n1.submit();
+}
+</script>
+  </head>
+  
+  <body>
+  <form method="post" name="n1"><input type="hidden" name="styid">
+  <table class="datatable"><tr class="search">
+  <td>政策名</td>
+  <td align="left"><input type="text" name="styname" value="$!form_styname"></td> 
+  <td>政策编号</td>
+  <td align="left"><input type="text" name="stycode" value="$!form_stycode"></td></tr><tr class="search">  
+   <td>补贴额</td>
+   <td align="left"><input type="text" name="allowance" value="$!form_allowance"></td>
+ 
+   <td>类型</td>
+   <td align="left"><select name="type" id="type">
+    <option></option>
+    <option value="单补">单补</option>
+    <option value="套餐补">套餐补</option>
+   
+   </select></td></tr><tr class="search">
+   <td>起始时间</td>
+   <td align="left"><input type="text" name="starttime" onclick="ShowDate(this)" value="$!form_starttime"></td>
+   <td>结束时间</td>
+   <td align="left"><input type="text" name="endtime" onclick="ShowDate(this)" value="$!form_endtime"></td></tr>
+   <tr class="search">  
+   <td>备注</td>
+   <td align="left" colspan="3"><textarea id="note" name="note" rows="3" cols="80"></textarea></td></tr>
+   <tr class="search">
+    <td align="center" colspan="4"><input type="submit" name="b1" value="查询"  onClick="q()">
+   <input type="button"" name="name1" value="添加" onClick="m()"></td></tr></table>
+   </form>
+ <table class="datatable" id="table6">
+  <tr class="trcolor">
+    <td>政策编号</td>
+    <td>政策名</td>
+    <td>补贴额</td>
+    <td>类型</td>
+    <td>起始时间</td>
+    <td>结束时间</td> 
+     <td>操作</td> 
+     <td>备注</td> 
+  </tr>
+</table>
+<div style="width:100%;txt-align:center;border:3 double gray;">
+<span id="pg"></span>
+</div>
+<script>
+	 toPage(1);
+</script>
+<div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</div>
+  </body>
+</html>
+
+
+
+ 
+ 
+  
+  
+

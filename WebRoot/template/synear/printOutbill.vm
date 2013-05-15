@@ -1,0 +1,123 @@
+
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<title>成品调拨记录单</title>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script type="text/javascript" src="../../../inc/js/array2.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+   var prod=new Array(); 
+   data=new data1('品名','批号','代码','规格','单位','数量');
+   prod.add(data);
+   #foreach($m in $sql1)
+      data=new data1("$!m.INVNAME","$!m.VBATCHCODE","$!m.INVCODE","$!m.INVTYPE","$!m.UNIT","$!m.OUTCOUNT");
+      prod.add(data);
+   #end
+</script>
+</head>
+<STYLE><!--
+	.datatable2{
+		width:95%;
+		border:1px #80B3B0 solid;
+		border-bottom-style:none;
+		border-right-style:none;
+		font:12px;
+		padding: 0; 
+		margin: 0; 
+	} 
+
+	.datatable2 td { 
+		border-right: 1px solid #80B3B0; 
+		border-bottom: 1px solid #80B3B0;  
+		font-size:12px;
+		line-height:200%;
+		padding: 0px 4px 0px 4px; 
+		margin: 0;
+	}
+--></STYLE>
+<body>	
+<div style="text-align:center"><B>成品调拨记录单</B></div>
+<br>
+    <script>
+      var snum=0;
+    </script>
+<table width=95% align=center border="0" cellpadding="0" frame=box cellspacing="0">
+<tr><td width=30%>
+<div class="qx" style="text-align:left">调入单位：</div></td><td  width=35%><div class="qx" style="text-align:left">
+调拨单号：$!form_PID</div></td><td width=35%><div class="qx" style="text-align:left">
+#foreach($m in $sql0)倒货车号：$!m.CARCODE  #end</div></td></tr>
+<tr><td>
+<div class="qx" style="text-align:left">#foreach($m in $sql0)调出单位：$!m.UNAME #end</div></td><td><div class="qx" style="text-align:left">
+#foreach($m in $sql0)装车开始时间：$!m.SDATE &nbsp;  #end</div></td><td><div class="qx" style="text-align:left">
+#foreach($m in $sql0)装车结束时间：$!m.EDATE &nbsp;   #end</div></td></tr>
+</table>
+<table class="datatable2" align=center border="0" cellpadding="0" frame=box id="datatable"
+		cellspacing="0">
+	<tr class="search">
+		<td class="CN" width=5% nowrap>编号</td>		
+		<td class="CN" width=25%>产品名称</td>		
+		<td class="CN" width=15%>规格</td>
+		<td class="CN" width=5% nowrap>单位</td>	
+		<td class="CN" width=10%>调拨数量</td>
+		<td class="CN" width=15%>实际入库数量</td>
+		<td class="CN" width=25%>备注</td>
+	</tr>
+    <script>
+      var pcount=0;
+      var memo="其中";
+      var cnum=1;
+      
+      for(var i=1;i<prod.length;i++){
+        if(prod[i].data[0]!=''){   //非总计
+          if(prod[i].data[2]!=''){  //非单品小计
+	     memo=memo+prod[i].data[1].substring(8,12)+"计"+prod[i].data[5]+prod[i].data[4]+";"
+             pcount=pcount+1;
+	  }else{
+	     document.write("<tr><td class=CN>"+cnum+"</td>");
+	     document.write("<td class=CN>"+prod[i].data[0]+"</td>");
+	     document.write("<td class=CN>"+prod[i].data[3]+"</td>");
+	     document.write("<td class=CN>"+prod[i].data[4]+"</td>");
+	     document.write("<td class=CN>"+prod[i].data[5]+"</td>");
+	     document.write("<td class=CN>&nbsp;</td>");
+	     //if(pcount>1)
+	       document.write("<td class=CN>"+memo+"</td></tr>");
+	     //else
+	       //document.write("<td class=CN>&nbsp;</td></tr>");
+             pcount=0;
+             memo="其中";
+             cnum=cnum+1;
+	  }
+        }else{
+	   snum=prod[i].data[5];
+	}
+      }
+    </script>
+
+	<tr class="trcolor NUM">
+		<td colspan=4>合计</td>
+		<td>
+		<script>
+                    document.write(snum)
+                </script></td>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+	</tr>
+</table>
+<table width=95% align=center border="0" cellpadding="0" frame=box cellspacing="0">
+<tr><td width=30%>
+<div class="qx" style="text-align:left">到达成品库时间：</div></td><td  width=35%><div class="qx" style="text-align:left">
+卸车开始时间：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td width=35%><div class="qx" style="text-align:left">
+卸车结束时间：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td></tr>
+<tr><td>
+<div class="qx" style="text-align:left">经手人：</div></td><td><div class="qx" style="text-align:left">
+质检员：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td><div class="qx" style="text-align:left">
+调出库管：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td></tr>
+<tr><td>
+<div class="qx" style="text-align:left">司机：</div></td><td><div class="qx" style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td><div class="qx" style="text-align:left">
+调入库管：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../js/style.css">
+	<style>
+	table,body{font-size:12px;background-color:#EBE9EE; margin:0px; padding:0px;}
+</style>
+</head>
+<body>
+<script src='../../../inc/js/invcodedtree.js'></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<div id='Layer1' class='dtree'></div>
+<script>
+function Choose(dm,mc,code){
+   alert(code);
+}
+var d = new dTree('d');
+d.add('ffff',-1,'请选择','','');
+d.add('0001AG100000000001EN','ffff',"<input type=checkbox name=check value='0001AG100000000001EN' class=ffff id=ch0 onClick=checkStatus('0001AG100000000001EN',this)>产成品",'','01');  
+#set($i = 1)
+#foreach($m in $queryyxzxinvdescall)
+   d.add("$!m.CODE","$!m.PCODE","<input type=checkbox name=check value='$!m.CODE' class=$!m.PCODE id=ch$i onClick=checkStatus('$!m.CODE',this)>$!m.INVCLASSCODE $!m.INVCLASSNAME","","$!m.INVCLASSCODE");
+   #set($i = $i+1)
+#end
+
+	var str = '';
+if (document.getElementById) {
+   str += d.addNode(d.root);
+}else{
+   str += 'Browser not supported.';
+}
+   d.completed = true;
+   document.getElementById('Layer1').innerHTML=str;
+   curindex=0;
+   function checkStatus(no,chkBox){
+      var chks = document.getElementsByTagName('input');//得到所有input
+      for(var i=0;i <chks.length;i++){
+        if(chks[i].name.toLowerCase() == 'check'){//得到所名为check的input
+          if(chks[i].className == no){//ID等于传进父目录ID时
+            chks[i].checked = chkBox.checked;//保持选中状态和父目录一致
+            checkStatus(chks[i].value,chks[i]);//递归保持所有的子目录选中
+          }
+        }
+      }
+    }
+    function tosure(){
+       var htmlstr = "";
+       var htmlstrname = "";
+       var count = 0 ;
+       for(var i = 0; i < $i; i ++){
+          if(document.getElementById('ch'+i).checked){
+	     if(count == '0'){
+		htmlstr+=document.getElementById('ch'+i).value;
+	     }else{
+		htmlstr+=","+document.getElementById('ch'+i).value;
+	     }
+	     count ++;
+	  }
+       }
+       window.opener.document.getElementById("ptypename").value= htmlstr;
+       window.opener.document.getElementById("ptype").value= htmlstr;
+       window.close();
+    }
+</script>
+<input type="button" class="bt1" value=" 确  定 " onclick="tosure()">
+</body>
+</html>

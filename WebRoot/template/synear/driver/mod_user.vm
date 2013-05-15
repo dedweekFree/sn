@@ -1,0 +1,74 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title></title>
+<script language = "javascript">
+	function a(){				//修改用户
+			if(document.all.update_roleid.value==document.all.newroleid.value){
+				document.all.ddd.value=""
+			}else{document.all.ddd.value="1"}
+			updateuser.submit();
+	}
+</script>
+ </head>
+	 <body>
+		 <form name='updateuser' action ='updateUserSub.aspx' method='post'>
+		 <input type="hidden" name="ent" value='$form_ent'>
+		 <input type="hidden" name="dpt" value='$form_departid'>
+			<table class="datatable" id='tab'>
+			#set($i=0)
+			#foreach($!m in $driverRole)
+			  <tr class="trcolor">
+			    <td>用户名:
+			      <input type="text" name="username" value='$m.USERNAME'/>
+			      <input type="hidden" name="usernametend" value='$m.USERNAME'/>
+			      <input type="hidden" name="userid" value='$m.USERID'/>
+				</td>
+			    <td align="left">姓名:
+				<input type="text" name="name" value='$m.NAME'/>
+				<input type="hidden" name="ddd" value=''/>
+				</td>
+			  </tr>
+			  <tr class="trcolor">
+			    <td>公司:
+			      <select name="enterprisecode">
+				   <option value=""></option>
+				   #foreach($!h in $driverbdcorp)
+					<option value="$!h.PK_CORP" #if($m.PK_CORP==$h.PK_CORP)selected#end>$!h.UNITNAME</option>
+				   #end
+				</select>
+				</td>
+			    <td align="left">&nbsp;
+				</td>
+			  </tr>
+			 
+			  <tr class="trcolor">
+			    	<td colspan='2' align='left'><input type="hidden" name="newroleid" value='$m.ROLEID'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;角色:
+				<select name='update_roleid'>
+				<option value="">请选择角色</option>
+				#set($i=0)
+				#foreach($!k in $driverRolenamezb)
+					<option value='$k.ROLEID' #if($!form_roleid==$!k.ROLEID) selected #end>$k.ROLENAME</option>
+				#set($i=$i+1)
+				#end
+				</select>
+			    </td>
+			   </tr>
+			  <tr class="trcolor">
+			    <td>
+			      <input name="button" type="button" id="button" value="返回" onclick="javascript:history.back(-1)"/>
+				</td>
+			    <td>
+				<input name="button" type="button" id="button" value="修改" onclick='a()'/>
+				</td>
+			  </tr>
+			    #set($i=$i+1)
+				#end
+			</table>
+		</form>
+	</body>
+</html>

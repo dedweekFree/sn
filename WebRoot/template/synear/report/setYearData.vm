@@ -1,0 +1,509 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>客户计划完成情况</title>
+<script type="text/javascript">
+	$(function(){
+		$("#show1").hide();
+		$('#savebtn').attr('disabled',"true"); 
+		$('#modifybtn').removeAttr("disabled");				
+		$("#makereport").click(function(){
+			if($("#selectMonth").val()==""){
+				alert("请选择月份");
+			}else if($("#sel").val()==0){
+				alert("请选择分厂");
+			}else{
+					//创建报表操作
+				var $datahtml="";
+				var $subdata=$("#subdata");
+				var $daleis = $(":checkbox[name='dalei'][checked]");
+				var $xiangmus = $(":checkbox[name='xiangmu'][checked]");
+				if($daleis.length!=0){
+					for(var i=0;i< $daleis.length;i++){
+						if($xiangmus.length!=0){
+							for(var j=0;j< $xiangmus.length;j++){
+								$datahtml=$datahtml+"<input type=hidden name=categorys value='"+$daleis[i].value+"'><input type=hidden name=accsubjIds value='"+$xiangmus[j].value+"'>";
+								if(i==0){
+									$datahtml=$datahtml+"<input type=hidden name=xiangmus value='"+$xiangmus[j].value+"'></br>";
+								}else{
+									$datahtml=$datahtml+"<input type=hidden name=xiangmus value='-1'></br>";
+								}
+							}						
+						}else{
+							alert("没有选择费用项目");
+						}
+					}
+				  }else{
+						alert("没有选择大类");
+				  }
+				//获取选中的分厂
+				 $sel = $("#sel").val();
+				//获取用户选中的年月并截取
+				var $selectdate = $("#selectMonth").val();
+				$datahtml=$datahtml+"<input type=hidden name=selectDept value='"+$sel+"'><input type=hidden name=years value='"+$selectdate+"'>";
+				$subdata.html($datahtml);
+				$("#thisform").submit();
+			
+				$('#savebtn').attr('disabled',"true");
+			}
+		});
+		//查询报表的click事件
+		$("#selectreport").click(function(){
+			if($("#nianfen").val()==""){
+				alert("请选择年份");
+			}else if($("#fenchang").val()==0){
+				alert("请选择分厂");
+			}else{
+				//查询报表操作
+				var $querydata="";
+				var $subquery=$("#subquery");
+				//获取选中的分厂
+				var $fenchang=$("#fenchang").val()
+				//获取用户选中的年
+				var $nianfen = $("#nianfen").val();
+				//添加分厂和截取后的时间
+				$querydata=$querydata+"<input type=hidden name=selectDept value='"+$fenchang+"'><input type=hidden name=years value='"+$nianfen+"'>";
+				$subquery.html($querydata);
+				$("#queryform").submit();
+			}
+		});
+		
+		$("#modifybtn").click(function(){
+
+			$('#modifybtn').attr('disabled',"true");  
+			$('#savebtn').removeAttr("disabled");
+			//给单元格添加点击后编辑的功能
+			$("td[class='findme']").bind('click',tdClick);
+		});
+		$("#savebtn").click(function(){
+				//保存报表数据
+				/* 年度表中在无保存到的列，这里先注释掉
+
+				var $savehtml="";
+				var $edittr = $("tr[name='edittr'] > td[name='ids']");
+				var $edittd1 = $("tr[name='edittr'] > td[name='monthbudget']");
+				var $edittd2 = $("tr[name='edittr'] > td[name='monthbudgettons']");
+				if($edittr.length!=0){
+					for(var i=0;i< $edittr.length;i++){
+						$savehtml = $savehtml+"<input type=text name=itemss value='"+$edittr[i].innerText+"'><input type=text name=monthbudgets value='"+$edittd1[i].innerHTML+"'><input type=text name=monthbudgettonss value='"+$edittd2[i].innerText+"'>";
+					}
+				}
+				//添加时间和分厂
+				$savehtml=$savehtml+"<input type=hidden name=years value='${form_years}'><input type=hidden name=selectDept value='${form_selectDept}'>";
+				$("#saveMonthdata").html($savehtml);
+				*/
+				//保存大类数据
+				var $saveCategoryhtml="";
+				var $edittr = $("tr[name='edittr'] > td[name='ids']");
+				var $edittd1 = $("tr[name='dalei'] > td[name='cids']");
+				var $num1;
+				var $num2;
+				if($edittd1.length!=0){
+					for(var i=0;i< $edittd1.length;i++){
+						$num1 = $("tr[name='edittr'] > td[name=mt"+$edittd1[i].innerText+"]");
+						$num2 = $("tr[name='edittr'] > td[name=mts"+$edittd1[i].innerText+"]");
+						for(var j=0;j< $edittr.length;j++){
+							$saveCategoryhtml = $saveCategoryhtml+"<input type=hidden name=dlid value='"+$edittd1[i].innerText+"'><input type=hidden name=mt value='"+$num1[j].innerHTML+"'><input type=hidden name=mts value='"+$num2[j].innerText+"'><input type=hidden name=xmid value='"+$edittr[j].innerText+"'>";
+						}
+						
+					}
+				}
+				//添加时间和分厂
+				$saveCategoryhtml=$saveCategoryhtml+"<input type=hidden name=years value='${form_years}'><input type=hidden name=selectDept value='${form_selectDept}'>";
+				$("#saveCategorydata").html($saveCategoryhtml);
+				//分别提交两个表单
+				$("#saveMonthform").submit();
+				$("#saveCategoryform").submit();
+			//控制按钮的一些disable属性
+			$('#savebtn').attr('disabled',"true"); 
+			$('#modifybtn').removeAttr("disabled");				
+		});
+	});
+</script>
+<script language="JavaScript">
+/* $(function(){
+    var tdNods = $("td[class='findme']");
+	//这里是表格的单击事件
+    tdNods.click(tdClick);
+}); */
+function tdClick(){
+        var td = $(this);
+        var tdText = td.text();
+        td.html(""); 
+        var input = $("<input>");
+        input.attr("value",tdText); 
+		//input.css({"border-width":"0","color":"red","font-size":"12px"});		  
+		input.width(td.width());		  
+			//监听回车事件      
+           input.keyup(function(event){
+               var myEvent = event || window.event;
+               var keyCode = myEvent.keyCode;
+               if(keyCode == 13){
+                    var input = $(this);
+                    var inputText = input.val();
+                   var td = input.parent("td");
+				//这里如果需要添加数据库的话Ajax函数进行数据库后台的操作
+                   td.empty();
+                   td.html(inputText);
+				   td.css({"color":"red","font-size":"12px"});
+                   td.click(tdClick);
+               }
+			   if(event.keyCode == 46){   
+                    if(input.value.indexOf(".")!=-1){   
+                        return false;   
+                    }   
+                }else{   
+                    return event.keyCode>=46&&event.keyCode<=57;   
+                }   
+           });
+		//监听失去焦点事件
+		input.blur(function(){
+				var input = $(this);
+				var inputText = input.val();
+				var td = input.parent("td");
+		//这里如果需要添加数据库的话Ajax函数进行数据库后台的操作
+        td.html(inputText);
+		td.css({"color":"red","font-size":"12px"});
+        td.click(tdClick);
+    });
+			//数字验证
+		input.bind("keypress",function(){   
+                if(event.keyCode == 46){   
+                    if(input.value.indexOf(".")!=-1){   
+                        return false;   
+                    }   
+                }else{   
+                    return event.keyCode>=46&&event.keyCode<=57;   
+                }   
+            }); 
+		//数字验证
+        input.bind("paste",function(){   
+                var s=clipboardData.getData('text');    
+                if(!/\D/.test(s));    
+                value=s.replace(/^0*/,'');    
+                return false;   
+            });  
+		//数字验证
+        input.bind("dragenter",function(){   
+                return false;   
+            });  
+          td.append(input); 
+//转换成DOM对象然后让其获得焦点
+var inputDom = input.get(0);
+  inputDom.focus();//如果实现选中选中内容可以使用inputDom.select()
+        td.unbind("click");
+};
+</script>
+<style>
+.editableTable{
+	border-collapse:collapse;
+	width:200px;
+}
+.editableTable td{
+	border:1px solid red;
+	width:50%;
+}
+</style>
+</head>
+<body>	
+
+  <div id="showselect1">
+  <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">选择年份</td>
+		  	<td class="tdinput" width="20%">
+                <input type="text" name="selectMonth"
+						value="$!form_years"
+				id="nianfen" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy',readOnly:true})" class="Wdate"/>
+			</td>
+			<td class="tdlabel" width="10%">选择分厂
+			</td>
+			<td class="tdinput" width="20%">
+				<select name="selectDept" id="fenchang">							
+					<option value="0">请选择分厂</option>
+					#foreach($m in $getUserFactoryBySessionUser)
+								<option value="${m.PK_DEPTDOC}"
+										#if($!form_selectDept==$m.PK_DEPTDOC)
+											selected="selected"
+										#end
+								>${m.DEPTNAME}</option>
+					#end							
+                </select>
+			</td>
+        </tr>
+            <tr> 
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" id="selectreport" value="查询报表">
+			</td>
+		</tr>	
+</table>
+</br>
+</div>
+  <div id="showselect2">
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">选择年份</td>
+		  	<td class="tdinput" width="20%">
+                <input type="text" name="selectMonth"
+						value="$!form_years"
+				id="selectMonth" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy',readOnly:true})" class="Wdate"/>
+			</td>
+			<td class="tdlabel" width="10%">选择分厂</td>
+			<td class="tdinput" width="20%">
+				<select name="selectDept" id="sel">							
+					<option value="0">请选择分厂</option>
+					#foreach($m in $getUserFactoryBySessionUser)
+								<option value="${m.PK_DEPTDOC}"
+										#if($!form_selectDept==$m.PK_DEPTDOC)
+											selected="selected"
+										#end
+								>${m.DEPTNAME}</option>
+					#end
+                </select>
+			</td>
+        </tr>
+		<tr class="search"> 
+            <td class="tdlabel" width="10%">本厂区包含的产品大类</td>
+		  	<td class="tdinput" width="20%" colspan="3">
+			#set($i=1)
+				#foreach($m in $getAllCategory)
+				<input type="checkbox" name="dalei" value="$m.ID">$m.CATEGORYNAME
+						#if($i==9)
+						</br>
+						#end
+					#set($i=$i+1)
+				#end
+			</td>
+        </tr>
+
+            <tr> 
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" id="makereport" value="生成报表">
+			</td>
+		</tr>	
+</table>
+</br>
+</div>
+
+			<div>
+			<input type="button" name="search" class="bt1" id="modifybtn" value="编辑">	
+			<input type="button" name="search" class="bt1" id="savebtn"  value="保存">
+			</div>
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="editableTable" class="datatable">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+			
+			<td  rowspan="2" style="display:none">itemID</td>
+			<td  rowspan="2">科目代码</td>
+			<td  rowspan="2">科目名称</td>
+			
+			<td  colspan="2">年度预算</td>
+			
+				#foreach($m in $getYearCategoryNames)
+					<td colspan="2" name="dalei">$m.CATEGORYNAME</td>
+					<td style="display:none" name="cids">$m.ID</td>
+				#end
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			<td width="60px;">预算金额</td>
+			<td width="100px;">预算吨费用</td>
+			#foreach($m in $getYearCategoryNames)
+				<td width="60px;" >预算金额</td>
+				<td width="100px;"  >预算吨费用</td>
+			#end
+
+		</tr>
+		#set($i=1) 
+		#foreach($m in $getYearItemNames)
+			#if($m.LEVELID==0)
+			<tr height="20" class="trcolor" name="edittr">
+				<td align="left" nowrap="nowrap" style="display:none" name="ids">$m.ID</td>
+				<td align="left" nowrap="nowrap" >$m.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$m.DISPNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap">待查询</td>
+				#foreach($n in $getYearCategoryNames)
+					#foreach($s in $getYearCategoryResults)
+						#if($m.ID == $s.ITEMID)
+							
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"  class="findme" width="60px;" name=mt${s.CATEGORYID} >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"  class="findme" width="100px;" name=mts${s.CATEGORYID} >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end		
+			 </tr>
+				#foreach($x in $getYearItemNames)
+					#if($x.LEVELID==1)
+				
+					#foreach($y in $getYearItemNames)
+						#if($y.LEVELID == $x.ID)
+						<tr height="20" class="trcolor" name="edittr">
+							<td align="left" nowrap="nowrap" style="display:none" name="ids">$y.ID</td>
+							<td align="left" nowrap="nowrap" >&nbsp;&nbsp;$y.SUBJCODE</td>
+							<td align="left" nowrap="nowrap">$y.DISPNAME &nbsp;</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							#foreach($n in $getYearCategoryNames)
+								#foreach($s in $getYearCategoryResults)
+									#if($y.ID == $s.ITEMID)
+										
+											#if($n.ID == $s.CATEGORYID )
+												<td align="center" nowrap="nowrap"  class="findme" width="60px;" name=mt${s.CATEGORYID} >$s.MONTHBUDGET</td> 
+												<td align="center" nowrap="nowrap"  class="findme" width="100px;" name=mts${s.CATEGORYID} >$s.MONTHBUDGETTONS</td> 
+											#end
+										#end
+									#end
+								#end			
+						 </tr>
+								#foreach($z in $getYearItemNames)
+									#if($z.LEVELID == $y.ID)
+									<tr height="20" class="trcolor" name="edittr">
+										<td align="left" nowrap="nowrap" style="display:none" name="ids">$z.ID</td>
+										<td align="left" nowrap="nowrap" >&nbsp;&nbsp;&nbsp;$z.SUBJCODE</td>
+										<td align="left" nowrap="nowrap">$z.DISPNAME &nbsp;</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										#foreach($n in $getYearCategoryNames)
+											#foreach($s in $getYearCategoryResults)
+												#if($z.ID == $s.ITEMID)
+													
+														#if($n.ID == $s.CATEGORYID )
+															<td align="center" nowrap="nowrap"  class="findme" width="60px;" name=mt${s.CATEGORYID} >$s.MONTHBUDGET</td> 
+															<td align="center" nowrap="nowrap"  class="findme" width="100px;" name=mts${s.CATEGORYID} >$s.MONTHBUDGETTONS</td> 
+														#end
+													#end
+												#end
+											#end		
+									 </tr>
+										#end
+									#end
+							#end
+						#end
+			<tr height="20" class="trcolor" name="edittr">
+				<td align="left" nowrap="nowrap" style="display:none" name="ids">$x.ID</td>
+				<td align="left" nowrap="nowrap" >&nbsp;$x.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$x.ACCSUBJNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				#foreach($n in $getYearCategoryNames)
+					#foreach($s in $getYearCategoryResults)
+						#if($x.ID == $s.ITEMID)
+							
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap" width="60px;" name=mt${s.CATEGORYID} >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap" width="100px;" name=mts${s.CATEGORYID} >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end		
+			 </tr>
+					#end
+				#end
+			 #end
+		 #set($i=$i+1)
+		#end 
+		#if($i==1)
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="11"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+			 <script>
+				if($("#nianfen").val()!="" && $("#fenchang").val()!=0){
+					$("#showselect1").show();
+					$("#showselect2").show();
+					$("#showContext").html("没有相关信息,请选择条件，创建本年报表");
+				}else{
+					$("#showselect1").show();
+					$("#showselect2").hide();
+				}
+			</script>
+		#else
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="11"  bgcolor="#eeeeee" align="center" class="trcolor">请选择条件查询</td>
+			 </tr>
+			 <script>
+					$("#showselect1").show();
+					$("#showselect2").hide();
+			</script>
+		#end	
+</table>
+  <form name="queryform" method="post" action="queryYearReport.aspx" id="queryform">
+  <span id="subquery"></span>
+  </form>
+  <form name="thisform" method="post" action="createYearReport.aspx" id="thisform" target="saveframe">
+  <span id="subdata"></span>
+  </form>
+    <form name="saveMonthform" method="post" action="saveYearReport1.aspx" id="saveMonthform" target="saveframe">
+    <span id="saveMonthdata"></span>
+	</form>
+	<form name="saveCategoryform" method="post" action="saveYearReport2.aspx" id="saveCategoryform" target="saveframe">
+    <span id="saveCategorydata"></span>
+	</form>
+		<div id="show1">
+			#set($i=1)
+				#foreach($m in $getAllAccsubj)
+				<input type="checkbox" name="xiangmu" value="$m.ID" checked='checked' >$m.SORTKEY
+						#if($i==9)
+						</br>
+						#end
+					#set($i=$i+1)
+				#end
+		</div>
+<SCRIPT LANGUAGE="javascript"> 
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</SCRIPT>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

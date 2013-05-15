@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ #foreach($m in $outstockbackcount)
+   feenum='$m.CTS';
+ #end
+ if(parseInt(feenum)> 1) { 
+   alert("该销售出库单只能回流2次！");
+   parent.submitok=false;
+ }else if(feenum=='0' || feenum=='1'){
+   parent.testok();
+ }else{
+   alert("出现未知错误！");
+   parent.submitok=false;
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('bhdata1').value=Today;
+	document.getElementById('bhdate2').value=Today;
+    }
+</script>
+<title>订单跟踪</title>
+</head>
+
+<body onload="GetDateString()">
+<form name="thisfrom" method="post" action="fororderdetail.aspx">
+<table class="datatable">
+  <tr>
+    <td colspan="4">订单跟踪</td>
+  </tr>
+  <tr class="trcolor">
+    <td>备货时间:</td>
+    <td align="left"><input type="text" name="bhdata1" value="$!form_bhdata1" onclick="ShowDate(bhdata1)"/>-<input type="text" name="bhdate2" value="$!form_bhdate2" onclick="ShowDate(bhdate2)"/></td>
+    <td>备货单号:</td>
+    <td align="left"><input type="text" name="bhorder" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>订单日期:</td>
+    <td align="left"><input type="text" name="cddate1" value="$!form_cddate1" onclick="ShowDate(cddate1)"/>-<input type="text" name="cddate2" value="$!form_cddate2" onclick="ShowDate(cddate2)"/></td>
+    <td>订单号:</td>
+    <td align="left"><input type="text" name="order" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>供应商:</td>
+    <td align="left"><input type="text" name="custname" /></td>
+    <td><input class="bt1" type="submit" name="button" value="查&nbsp;&nbsp;询" /></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

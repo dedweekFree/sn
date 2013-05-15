@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>差旅费审核完毕</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script>
+var dept=new Array(); 
+	dept=[
+	   ['区域主键','区域名称','大区主键']
+		#foreach($!m in $selsyneararea)
+		  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+		#end
+	   ];
+       function setF(departid,objid)
+	{
+	    if(departid==""){
+		  var obj = document.getElementById(objid);
+		  var length = obj.length;
+		  for (var j=length-1; j>0; j--)
+		  {
+		    obj.options.remove(j);
+		  }
+		  for(var i=1;i<dept.length;i++){   
+		      var oOption = document.createElement("OPTION");
+		      obj.options.add(oOption);
+		      oOption.innerText = dept[i][1];
+		      oOption.value = dept[i][0];
+		  }	  
+	    }else{
+	      var obj = document.getElementById(objid);
+	      var length = obj.length;
+	      for (var j=length-1; j>0; j--)
+	      {
+		obj.options.remove(j);
+	      }
+		 
+	      for(var i=1;i<dept.length;i++){
+		if(dept[i][2]==departid){
+		  var oOption = document.createElement("OPTION");
+		  obj.options.add(oOption);
+		  oOption.innerText = dept[i][1];
+		  oOption.value = dept[i][0];
+		}
+	      }
+	    }
+	}
+function checkinput()
+{  
+   //document.thisform.page.value =1;
+   document.thisform.submit();
+}
+function GetDateString(){
+        var MyDate=new Date();
+	var Year=MyDate.getFullYear();
+	var MonthNum=MyDate.getMonth();
+	var Month;
+	if(MonthNum<9){
+	    Month="0"+(MonthNum+1);
+	}else{
+	    Month=MonthNum+1;
+	}
+	var Day=MyDate.getDate();
+	if(Day<=9){
+	    Day="0"+Day;
+	}
+	var Today=Year+"-"+Month;
+	var v1 = "$!form_billdate1";
+	var v2 = "$!form_billdate2";
+	if(v1=="" && v2==""){ 
+	   document.getElementById('billdate1').value=Today;
+	   document.getElementById('billdate2').value=Today;
+	}else{
+	   document.getElementById('billdate1').value=v1;
+	   document.getElementById('billdate2').value=v2;
+	} 
+    }
+    function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue.substring(0,7);
+ }
+var bData1=new Array(); 
+bData1=[
+      ['大区0','区域1','用户2','姓名3','职务4','申报月份5','状态6','主键7','0','申报交通费金额9','实报交通费金额10','实报其他费金额11','申报补助金额12','实报补助金额13','电话14','出差天数15','原报金额小计16','实报金额小计17']
+ #set($i=1)
+ #foreach($m in $jsoverlistsnclfapplay)
+      ,['$m.DAQU','$m.AREA','$m.USERID','$m.NAME','$m.LEVELNAME','$!m.MONTH','N','$m.CLFID','$i','$m.YTICKETMONEY','$m.STICKETMONEY','$m.SOTHERTICKETMONEY','$m.YSUBMONEY','$m.SSUBMONEY','$m.PHONE','$m.WWDAY','$m.YBJE','$m.SBJE']
+   #set($i=$i+1)
+ #end
+]
+var pageSize=15;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked onclick=\"javascript:setStatus("+i+")\">";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' onclick=\"javascript:setStatus("+i+")\">";
+	  }
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][4]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][5]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][9]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][10]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][11]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][12]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][13]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][16]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][17]
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ } 
+}
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][6]='Y';
+      else  rdata[(page-1)*pageSize+i][6]='N';
+      bData1[rdata[(page-1)*pageSize+i][8]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function setStatus(lineno)
+{
+   if(document.all.checkbox[lineno].checked){
+      document.all.checkbox[lineno].value = 'Y';
+   }else{
+      document.all.checkbox[lineno].value = 'N';
+   }
+}
+
+function save(step,status)
+{
+  savepage(pageno);
+  var datahtml="";
+  var wwday = "";
+  var count = 0;
+  var phone = "";
+  var snbomid = "";
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y'){
+       count ++;
+       if(count==1){
+	 datahtml="<input type='hidden' name='clfid' value='"+bData1[i][7]+"'>";
+	 phone = bData1[i][14];
+	 wwday = bData1[i][15];
+       }else{
+         datahtml+="<input type='hidden' name='clfid' value='"+bData1[i][7]+"'>";
+	 phone += ","+bData1[i][14];
+       }
+    }
+  }
+  
+	 if(count==0){
+	   alert("没有可更新的数据！");
+	   return false;
+	 }
+	 document.getElementById('btnSave2').disabled = true;
+         subdata.innerHTML=datahtml+"<input type='hidden' name='phones' value='"+phone+"'><input type='hidden' name='wwday' value='"+wwday+"'>";
+	 document.form_submit.target="dataframe";
+         form_submit.action="jsclfoversaveadd.aspx";
+         form_submit.submit();
+}
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+</script>
+
+</head>
+<body >
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f"> <div align="center" class="style1">差旅费申请表</div></td>
+  </tr>
+</table>
+<form name="thisform" method="post">
+<table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      	<tr class="search"> 
+	  <td class="tdlabel" width="10%">大区</td>
+		<td class="tdinput" width="20%">
+		 <select name=dq_pk  onchange="javascript:setF(this.value,'areapk');">
+		<option value=''>请选择大区</option>
+	      #foreach($m2 in $selsyneardaqu)
+		     <option value="$!m2.NC_PK" #if($form_dq_pk==$m2.NC_PK) selected #end>$!m2.DEPTNAME</option>
+	      #end
+		</select>	
+	</td>	
+	<td class="tdlabel" width="10%">区域</td>
+	<td class="tdinput" width="20%">
+	  <select name=areapk><option value=''>请选择区域</option>
+	      #foreach($m1 in $selsyneararea)
+		     <option value="$!m1.NC_PK" #if($form_areapk==$m1.NC_PK) selected #end>$!m1.DEPTNAME</option>
+	      #end
+	     </select>
+	</td>
+	<td class="tdlabel" width="10%">任职级别</td>
+        <td class="tdinput" width="20%">
+           <select name="levelid">
+               <option></option>
+	       #foreach($n in $selbasiclevel)
+                 <option value="$n.LEVELNAME" #if($form_levelid==$n.LEVELNAME) selected #end>$n.LEVELNAME</option>
+	       #end
+	   </select>
+	</td>
+	</tr>
+	<tr class="search"> 
+	  <td class="tdlabel" width="10%" nowrap>审核开始月份</td>
+	  <td class="tdinput" width="20%">
+	    <input type="text" name="billdate1" style="width:100" id="billdate1" value="$!form_billdate1" onclick="ShowDate(billdate1)"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%" nowrap>审核结束月份</td>
+	  <td class="tdinput" width="20%">
+	     <input type="text" name="billdate2"  style="width:100" id="billdate2" value="$!form_billdate2" onclick="ShowDate(billdate2)"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%">&nbsp;
+	  </td>
+	  <td align="left" class="tdinput"  width="20%">&nbsp;
+	  </td>
+	</tr>
+	<tr> 
+           <td colspan="6" align="center" >
+               <input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+	   </td>
+ 	</tr>
+  </table>
+</form>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable" id="table6">
+  <tr class="trtitle" bgcolor="abcdef">
+    <td height="19" bgcolor="#abcdef" nowrap Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+    <td height="25" nowrap>大区</td>
+    <td height="25" nowrap>区域</td>
+    <td height="25" nowrap>用户编码</td>
+    <td height="25" nowrap>用户名称</td>
+    <td height="25" nowrap>任职级别</td>
+    <td height="25" nowrap>出差月份</td>
+    <td height="25" nowrap>申报交通费（油费）金额</td>
+    <td height="25" nowrap>实报正规交通票金额</td>
+    <td height="25" nowrap>实报其他交通票金额</td>
+    <td height="25" nowrap>申报补助金额</td>
+    <td height="25" nowrap>实报补助金额</td>
+    <td height="25" nowrap>申报差旅费小计</td>
+    <td height="25" nowrap>实报差旅费小计</td>
+  </tr>
+  </table>
+  <div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value="已发放" id="btnSave2" class="bt1">&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“提交”按钮
+btnSave2.onclick=function()
+{
+   save(0,'B');	
+}
+
+</script>
+  <script>
+	 toPage(1);
+</script>
+ <div align="center"> <input type="button" class="bt1" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form_submit" method="post" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

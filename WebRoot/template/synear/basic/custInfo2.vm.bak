@@ -1,0 +1,242 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>客户计划完成情况</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+		var dept=new Array(); 
+		dept=[
+		   ['区域主键','区域名称','大区主键']
+			#foreach($!m in $getSysSaleDept2)
+			  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+			#end
+		   ];
+
+function setF(departid,objid)
+{
+    if(departid==""){
+          var obj = document.getElementById(objid);
+          var length = obj.length;
+          for (var j=length-1; j>0; j--)
+          {
+            obj.options.remove(j);
+          }
+    	  for(var i=1;i<dept.length;i++){   
+              var oOption = document.createElement("OPTION");
+              obj.options.add(oOption);
+              oOption.innerText = dept[i][1];
+              oOption.value = dept[i][0];
+          }	  
+    }else{
+      var obj = document.getElementById(objid);
+      var length = obj.length;
+      for (var j=length-1; j>0; j--)
+      {
+        obj.options.remove(j);
+      }
+         
+      for(var i=1;i<dept.length;i++){
+        if(dept[i][2]==departid){
+          var oOption = document.createElement("OPTION");
+          obj.options.add(oOption);
+          oOption.innerText = dept[i][1];
+          oOption.value = dept[i][0];
+        }
+      }
+    }
+}
+
+function fsubmit()
+{
+   thisform.page.value=1;
+   thisform.submit();
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function seldata(obj)
+{
+  if(obj.checked){
+      document.all.fltj.value=''
+  }else{
+      document.all.fltj.value='no'
+  }
+}
+function esubmit()
+{
+   thisform.action="custPlanExecExcel.exl";
+   thisform.submit();
+}
+</script>
+<body>	
+  <form name="thisform" method="post" action="custInfo2.aspx">
+  <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+	<tr class="search"> 
+			<td class="tdlabel" width="10%">所属大区</td>
+			<td class="tdinput" width="20%">
+				<select name=dq_pk  onchange="javascript:setF(this.value,'areapk');"><option value=''>请选择大区</option>
+                              #foreach($m in $getSysSaleBigDept2)
+                                     <option value="$!m.NC_PK" #if($form_dq_pk==$m.NC_PK) selected #end>$!m.DEPTNAME</option>
+                              #end
+                                </select>			
+			</td>
+			<td class="tdlabel" width="10%">所属区域</td>
+			<td class="tdinput" width="20%">
+				<select name=areapk><option value=''>请选择区域</option>
+                              #foreach($m in $getSysSaleDept2)
+                                     <option value="$!m.NC_PK">$!m.DEPTNAME</option>
+                              #end
+                                </select>
+			</td>
+			<td class="tdlabel" width="10%">启用状态</td>
+			<td class="tdinput" width="20%">
+				<select name=ise><option value=''>请选择启用状态</option>
+                                     <option value="Y"  #if($form_ise=='Y') selected #end>启用</option>
+				     <option value="N"  #if($form_ise=='N') selected #end>未启用</option>
+                                </select>
+			</td>
+                </tr>
+		<script>
+                    setF('$form_dq_pk','areapk');
+		    document.getElementById('areapk').value='$form_areapk';
+		</script>
+	        <tr class="search"> 
+			<td class="tdlabel" width="10%">库存组织</td>
+			<td class="tdinput" width="20%">
+				<select name=calbody><option value=''>请选择库存组织</option>
+                                 #foreach($m in $getCalbody)
+                                     <option value="$!m.PK_CALBODY" #if($form_calbody==$m.PK_CALBODY) selected #end>$!m.BODYNAME</option>
+                                 #end
+                                </select>			
+			</td>
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="cname" value="$!form_cname">
+			</td>
+			<td class="tdlabel" width="10%">关联状态</td>
+			<td class="tdinput" width="20%">
+				<select name=isl><option value=''>请选择关联状态</option>
+                                     <option value="Y"  #if($form_isl=='Y') selected #end>已关联</option>
+				     <option value="N"  #if($form_isl=='N') selected #end>未关联</option>
+                                </select>
+			</td>
+                </tr>
+                <tr>
+			<td align="center" colspan="6">	
+				<input type="button" name="search" class="bt1" value="查询" onclick="fsubmit()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</td>
+		</tr>	
+  </table>
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">NC部门</td>
+	<td nowrap="nowrap">客户名称</td>
+	<td nowrap="nowrap">NC名称</td>
+        <td nowrap="nowrap">客户代码</td>
+        <td nowrap="nowrap">NC代码</td>
+	<td nowrap="nowrap">启用状态</td>
+	<td nowrap="nowrap">删除状态</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getSysCustInfo2)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		        <td align="center" nowrap="nowrap">$m.DEPTNAME &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.ORGDESC &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.CUSTNAME &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.ORGCODE &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.CUSTCODE &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.ISENABLED &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.ISDELETED &nbsp;</td>
+			<td align="center" nowrap="nowrap">
+			#if($m.DEPTCODE=="")
+			  <a href="setCustToNcSubmit2.aspx?custcode=$m.CUSTCODE" target="saveframe">同步NC</a>
+			#else
+                          #if($m.ISENABLED=="Y")
+			     <a href="custAdmin2.aspx?custcode=$m.CUSTCODE&st=N&fld=ISENABLED" target='saveframe'>停用</a>
+			  #else
+			     <a href="custAdmin2.aspx?custcode=$m.CUSTCODE&st=Y&fld=ISENABLED" target='saveframe'>启用</a>
+			  #end
+                          #if($m.ISDELETED=="Y")
+			     <a href="custAdmin2.aspx?custcode=$m.CUSTCODE&st=N&fld=ISDELETED" target='saveframe'>恢复</a>
+			  #else
+			     <a href="custAdmin2.aspx?custcode=$m.CUSTCODE&st=Y&fld=ISDELETED" target='saveframe'>删除</a>
+			  #end
+			#end
+                        </td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</form>	
+</body>
+</html>

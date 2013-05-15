@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+
+<dwr>
+
+  <allow>
+     <convert converter="bean" match="com.nc.comm.UITreeNode"/>
+     <convert converter="bean" match="com.nc.comm.ListRange"/>
+     <convert converter="bean" match="com.nc.bean.*"/>
+     
+     <create creator="spring" javascript="BasicService" scope="application">
+        <param name="beanName" value="dwrbasic"/>
+    </create>
+    
+    <create creator="spring" javascript="SalBasicService" scope="application">
+        <param name="beanName" value="saldwrbasic"/>
+    </create>
+    
+     <create creator="spring" javascript="storeBasicService" scope="application">
+        <param name="beanName" value="storedwrbasic"/>
+    </create>
+    
+    
+    
+    <create creator="spring" javascript="userservice" scope="application">
+        <param name="beanName" value="userservice"/>
+    </create>
+    
+    
+    <create creator="spring" javascript="tmdsqlService" scope="session">
+        <param name="beanName" value="tmdsqlService"/>
+    </create>
+    
+  
+    
+    
+    
+   
+
+  </allow>
+
+</dwr>

@@ -1,0 +1,9 @@
+<web:page>
+  <web:sql>updateVsessionVStateAgree</web:sql>
+  <web:sql_type>update</web:sql_type>
+  <web:multiValue>pk_aids,usernames,userphones</web:multiValue>
+  <web:successMsg>操作成功！</web:successMsg>
+  <web:failMsg>操作失败！</web:failMsg>
+  <web:url>vsession.aspx</web:url>
+  <web:template>videosession/message.vm</web:template>
+</web:page>

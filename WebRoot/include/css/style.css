@@ -1,0 +1,49 @@
+BODY{
+	font-family: "ËÎÌו", "Arial Narrow", "Times New Roman";
+	font-size: 12px;
+	'margin:5 5 5;
+	'background-color: #ffffff;	
+	background-color:#DCE4D6
+}
+TD
+{
+    FONT-SIZE: 10.5pt;
+    FONT-FAMILY: Tahoma
+}
+SELECT
+{
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Tahoma
+}
+INPUT
+{
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Tahoma;
+}
+.radio
+{
+    border:0;
+} 
+.checkbox
+{
+    border:0;
+}
+.submit
+{
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Tahoma;
+    border:1 solid #000000;
+	background-color:#F3D275
+}
+.button
+{
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Tahoma;
+    border:1 solid #000000;
+	background-color:#F3D275
+}
+DIV
+{
+    FONT-SIZE: 10.5pt;
+    FONT-FAMILY: Tahoma
+}

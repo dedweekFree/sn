@@ -1,0 +1,45 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>==========</title>
+<script language="javascript">
+function ButtonSelectOk(){
+    window.close();
+}
+</script>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>发票号</td>
+    <td>入库数量</td>
+    <td>含税单价</td>
+    <td>价税合计</td>
+    <td>票到日期</td>
+    <td>发票日期</td>
+    <td>审批日期</td>
+    <td>备注</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selFaPiao)
+      <tr class="trcolor">
+        <td>$!m.VINVOICECODE</td>
+        <td>$!m.NACCUMSETTNUM</td>
+        <td>$!m.NORGNETTAXPRICE</td>
+        <td>$!m.NSUMMNY</td>
+        <td>$!m.DARRIVEDATE</td>
+        <td>$!m.TS</td>
+        <td>$!m.DAUDITDATE</td>
+        <td>$!m.P_VMEMO</td>
+      </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="8"><input type="button" class="bt1" name="button" value="关&nbsp;&nbsp;闭" onclick="ButtonSelectOk()"/></td>
+  </tr>
+</table>
+</body>
+</html>

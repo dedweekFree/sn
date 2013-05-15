@@ -1,0 +1,15 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>派车单打印</title>
+</head>
+<body>
+<table><tr><td style="font-size:12px"><font color="ff0000">本周末值班：</font>
+#foreach($!m in $seldutypersion)
+$m.PERSIONNAME&nbsp;
+#end
+</td></tr></table>
+</body>
+</html>

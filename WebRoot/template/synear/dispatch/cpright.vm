@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+</head>
+
+<body>
+<form name="form1" method="post" action="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td align="left">产品名称<input type="text" style="width:100" name="invname">&nbsp;<input type="button" value="查询" onclick="tosearch()"></td>
+    <input type="hidden" name="xtype" value="1"><input type="hidden" name="row" value="$!form_row">
+  </tr>
+</table>
+</form>
+<table class="datatable" id="TableList">
+   <tr class="trcolor">
+    <td>选择</td>
+    <td>产品编码</td>
+    <td>产品名称</td>
+    <td>产品规格</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $dispatchinvnamequery)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="ButtonSelectOk($i)"/></td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME
+    <input type="hidden" name="invcode" id='invcode$i' value="$!m.INVCODE" >
+    <input type="hidden" name="invname" id='invname$i' value="$!m.INVNAME" >
+    <input type="hidden" name="pk_invbasdoc" id='pk_invbasdoc$i' value="$!m.PK_INVBASDOC" >
+    <input type="hidden" name="invspec" id='invspec$i' value="$!m.INVSPEC" >
+    <input type="hidden" name="fnumber" id='fnumber$i' value="$!m.FNUMBER" >
+    <input type="hidden" name="taxratio" id='taxratio$i' value="$!m.TAXRATIO" >
+    <input type="hidden" name="pk_invmandoc" id='pk_invmandoc$i' value="$!m.PK_INVMANDOC" >
+    <input type="hidden" name="pk_measdoc" id='pk_measdoc$i' value="$!m.PK_MEASDOC" >
+    <input type="hidden" name="fpk_measdoc" id='fpk_measdoc$i' value="$!m.FPK_MEASDOC" >
+    <input type="hidden" name="pk_taxitems" id='pk_taxitems$i' value="$!m.PK_TAXITEMS" >
+    <input type="hidden" name="mainmeasrate" id='mainmeasrate$i' value="$!m.MAINMEASRATE" >
+    </td>
+    <td>$m.INVSPEC&nbsp;</td>
+  </tr>
+#set($i=$i+1)
+#end
+</table>
+</body>
+</html>
+<script language="javascript">
+function ButtonSelectOk(i){
+    var htmlcode = "";
+    var htmlname = "";
+    var htmlspec = "";
+    var htmlpk = "";
+    var fnumber = "";
+    var taxratio = "";
+    var pk_invmandoc = "";
+    var pk_measdoc = "";
+    var fpk_measdoc = "";
+    var pk_taxitems = "";
+    var mainmeasrate = "";
+    if(document.getElementById('Checkbox'+i).checked == true){ 
+       htmlcode=document.getElementById('invcode'+i).value;
+       htmlname =document.getElementById('invname'+i).value;
+       htmlpk =document.getElementById('pk_invbasdoc'+i).value;
+       htmlspec = document.getElementById('invspec'+i).value;
+       fnumber = document.getElementById('fnumber'+i).value;
+       taxratio = document.getElementById('taxratio'+i).value;
+       pk_invmandoc = document.getElementById('pk_invmandoc'+i).value;
+       pk_measdoc = document.getElementById('pk_measdoc'+i).value;
+       fpk_measdoc = document.getElementById('fpk_measdoc'+i).value;
+       pk_taxitems = document.getElementById('pk_taxitems'+i).value;
+       mainmeasrate = document.getElementById('mainmeasrate'+i).value;
+    }
+    window.top.opener.document.getElementById("invname$!form_row").value= htmlname;
+    window.top.opener.document.getElementById("invcode$!form_row").value= htmlcode;
+    window.top.opener.document.getElementById("pk_invbasdoc$!form_row").value= htmlpk;
+    window.top.opener.document.getElementById("invspec$!form_row").value= htmlspec;
+    window.top.opener.document.getElementById("fnumber$!form_row").value= fnumber;
+    window.top.opener.document.getElementById("nnumber$!form_row").value= "0";
+    window.top.opener.document.getElementById("fnnumber$!form_row").value= "0";
+    window.top.opener.document.getElementById("taxrate$!form_row").value= "17";
+    window.top.opener.document.getElementById("pk_invmandoc$!form_row").value= pk_invmandoc;
+    window.top.opener.document.getElementById("pk_measdoc$!form_row").value= pk_measdoc;
+    window.top.opener.document.getElementById("fpk_measdoc$!form_row").value= fpk_measdoc;
+    window.top.opener.document.getElementById("pk_taxitems$!form_row").value= pk_taxitems;
+    window.top.opener.document.getElementById("mainmeasrate$!form_row").value= mainmeasrate;
+    window.top.close();
+}
+function tosearch(){
+   document.form1.action="cpright.aspx";
+   document.form1.submit();
+}
+</script>

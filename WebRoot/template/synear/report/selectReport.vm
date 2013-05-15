@@ -1,0 +1,881 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>报表查询</title>
+<script language="JavaScript">
+$(function(){
+	//页面加载的时候判断哪个报表模板显示
+	var $selectResule = $('input[name=reporttype]:checked').val();//若未被选中 则val() = null 
+ 		if($selectResule==null){
+			$("input[name='reporttype'][value='yuedu']").attr('checked',true);
+			$("#yueducanshu").show();
+			$("#nianducanshu").hide();
+			$("#zonghecanshu").hide();
+			$("#yuedubaobiao").show();
+			$("#niandubaobiao").hide();
+			$("#zonghebaobiao").hide();	
+		}else if($selectResule=='yuedu'){
+			$("input[name='reporttype'][value='yuedu']").attr('checked',true);
+			$("#yueducanshu").show();
+			$("#nianducanshu").hide();
+			$("#zonghecanshu").hide();
+			$("#yuedubaobiao").show();
+			$("#niandubaobiao").hide();
+			$("#zonghebaobiao").hide();	
+		}else if($selectResule=='niandu'){
+			$("#yueducanshu").hide();
+			$("#nianducanshu").show();
+			$("#zonghecanshu").hide();
+			$("#yuedubaobiao").hide();
+			$("#niandubaobiao").show();
+			$("#zonghebaobiao").hide();				
+		}else if($selectResule=='zonghe'){
+			$("#yueducanshu").hide();
+			$("#nianducanshu").hide();
+			$("#zonghecanshu").show();	
+			$("#yuedubaobiao").hide();
+			$("#niandubaobiao").hide();
+			$("#zonghebaobiao").show();				
+		}
+	//给单选按钮添加选中事件
+	$("input[name='reporttype']").bind("click", function(event) {
+		var $selectResule = $("input[name='reporttype']:checked").val();
+		if($selectResule=='yuedu'){
+			$("#yueducanshu").show();
+			$("#nianducanshu").hide();
+			$("#zonghecanshu").hide();
+			$("#yuedubaobiao").show();
+			$("#niandubaobiao").hide();
+			$("#zonghebaobiao").hide();	
+		}else if($selectResule=='niandu'){
+			$("#yueducanshu").hide();
+			$("#nianducanshu").show();
+			$("#zonghecanshu").hide();
+			$("#yuedubaobiao").hide();
+			$("#niandubaobiao").show();
+			$("#zonghebaobiao").hide();				
+		}else if($selectResule=='zonghe'){
+			$("#yueducanshu").hide();
+			$("#nianducanshu").hide();
+			$("#zonghecanshu").show();	
+			$("#yuedubaobiao").hide();
+			$("#niandubaobiao").hide();
+			$("#zonghebaobiao").show();				
+		}
+	});	
+	//月度报表的查询click事件
+		$("#selectmonthreport").click(function(){
+			if($("#yuefen").val()==""){
+				alert("请选择月份");
+			}else if($("#fenchang1").val()==0){
+				alert("请选择分厂");
+			}else{
+				//查询报表操作
+				//var $querydata="";
+				//var $subdata=$("#subdata");
+				//获取选中的分厂
+				var $fenchang1=$("#fenchang1").val();
+				//选中的报表类型
+				var $selectResule = $("input[name='reporttype']:checked").val();
+				//获取用户选中的年月并截取
+				var $yuefen = $("#yuefen").val();
+				var strall = [];
+				strall = $yuefen.split("-");	
+				//$querydata=$querydata+"<input type=text name=selectDept value='"+$fenchang1+"'><input type=text name=years value='"+strall[0]+"'><input type=text name=monthss value='"+strall[1]+"'>";
+				//$subdata.html($querydata);
+				$("#queryform").attr('action','queryZongHeReport1.aspx?selectDept='+$fenchang1+'&years='+strall[0]+'&monthss='+strall[1]+'&reporttype='+$selectResule+'');
+				$("#queryform").submit();
+			}
+		});
+	//年度报表的查询click事件
+		$("#selectyearreport").click(function(){
+			if($("#nianfen").val()==""){
+				alert("请选择年份");
+			}else if($("#fenchang2").val()==0){
+				alert("请选择分厂");
+			}else{
+			
+				//获取服务器系统时间
+					#foreach($m in $getSysDate)
+						var vYear = "$!m.SYSYEARS";
+						var vMon = "$!m.SYSMONTHS";
+						var vDay = "$!m.SYSDAYS";
+					#end
+			if(vYear==$("#nianfen").val()){
+				if(vMon=="01"){
+					$arraymonth="07','08','09','10','11','12','01";
+				}
+				if(vMon=="02"){
+					$arraymonth="07','08','09','10','11','12','01','02";
+				}
+				if(vMon=="03"){
+					$arraymonth="07','08','09','10','11','12','01','02','03";
+				}
+				if(vMon=="04"){
+					$arraymonth="07','08','09','10','11','12','01','02','03','04";
+				}
+				if(vMon=="05"){
+					$arraymonth="07','08','09','10','11','12','01','02','03','04','05";
+				}
+				if(vMon=="06"){
+					$arraymonth="07','08','09','10','11','12','01','02','03','04','05','06";
+				}
+				if(vMon=="07"){
+					$arraymonth="07";
+				}
+				if(vMon=="08"){
+					$arraymonth="07','08";
+				}
+				if(vMon=="09"){
+					$arraymonth="07','08','09";
+				}
+				if(vMon=="10"){
+					$arraymonth="07','08','09','10";
+				}
+				if(vMon=="11"){
+					$arraymonth="07','08','09','10','11";
+				}
+				if(vMon=="12"){
+					$arraymonth="07','08','09','10','11','12";
+				}
+			}else{
+				$arraymonth="";
+			}	
+				//查询报表操作
+				var $querydata="";
+				var $subquery=$("#subquery");
+				//获取选中的分厂
+				var $fenchang2=$("#fenchang2").val();
+				//选中的报表类型
+				var $selectResule = $("input[name='reporttype']:checked").val();
+				//获取用户选中的年月并截取
+				var $years = $("#nianfen").val();
+				//$querydata=$querydata+"<input type=text name=selectDept value='"+$fenchang2+"'><input type=text name=years value='"+strall[0]+"'><input type=text name=monthss value='"+strall[1]+"'>";
+				//$subquery.html($querydata);
+				$("#queryform").attr('action','queryZongHeReport2.aspx?selectDept='+$fenchang2+'&years='+$years+'&Hmonthss='+$arraymonth+'&reporttype='+$selectResule+'');
+				$("#queryform").submit();
+			}
+		});
+		//综合报表的查询click事件
+		$("#selectzonghereport").click(function(){
+			
+		});
+		//计算月度完成比例
+		var $yuedureportyujijine = $("tr[name='yuedureport'] > td[name='yujijine']");
+		var $yuedureportyujidunfeiyong = $("tr[name='yuedureport'] > td[name='yujidunfeiyong']");
+		var $yuedureportshijijine = $("tr[name='yuedureport'] > td[name='shijijine']");
+		var $yuedureportshijidunfeiyong = $("tr[name='yuedureport'] > td[name='shijidunfeiyong']");
+		
+		var $yuedureportbili = $("tr[name='yuedureport'] > td[name='bili']");
+			if($yuedureportyujijine.length!=0){
+					for(var i=0;i< $yuedureportyujijine.length;i++){
+						$yuedureportbili[i].innerText=formatNum(($yuedureportshijijine[i].innerText/$yuedureportyujijine[i].innerText)*100,2) +"%";
+					}
+			}
+		//计算年度完成比例
+		var $niandureportyujijine = $("tr[name='niandureport'] > td[name='yujijine']");
+		var $niandureportyujidunfeiyong = $("tr[name='niandureport'] > td[name='yujidunfeiyong']");
+		var $niandureportshijijine = $("tr[name='niandureport'] > td[name='shijijine']");
+		var $niandureportshijidunfeiyong = $("tr[name='niandureport'] > td[name='shijidunfeiyong']");
+		
+		var $nianreportbili = $("tr[name='niandureport'] > td[name='bili']");
+			if($niandureportyujijine.length!=0){
+					for(var i=0;i< $yuedureportyujijine.length;i++){
+						$niandureportbili[i].innerText=formatNum(($niandureportshijijine[i].innerText/$niandureportyujijine[i].innerText)*100,2) +"%";
+					}
+			}
+});
+function formatNum(Num1,Num2){ 
+     if(isNaN(Num1)||isNaN(Num2)){ 
+           return(0); 
+     }else{ 
+           Num1=Num1.toString(); 
+           Num2=parseInt(Num2); 
+           if(Num1.indexOf('.')==-1){ 
+                 return(Num1); 
+           }else{ 
+                 var b=Num1.substring(0,Num1.indexOf('.')+Num2+1); 
+                 var c=Num1.substring(Num1.indexOf('.')+Num2+1,Num1.indexOf('.')+Num2+2); 
+                 if(c==""){ 
+                       return(b); 
+                 }else{ 
+                       if(parseInt(c)<5){ 
+                             return(b); 
+                       }else{ 
+                             return((Math.round(parseFloat(b)*Math.pow(10,Num2))+Math.round(parseFloat(Math.pow(0.1,Num2).toString().substring(0,Math.pow(0.1,Num2).toString().indexOf('.')+Num2+1))*Math.pow(10,Num2)))/Math.pow(10,Num2)); 
+                       } 
+                 } 
+           } 
+     } 
+} 
+</script>
+</head>
+<body>	
+<form name="queryform" method="post" id="queryform" >
+<span id="subdata"></span>
+</form> 
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+      <input type="hidden" name="first" value="1">	
+		<tr class="search"> 
+            <td class="tdlabel" width="4%">选择类型：</td>
+		  	<td class="tdinput" width="20%" colspan="3">
+				<input type="radio"  name="reporttype" value="yuedu"  
+					#if(${form_reporttype}=='yuedu')	
+						checked
+					#end
+				/>月度报表
+				<input type="radio"  name="reporttype" value="niandu" 
+					#if(${form_reporttype}=='niandu')	
+						checked
+					#end
+				/>年度报表
+				<input type="radio"  name="reporttype" value="zonghe" 
+					#if(${form_reporttype}=='zonghe')	
+						checked
+					#end
+				/>综合报表
+			</td>
+        </tr>
+</table>
+</br>
+  <div id="yueducanshu">
+  <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">选择月份</td>
+		  	<td class="tdinput" width="20%">
+                <input type="text" name="selectMonth"
+				#if($!{form_years}!='' && $!{form_monthss}!='')	
+					value="${form_years}-${form_monthss}"
+				#end
+				id="yuefen" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM',readOnly:true})" class="Wdate"/>
+			</td>
+			<td class="tdlabel" width="10%">选择分厂</td>
+			<td class="tdinput" width="20%">
+				<select name="selectDept" id="fenchang1">							
+					<option value="0">请选择分厂</option>
+										#foreach($m in $getUserFactoryBySessionUser)
+								<option value="${m.PK_DEPTDOC}"
+										#if($!form_selectDept==$m.PK_DEPTDOC)
+											selected="selected"
+										#end
+								>${m.DEPTNAME}</option>
+					#end							
+                </select>
+			</td>
+        </tr>
+            <tr> 
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" id="selectmonthreport" value="查询报表">
+			</td>
+		</tr>	
+</table>
+</br>
+</div>
+<div id="nianducanshu">
+  <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">选择年份</td>
+		  	<td class="tdinput" width="20%">
+                <input type="text" name="selectMonth"
+					#if(${form_years}!='')	
+						value="${form_years}"
+					#end
+				id="nianfen" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy',readOnly:true})" class="Wdate"/>
+			</td>
+			<td class="tdlabel" width="10%">选择分厂</td>
+			<td class="tdinput" width="20%">
+				<select name="selectDept" id="fenchang2">							
+					<option value="0">请选择分厂</option>
+					#foreach($m in $getUserFactoryBySessionUser)
+								<option value="${m.PK_DEPTDOC}"
+										#if($!form_selectDept==$m.PK_DEPTDOC)
+											selected="selected"
+										#end
+								>${m.DEPTNAME}</option>
+					#end								
+                </select>
+			</td>
+        </tr>
+            <tr> 
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" id="selectyearreport" value="查询报表">
+			</td>
+		</tr>	
+</table>
+</br>
+</div>
+<div id="zonghecanshu">
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+      <input type="hidden" name="first" value="1">	
+		<tr class="search"> 
+            <td class="tdlabel" width="10%">起始时间</td>
+		  	<td class="tdinput" width="20%">
+				<input type="text" id="d243" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy年MM月'})" class="Wdate"/>
+			</td>
+			<td class="tdlabel" width="10%">截止时间</td>
+			<td class="tdinput" width="20%">
+				<input type="text" id="d243" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy年MM月'})" class="Wdate"/>
+			</td>
+        </tr>
+		<tr class="search"> 
+            <td class="tdlabel" width="10%">选择分厂</td>
+		  	<td class="tdinput" width="20%" colspan="3">
+			#set($i=1)
+				#foreach($m in $getUserFactoryBySessionUser)
+						<input type="checkbox" name="dalei" value="${m.PK_DEPTDOC}">${m.DEPTNAME}
+							#if(${i}%5==0)
+								</br>
+							#end
+						#set($i=$i+1)
+					#end
+			</td>
+        </tr>
+		<tr class="search"> 
+            <td class="tdlabel" width="10%">选择大类</td>
+		  	<td class="tdinput" width="20%" colspan="3">
+				#set($i=1)
+				#foreach($m in $getAllCategory)
+				<input type="checkbox" name="dalei" value="$m.ID">$m.CATEGORYNAME
+						#if(${i}%9==0)
+						</br>
+						#end
+					#set($i=$i+1)
+				#end
+			</td>
+        </tr>
+            <tr> 
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" id="selectzonghereport" value="查询">
+			</td>
+		</tr>	
+</table>
+	</br>
+</div>
+<!-- 三种报表的显示模板-->
+<!-- 月度报表模板-->
+	<div id="yuedubaobiao">
+	<input type="button" name="search" class="bt1" id="exportbtn" value="导出Excel" onclick="javascript:exportMethod('ydbb');">
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="ydbb" class="datatable">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+			<td  rowspan="2">序号</td>
+			<td  rowspan="2">费用项目</td>
+			
+			<td nowrap="nowrap" colspan="2">$!{form_years}年$!{form_monthss}月预算</td>
+			<td nowrap="nowrap" colspan="2">$!{form_years}年$!{form_monthss}月实际</td>
+				#foreach($m in $getCategoryNames)
+					<td colspan="2" name="dalei">$m.CATEGORYNAME</td>
+				#end
+			<td  rowspan="2" nowrap="nowrap"  width="100px;">本月完成比例</td>
+			<td  colspan="2" nowrap="nowrap" width="100px;">往年实际费用</td>
+			<td  rowspan="2" nowrap="nowrap" width="100px;">今年与往年预算吨费用比较</td>
+			<td  rowspan="2" nowrap="nowrap" width="100px;">今年与往年实际吨费用比较</td>
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			<td width="60px;" nowrap="nowrap" width="100px;">预算金额</td>
+			<td width="100px;" nowrap="nowrap" width="100px;">预算吨费用</td>
+			#foreach($m in $getCategoryNames)
+				<td width="60px;" nowrap="nowrap" width="100px;">实际金额</td>
+				<td width="100px;" nowrap="nowrap" width="100px;" >实际吨费用</td>
+			#end
+			<td width="60px;" >实际金额</td>
+			<td width="100px;" >实际吨费用</td>
+			<td width="60px;" >实际金额</td>
+			<td width="100px;" >实际吨费用</td>
+		</tr>
+
+		#set($i=1) 
+		#foreach($m in $getItemNames)
+			#if($m.LEVELID==0)
+			<tr height="20" class="trcolor" name="yuedureport">
+				<td align="left" nowrap="nowrap" >$m.SUBJCODE &nbsp;</td>
+				<td align="left" nowrap="nowrap">$m.DISPNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" name="yujijine" >1000</td>
+				<td align="center" nowrap="nowrap" name="yujidunfeiyong">1000</td>
+				<td align="center" nowrap="nowrap" width="60px;" name="shijijine" >$m.MONTHBUDGET</td>
+				<td align="center" nowrap="nowrap" width="100px;" name="shijidunfeiyong" >$m.MONTHBUDGETTONS</td>
+				#foreach($n in $getCategoryNames)
+					#foreach($s in $getCategoryResults)
+						#if($m.ID == $s.ITEMID)
+							
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end
+				<td align="center" nowrap="nowrap" name="bili"  width="90px;">--</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" width="100px;">暂无</td>
+				<td align="center" nowrap="nowrap" width="100px;">暂无</td>			
+			 </tr>
+			#foreach($x in $getItemNames)
+				#if($x.LEVELID==1)
+				
+					#foreach($y in $getItemNames)
+						#if($y.LEVELID == $x.ID)
+						<tr height="20" class="trcolor" name="yuedureport">
+							<td align="left" nowrap="nowrap" >&nbsp;&nbsp;$y.SUBJCODE</td>
+							<td align="left" nowrap="nowrap">$y.DISPNAME &nbsp;</td>
+							<td align="center" nowrap="nowrap" name="yujijine" >1000</td>
+							<td align="center" nowrap="nowrap" name="yujidunfeiyong">1000</td>
+							<td align="center" nowrap="nowrap"  name="shijijine" >$y.MONTHBUDGET</td>
+							<td align="center" nowrap="nowrap"  name="shijidunfeiyong" >$y.MONTHBUDGETTONS</td>
+							#foreach($n in $getCategoryNames)
+								#foreach($s in $getCategoryResults)
+									#if($y.ID == $s.ITEMID)
+										
+											#if($n.ID == $s.CATEGORYID )
+												<td align="center" nowrap="nowrap"   width="60px;"  >$s.MONTHBUDGET</td> 
+												<td align="center" nowrap="nowrap"   width="100px;"  >$s.MONTHBUDGETTONS</td> 
+											#end
+										#end
+									#end
+								#end
+							<td align="center" nowrap="nowrap"  name="bili" width="90px;" width="100px;">--</td>
+							<td align="center" nowrap="nowrap"  >待查询</td>
+							<td align="center" nowrap="nowrap"  >待查询</td>
+							<td align="center" nowrap="nowrap">暂无</td>
+							<td align="center" nowrap="nowrap">暂无</td>			
+						 </tr>
+								#foreach($z in $getItemNames)
+									#if($z.LEVELID == $y.ID)
+									<tr height="20" class="trcolor" name="yuedureport">
+										<td align="left" nowrap="nowrap" >&nbsp;&nbsp;&nbsp;$z.SUBJCODE</td>
+										<td align="left" nowrap="nowrap">$z.DISPNAME &nbsp;</td>
+										<td align="center" nowrap="nowrap" name="yujijine" >1000</td>
+										<td align="center" nowrap="nowrap" name="yujidunfeiyong">1000</td>
+										<td align="center" nowrap="nowrap"  name="shijijine" >$z.MONTHBUDGET</td>
+										<td align="center" nowrap="nowrap"  name="shijidunfeiyong" >$z.MONTHBUDGETTONS</td>
+										#foreach($n in $getCategoryNames)
+											#foreach($s in $getCategoryResults)
+												#if($z.ID == $s.ITEMID)
+													
+														#if($n.ID == $s.CATEGORYID )
+															<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+															<td align="center" nowrap="nowrap"   width="100px;"  >$s.MONTHBUDGETTONS</td> 
+														#end
+													#end
+												#end
+											#end
+										<td align="center" nowrap="nowrap" name="bili" width="90px;" width="100px;">--</td>
+										<td align="center" nowrap="nowrap"  >待查询</td>
+										<td align="center" nowrap="nowrap"  >待查询</td>
+										<td align="center" nowrap="nowrap">暂无</td>
+										<td align="center" nowrap="nowrap">暂无</td>			
+									 </tr>
+									#end
+								#end
+						#end
+					#end
+			<tr height="20" class="trcolor" name="yuedureport">
+				<td align="left" nowrap="nowrap" >&nbsp;$x.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$x.ACCSUBJNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" name="yujijine" >1000</td>
+				<td align="center" nowrap="nowrap" name="yujidunfeiyong">1000</td>
+				<td align="center" nowrap="nowrap" name="shijijine" >$x.MONTHBUDGET</td>
+				<td align="center" nowrap="nowrap" name="shijidunfeiyong" >$x.MONTHBUDGETTONS</td>
+				#foreach($n in $getCategoryNames)	
+				#foreach($s in $getCategoryResults)
+						#if($x.ID == $s.ITEMID)
+							
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"  width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"  width="100px;"  >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end
+				<td align="center" nowrap="nowrap"  name="bili"  width="90px;" width="100px;">--</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap">暂无</td>
+				<td align="center" nowrap="nowrap">暂无</td>			
+			 </tr>
+				#end
+			#end
+		#end
+		#set($i=$i+1)
+		#end 
+		#if($i==1)
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+			 <script>
+				if($("#yuefen").val()!="" && $("#fenchang").val()!=0){
+					$("#showContext").html("没有找到报表信息,请在月度报表填报中 创建并填报");
+				}
+			</script>
+		#else
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+			 <script>
+				if($("#yuefen").val()!="" && $("#fenchang").val()!=0){
+					$("#showContext").html("");
+				}
+			</script>
+		#end	
+</table>
+</div>	
+<!--年度报表模板-->
+	<div id="niandubaobiao">
+			<input type="button" name="search" class="bt1" id="exportbtn" value="导出Excel" onclick="javascript:exportMethod('ndbb');">
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="ndbb" class="datatable">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+			<td  rowspan="2">科目代码</td>
+			<td  rowspan="2">科目名称</td>
+			
+			<td  colspan="2">$!{form_years}年度预算</td>
+			
+				#foreach($m in $getYearCategoryNames)
+					<td colspan="2" name="dalei">$m.CATEGORYNAME 预算</td>
+				#end
+			<td  colspan="2">
+			#set($myyesr="")
+			#set($mymon="")
+				#foreach($m in $getSysDate)
+					#set($myyesr="$!m.SYSYEARS")
+					#set($mymon="$!m.SYSMONTHS")
+				#end
+			#if($myyesr==$!{form_years})
+				#if($mymon!="")	
+					#if($mymon=="07")	
+						$!{form_years}年度
+					#else
+						$!{form_years}年07-$mymon月
+					#end
+				#end
+			#else
+				$!{form_years}年度
+			#end
+			实际
+			
+			</td>
+			
+				#foreach($m in $getYearCategoryNames)
+					<td colspan="2" name="dalei">$m.CATEGORYNAME 实际</td>
+				#end
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			<td width="60px;" nowrap="nowrap" >预算金额</td>
+			<td width="100px;" nowrap="nowrap" >预算吨费用</td>
+			#foreach($m in $getYearCategoryNames)
+				<td width="60px;" nowrap="nowrap" >预算金额</td>
+				<td width="100px;"  nowrap="nowrap" >预算吨费用</td>
+			#end
+			<td width="60px;" nowrap="nowrap" >实际金额</td>
+			<td width="100px;" nowrap="nowrap" >实际吨费用</td>
+			#foreach($m in $getYearCategoryNames)
+				<td width="60px;" nowrap="nowrap" >实际金额</td>
+				<td width="100px;"  nowrap="nowrap" >实际吨费用</td>
+			#end
+		</tr>
+		#set($i=1) 
+		#foreach($m in $getYearItemNames)
+			#if($m.LEVELID==0)
+			<tr height="20" class="trcolor" name="niandureport">
+				<td align="left" nowrap="nowrap" >$m.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$m.DISPNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap">待查询</td>
+				#foreach($n in $getYearCategoryNames)
+					#foreach($s in $getYearCategoryResults)
+						#if($m.ID == $s.ITEMID)
+							
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"   width="100px;">$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end	
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap">待查询</td>
+			#foreach($n in $getYearCategoryNames)
+				#foreach($s in $getYearReportByMonthss)
+						#if($m.ID == $s.ITEMID)
+
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"   width="60px;" >$s.ZONG1</td> 
+									<td align="center" nowrap="nowrap"   width="100px;" >$s.ZONG2</td> 
+								#end
+							#end
+						#end
+					#end
+			 </tr>
+				#foreach($x in $getYearItemNames)
+					#if($x.LEVELID==1)
+					#foreach($y in $getYearItemNames)
+						#if($y.LEVELID == $x.ID)
+						<tr height="20" class="trcolor" name="niandureport">
+							<td align="left" nowrap="nowrap" >&nbsp;&nbsp;$y.SUBJCODE</td>
+							<td align="left" nowrap="nowrap">$y.DISPNAME &nbsp;</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							#foreach($n in $getYearCategoryNames)
+								#foreach($s in $getYearCategoryResults)
+									#if($y.ID == $s.ITEMID)
+										
+											#if($n.ID == $s.CATEGORYID )
+												<td align="center" nowrap="nowrap"   width="60px;"  >$s.MONTHBUDGET</td> 
+												<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS</td> 
+											#end
+										#end
+									#end
+								#end
+							<td align="center" nowrap="nowrap" >待查询</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							#foreach($n in $getYearCategoryNames)
+								#foreach($s in $getYearReportByMonthss)
+									#if($y.ID == $s.ITEMID)
+
+											#if($n.ID == $s.CATEGORYID )
+												<td align="center" nowrap="nowrap"   width="60px;"  >$s.ZONG1</td> 
+												<td align="center" nowrap="nowrap"   width="100px;" >$s.ZONG2</td> 
+											#end
+										#end
+									#end
+								#end
+						 </tr>
+								#foreach($z in $getYearItemNames)
+									#if($z.LEVELID == $y.ID)
+									<tr height="20" class="trcolor" name="niandureport">
+										<td align="left" nowrap="nowrap" >&nbsp;&nbsp;&nbsp;$z.SUBJCODE</td>
+										<td align="left" nowrap="nowrap">$z.DISPNAME &nbsp;</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										#foreach($n in $getYearCategoryNames)
+											#foreach($s in $getYearCategoryResults)
+												#if($z.ID == $s.ITEMID)
+
+														#if($n.ID == $s.CATEGORYID )
+															<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET  </td> 
+															<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS  </td> 
+														#end
+													#end
+												#end
+											#end
+										<td align="center" nowrap="nowrap" >待查询</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										#foreach($n in $getYearCategoryNames)
+											#foreach($s in $getYearReportByMonthss)
+												#if($z.ID == $s.ITEMID)
+													
+														#if($n.ID == $s.CATEGORYID )
+															<td align="center" nowrap="nowrap"   width="60px;" >$s.ZONG1 </td> 
+															<td align="center" nowrap="nowrap"   width="100px;" >$s.ZONG2  </td> 
+														#end
+													#end
+												#end
+											#end
+									 </tr>
+									#end
+								#end
+						#end
+					#end
+			<tr height="20" class="trcolor" name="niandureport">
+				<td align="left" nowrap="nowrap" >&nbsp;$x.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$x.ACCSUBJNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				#foreach($n in $getYearCategoryNames)
+					#foreach($s in $getYearCategoryResults)
+						#if($x.ID == $s.ITEMID)
+
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"  width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"  width="100px;">$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				#foreach($n in $getYearCategoryNames)
+					#foreach($s in $getYearReportByMonthss)
+						#if($x.ID == $s.ITEMID)
+
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"  width="60px;" >$s.ZONG1 </td> 
+									<td align="center" nowrap="nowrap"  width="100px;">$s.ZONG2 </td> 
+								#end
+							#end
+						#end
+					#end	
+			 </tr>
+					#end
+				#end
+			 #end
+		 #set($i=$i+1)
+		#end 
+		#if($i==1)
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+			 <script>
+				if($("#nianfen").val()!="" && $("#fenchang").val()!=0){
+					$("#showContext").html("没有找到报表信息,请在年度报表填报中 创建并填报");
+				}
+			</script>
+		#else
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+			 <script>
+				if($("#nianfen").val()!="" && $("#fenchang").val()!=0){
+					$("#showContext").html("");
+				}
+			</script>
+		#end	
+	</table>
+	</div>
+<!--综合报表模板-->
+	<div id="zonghebaobiao">
+	<input type="button" name="search" class="bt1" id="exportbtn" value="导出Excel" onclick="javascript:exportMethod('zhbb');">
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="zhbb" class="datatable">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+			<td  rowspan="2">科目代码</td>
+			<td  rowspan="2">科目名称</td>
+			
+			<td  colspan="2">年度预算</td>
+			
+				#foreach($m in $getYearCategoryNames)
+					<td colspan="2" name="dalei">$m.CATEGORYNAME</td>
+				#end
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			<td width="60px;">预算金额</td>
+			<td width="100px;">预算吨费用</td>
+			#foreach($m in $getYearCategoryNames)
+				<td width="60px;" >预算金额</td>
+				<td width="100px;"  >预算吨费用</td>
+			#end
+
+		</tr>
+		#set($i=1) 
+		#foreach($m in $getYearItemNames)
+			#if($m.LEVELID==0)
+			<tr height="20" class="trcolor" name="edittr">
+				<td align="left" nowrap="nowrap" >$m.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$m.DISPNAME</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap">待查询</td>
+					#foreach($s in $getYearCategoryResults)
+						#if($m.ID == $s.ITEMID)
+							#foreach($n in $getYearCategoryNames)
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end		
+			 </tr>
+				#foreach($x in $getYearItemNames)
+					#if($x.LEVELID==1)
+				<tr height="20" class="trcolor" name="edittr">
+				<td align="left" nowrap="nowrap" >&nbsp;$x.SUBJCODE</td>
+				<td align="left" nowrap="nowrap">$x.ACCSUBJNAME</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+				<td align="center" nowrap="nowrap" >待查询</td>
+					#foreach($s in $getYearCategoryResults)
+						#if($x.ID == $s.ITEMID)
+							#foreach($n in $getYearCategoryNames)
+								#if($n.ID == $s.CATEGORYID )
+									<td align="center" nowrap="nowrap"  width="60px;" >$s.MONTHBUDGET</td> 
+									<td align="center" nowrap="nowrap"  width="100px;" >$s.MONTHBUDGETTONS</td> 
+								#end
+							#end
+						#end
+					#end		
+			 </tr>
+					#foreach($y in $getYearItemNames)
+						#if($y.LEVELID == $x.ID)
+						<tr height="20" class="trcolor" name="edittr">
+							<td align="left" nowrap="nowrap" >&nbsp;&nbsp;$y.SUBJCODE</td>
+							<td align="left" nowrap="nowrap">$y.DISPNAME</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+							<td align="center" nowrap="nowrap" >待查询</td>
+								#foreach($s in $getYearCategoryResults)
+									#if($y.ID == $s.ITEMID)
+										#foreach($n in $getYearCategoryNames)
+											#if($n.ID == $s.CATEGORYID )
+												<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+												<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS</td> 
+											#end
+										#end
+									#end
+								#end			
+						 </tr>
+								#foreach($z in $getYearItemNames)
+									#if($z.LEVELID == $y.ID)
+									<tr height="20" class="trcolor" name="edittr">
+										<td align="left" nowrap="nowrap" >&nbsp;&nbsp;&nbsp;$z.SUBJCODE</td>
+										<td align="left" nowrap="nowrap">$z.DISPNAME</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+										<td align="center" nowrap="nowrap" >待查询</td>
+											#foreach($s in $getYearCategoryResults)
+												#if($z.ID == $s.ITEMID)
+													#foreach($n in $getYearCategoryNames)
+														#if($n.ID == $s.CATEGORYID )
+															<td align="center" nowrap="nowrap"   width="60px;" >$s.MONTHBUDGET</td> 
+															<td align="center" nowrap="nowrap"   width="100px;" >$s.MONTHBUDGETTONS</td> 
+														#end
+													#end
+												#end
+											#end		
+									 </tr>
+										#end
+									#end
+							#end
+						#end
+					#end
+				#end
+			 #end
+		 #set($i=$i+1)
+		#end 
+		#if($i==1)
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">请选择条件查询</label></td>
+			 </tr>
+		#else
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="4"  bgcolor="#eeeeee" align="center" class="trcolor">请选择条件查询</td>
+			 </tr>
+		#end	
+	</table>
+</div>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</body>
+</html>

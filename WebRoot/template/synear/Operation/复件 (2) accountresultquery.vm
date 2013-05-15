@@ -1,0 +1,123 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>对账结果汇总表</title>
+<script language="javascript">
+   function tosave(url){
+      document.form1.action=url;
+      document.form1.target="saveframe";
+      document.form1.submit();
+   }
+   function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue.substring(0,7);
+    }
+</script>
+</head>
+<body>
+<form name="thisform" method="post" action='accountresultquery.aspx'>
+   <table class="datatable">
+	<tr class="trcolor">
+		<td>供应商编码:</td>
+		<td align="left"><input type="text" name="custcode" value="#if($form_custcode != "")$form_custcode#end"></td>
+		<td>供应商名称:</td>
+		<td align="left"><input type="text" name="custname" value="#if($form_custname != "")$form_custname#end"></td>
+	</tr>
+	<tr class="trcolor">
+            <td>对账时间</td>
+	    <td align="left"><input type="text" name="accountime" onclick="ShowDate(accountime)" value="$!form_accountime" /></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	</tr>
+	<tr class="trcolor">
+		<td colspan="4"><input class="bt1" type="submit" name="button" value="查&nbsp;&nbsp;询"></td>
+	</td>
+   </table>
+</form>
+<table class="datatable" cellspacing=0 cellpadding=0 border=0>
+   <tr class="trcolor">
+        <td>序号</td>
+	<td colspan="6">供应商</td>
+	<td>思念</td>
+	<td>结果</td>
+	<td>&nbsp;</td>
+   </tr>
+   #foreach($m in $selenteraccountdate)
+   <tr class="trcolor">
+        <td>&nbsp;</td>
+	<td>供应商名称</td>
+	<td>供应商编码</td>
+	<td>$m.MONTHNAME.trim()初期初余额</td>
+	<td>$m.MONTHNAME.trim()发货</td>
+	<td>$m.MONTHNAME.trim()收款</td>
+	<td>$m.MONTHNAME.trim()期末余额</td>
+	<td>思念$m.MONTHNAME.trim()期末余额</td>
+	<td>对账结果</td>
+	<td>审核结果</td>
+   </tr>
+   #end
+   #if($session_CORPID == '1002')
+	   #if($session_USERNAME == 'hanchunyan' or $session_USERNAME == 'liguiping')
+	      #set($i = 1)
+	      #foreach($m in $selwjcaccountresultquery)
+		   <tr class="trcolor">
+		        <td>$i</td>
+			<td><a href="accountresult_detail2.aspx?accountid=$m.ACCOUNTID&ts=$m.ACCMONTH">$m.CUSTNAME</a></td>
+			<td>$m.USERNAME</td>
+			<td>$m.BALANCE</td>
+			<td>$m.TAXMONEY</td>
+			<td>$m.GETMONEY</td>
+			<td>$m.QIMOMONEY</td>
+			<td>$m.QMYE</td>
+			<td>#if($m.RESULTYPE == '1')对账相符#elseif($m.RESULTYPE == '0')<font color="red">对账不符</font>#end&nbsp;</td>
+			<td>#if($m.ISCHECKED == '1')通过#elseif($m.RESULTYPE == '0')<font color="red">未通过</font>#end&nbsp;</td>
+		   </tr>
+	       #set($i =$i+ 1)
+	       #end
+	   #else
+	            #set($i = 1)
+		   #foreach($m in $selemployeeaccountresultquery)
+		   <tr class="trcolor">
+		        <td>$i</td>
+			<td><a href="accountresult_detail2.aspx?accountid=$m.ACCOUNTID&ts=$m.ACCMONTH">$m.CUSTNAME</a></td>
+			<td>$m.USERNAME</td>
+			<td>$m.BALANCE</td>
+			<td>$m.TAXMONEY</td>
+			<td>$m.GETMONEY</td>
+			<td>$m.QIMOMONEY</td>
+			<td>$m.QMYE</td>
+			<td>#if($m.RESULTYPE == '1')对账相符#elseif($m.RESULTYPE == '0')<font color="red">对账不符</font>#end&nbsp;</td>
+			<td>#if($m.ISCHECKED == '1')通过#elseif($m.RESULTYPE == '0')<font color="red">未通过</font>#end&nbsp;</td>
+		   </tr>
+		   #set($i =$i+ 1)
+		   #end
+         #end
+   #else
+       #set($i = 1)
+       #foreach($m in $selwjcaccountresultquery)
+	   <tr class="trcolor">
+	        <td>$i</td>
+		<td><a href="accountresult_detail2.aspx?accountid=$m.ACCOUNTID&ts=$m.ACCMONTH">$m.CUSTNAME</a></td>
+		<td>$m.USERNAME</td>
+		<td>$m.BALANCE</td>
+		<td>$m.TAXMONEY</td>
+		<td>$m.GETMONEY</td>
+		<td>$m.QIMOMONEY</td>
+		<td>$m.QMYE</td>
+		<td>#if($m.RESULTYPE == '1')对账相符#elseif($m.RESULTYPE == '0')<font color="red">对账不符</font>#end&nbsp;</td>
+		<td>#if($m.ISCHECKED == '1')通过#elseif($m.RESULTYPE == '0')<font color="red">未通过</font>#end&nbsp;</td>
+	   </tr>
+	   #set($i =$i+ 1)
+       #end
+   #end
+</table>
+<form name="form1" method="post"></form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

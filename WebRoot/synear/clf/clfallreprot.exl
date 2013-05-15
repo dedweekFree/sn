@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>clftotalsendqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>申报月份##大区##区域##姓名##职务##卡号##审核用户姓名##状态##申报交通费（油费）金额##实报正规交通票金额##实报其他交通票金额##申报补助金额##实报补助金额##出差天数小计##申报差旅费小计##实报差旅费小计</web:col>
+  <web:key>MONTH##DAQU##AREA##NAME##LEVELNAME##BANKNUM##CHECKNAME##FSTATUS##YTICKETMONEY##STICKETMONEY##SOTHERTICKETMONEY##YSUBMONEY##SSUBMONEY##DAYCOUNT##YBJE##SBJE</web:key>
+  <web:name>差旅费汇总发放表</web:name>
+</web:page>
+
+
+

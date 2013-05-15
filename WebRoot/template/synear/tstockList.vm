@@ -1,0 +1,221 @@
+<HTML>
+<HEAD>		
+<title>仓库基础信息管理</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<style>
+.changecolor{
+font: 13px/200% 宋体;
+}
+.one{
+ background:#fff;
+ text-align:left;
+}
+.two{
+ background:#eeeeee;
+ text-align:left;
+}
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function set(id){
+  var obj=eval("document.all."+id);
+  var num=obj.rows.length-1
+  for(var i=1;i<num;i++){
+	if(i%2==1){
+		obj.rows[i].className="one";
+		}		
+	else{
+		obj.rows[i].className="two";
+	}
+  }
+}
+
+//修改
+function EditRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form2.PID.value = paras[0];
+       document.form2.submit();
+}
+
+//删除
+function DelRow()
+{      
+alert("功能暂不开放");
+return;
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.PID.value = paras[0];
+	   //document.form1.submit();
+   }
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+function clearVals() {
+      thisform.ptype.value='';
+      thisform.ptypename.value='';
+}
+
+function checkinput()
+{  
+  thisform.page.value=1;
+  thisform.submit();
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#E0F4FC" style="SCROLLBAR-HIGHLIGHT-COLOR:#73C5E8;SCROLLBAR-SHADOW-COLOR:#73C5E8;SCROLLBAR-3DLIGHT-
+
+COLOR:#73C5E8;SCROLLBAR-TRACK-COLOR: #C2E8F8;SCROLLBAR-DARKSHADOW-COLOR:#73C5E8;scrollbar-Base-Color:#73C5E8;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr bgcolor="#E0F4FC" height="5"><td height="5"></td></tr>
+<tr bgcolor="#E0F4FC"><td>
+	<table border="0" cellspacing="0" cellpadding="0" width="98%" align="center" >
+	  <tr height="23">
+	    <td align=left height="20">
+		   <table border="0" cellspacing="3" cellpadding="0">
+		      <tr>
+			     <td height=20>&nbsp;
+			     <div id="qx"> <a href="tstockList.aspx">仓库基础信息管理</a>
+			     &nbsp;&nbsp;<a href="tcorpList.aspx">机构基础信息管理</a>
+			        &nbsp;&nbsp;<a href="tunitList.aspx">分厂仓库组织表信息管理</a>
+			     &nbsp;&nbsp;<a href="tinclassList.aspx">入库类别信息管理</a>
+			      &nbsp;&nbsp;<a href="toutclassList.aspx">出库类别信息管理</a>
+			       &nbsp;&nbsp;<a href="toutdisclassList.aspx">出库收发类别信息管理</a>
+			          &nbsp;&nbsp;<a href="tindisclassList.aspx">入库收发类别信息管理</a>
+			     </div>
+			     
+			     </td>
+			  </tr>
+		   </table>
+		</td>
+		<td align="right">&nbsp;</td>
+	   </tr>
+      </table>
+     </td>
+</tr>
+<tr>
+  <form name="thisform" method="post" action="productList.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  
+
+class="datatable">
+        <tr height="5" bgcolor="#A6DDF4"> 
+		  <td colspan=2 height="5"></td>
+		</tr>
+		<tr bgcolor="#f3f3f3">
+		  <td colspan=2 >
+		  <!-- 
+		 &nbsp;&nbsp;&nbsp;产品名称：
+		  <input type="text" name="pname" size="38" class="tdinput td" value="$!form_pname">
+		  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">-->
+				&nbsp;&nbsp;<input type="button" value="返回" onclick="window.location='../syindex.htm';"  class="bt1">
+				&nbsp;&nbsp;<input type="button" value="新增仓库基础信息" onclick="window.location='addTstock.aspx';"  class="bt1">
+				<div class="dtree" id="dm_zzjg_tree_layer" 
+
+style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" 
+
+height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" name="swjgdm_tree_frame" 
+
+marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" 
+
+></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>	</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left">&nbsp;&nbsp;</td>
+		</tr>
+	  </table>
+   </td></form>
+</tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">仓库代码</td>
+	<td nowrap="nowrap">仓库名称</td>
+	<td nowrap="nowrap">所属组织代码</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1)
+    #foreach($m in $sql0)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		        <td align="center" nowrap="nowrap">$!m.PK_SCODE</td>
+			<td align="center" nowrap="nowrap">$!m.SNAME</td>
+			<td align="center" nowrap="nowrap">$!m.PK_UCODE</td>
+
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.PK_SCODE,$!m.SNAME"><a style='cursor:hand' onclick="javascript:EditRow()">修改</a>&nbsp;&nbsp;&nbsp;<a style='cursor:hand' onclick="javascript:DelRow()">删除</a></span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</td></tr>
+<tr><td height=5></td></tr>
+<tr><td>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</td></tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+<form name="form1" method="post" action="deltinclass.aspx" target="saveframe">
+  <input type="hidden" name="PID">
+</form>
+
+<form name="form2" method="post" action="editTstock.aspx">
+   <input type="hidden" name="PID" value="">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

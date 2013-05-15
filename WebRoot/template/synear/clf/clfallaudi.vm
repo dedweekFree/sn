@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>差旅费审核</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script>
+var dept=new Array(); 
+	dept=[
+	   ['区域主键','区域名称','大区主键']
+		#foreach($!m in $selsyneararea)
+		  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+		#end
+	   ];
+       function setF(departid,objid)
+	{
+	    if(departid==""){
+		  var obj = document.getElementById(objid);
+		  var length = obj.length;
+		  for (var j=length-1; j>0; j--)
+		  {
+		    obj.options.remove(j);
+		  }
+		  for(var i=1;i<dept.length;i++){   
+		      var oOption = document.createElement("OPTION");
+		      obj.options.add(oOption);
+		      oOption.innerText = dept[i][1];
+		      oOption.value = dept[i][0];
+		  }	  
+	    }else{
+	      var obj = document.getElementById(objid);
+	      var length = obj.length;
+	      for (var j=length-1; j>0; j--)
+	      {
+		obj.options.remove(j);
+	      }
+		 
+	      for(var i=1;i<dept.length;i++){
+		if(dept[i][2]==departid){
+		  var oOption = document.createElement("OPTION");
+		  obj.options.add(oOption);
+		  oOption.innerText = dept[i][1];
+		  oOption.value = dept[i][0];
+		}
+	      }
+	    }
+	}
+function checkinput()
+{  
+   //document.thisform.page.value =1;
+   document.thisform.submit();
+}
+function toallcheck(url){
+   if(confirm("确认要全部审核通过吗？")){
+	   document.form1.target="dataframe";
+	   document.form1.action=url;
+	   document.form1.submit();
+    }
+}
+</script>
+</head>
+<body>
+<table width="700" height="10"  border="0" align="center" cellpadding="0" cellspacing="0" >
+  <tr>
+    <td> <div align="center" class="style1">差旅费申请表</div></td>
+  </tr>
+</table>
+<form name="thisform" method="post">
+<table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      	<tr class="search"> 
+	  <td class="tdlabel" width="10%">大区</td>
+		<td class="tdinput" width="20%">
+		 <select name=dq_pk  onchange="javascript:setF(this.value,'areapk');">
+		<option value=''>请选择大区</option>
+	      #foreach($m2 in $selsyneardaqu)
+		     <option value="$!m2.NC_PK" #if($form_dq_pk==$m2.NC_PK) selected #end>$!m2.DEPTNAME</option>
+	      #end
+		</select>	
+	</td>	
+	<td class="tdlabel" width="10%">区域</td>
+	<td class="tdinput" width="20%">
+	  <select name=areapk><option value=''>请选择区域</option>
+	      #foreach($m1 in $selsyneararea)
+		     <option value="$!m1.NC_PK" #if($form_areapk==$m1.NC_PK) selected #end>$!m1.DEPTNAME</option>
+	      #end
+	     </select>
+	</td>
+	<td class="tdlabel" width="10%">用户姓名</td>
+        <td class="tdinput" width="20%">
+           <input type="text" name="user" value="$!form_user" style="width:100">
+	</td>
+	</tr>
+	<tr> 
+           <td colspan="6" align="center" >
+               <input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+	   </td>
+ 	</tr>
+  </table>
+</form>
+<table id="tb" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="trtitle" bgcolor="abcdef">
+    <td height="25" nowrap>大区</td>
+    <td height="25" nowrap>区域</td>
+    <td height="25" nowrap>用户编码</td>
+    <td height="25" nowrap>用户名称</td>
+    <td height="25" nowrap>任职级别</td>
+    <td height="25" nowrap>出差月份</td>
+    <td height="25" nowrap>申报交通费（油费）金额</td>
+    <td height="25" nowrap>申报补助金额</td>
+    <td height="25" nowrap>状态</td>
+    <td height="25" nowrap>操作</td>
+  </tr>
+ #set($i=0)
+ #foreach($m in $listallsnclfapplay)
+  <tr class="trcolor4">
+     <td align="center" nowrap>$!m.DAQU</td>
+     <td align="center" nowrap>#if($!m.AREA!="")$!m.AREA#else&nbsp;#end</td>
+     <td align="center" nowrap>$!m.USERID</td>
+     <td align="center" nowrap>$!m.NAME</td>
+     <td align="center" nowrap>$!m.LEVELNAME</td>
+     <td align="center" nowrap>$!m.MONTH</td>
+     <td align="center" nowrap>$!m.YTICKETMONEY</td>
+     <td align="center" nowrap>$!m.YSUBMONEY</td>
+     <td align="center" nowrap><script>'$!m.FSTATUS'.toRealText('F','报批','被退回').write()</script></td>
+	<td align="center" nowrap><a href="clfallaudisubmit.aspx?applymonth=$!m.MONTH&areacode=$!m.DEPTCODE&status=F&step=1&oldstep=$!m.STEP&fid=$m.CLFID&clftype=$m.CLFTYPE&remark=" target="dataframe">通过</a>&nbsp;&nbsp;<a href="clfallaudisubmit.aspx?applymonth=$!m.MONTH&areacode=$!m.DEPTCODE&status=R&step=-1&oldstep=$!m.STEP&fid=$m.CLFID&clftype=$m.CLFTYPE&remark=" target="dataframe">退回</a>&nbsp;&nbsp;<a href="clfalldetail.aspx?clfid=$!m.CLFID&applymonth=$!m.MONTH&areacode=$!m.DEPTCODE&oldstep=$!m.STEP&levelid=$!form_levelid&dq_pk=$!form_dq_pk&areapk=$!form_areapk">明细</a></td>
+  </tr>
+  <tr class="trcolor4"><td colspan=9 style="padding:0px" id="dtb"></td></tr>
+  #set($i=$i+1)
+ #end
+  #if($i==0)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="16"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+  </table>
+ <div align="center"> <input type="button" class="bt1" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="bt1" value="全部审核通过" onclick="toallcheck('clfallcheck.aspx?levelid=$!form_levelid&dq_pk=$!form_dq_pk&areapk=$!form_areapk')"> </div>
+<form name="form1" method="post"></form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

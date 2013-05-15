@@ -1,0 +1,174 @@
+<html>
+<head>
+    <title>======</title>
+    <link rel="stylesheet" type="text/css" href="../../../js/ZhrCss.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+    <script src="../../../js/sunnyfunc.js"></script>
+
+    <script>
+var undefined;
+
+function showtr(k,obj) { //v6.0
+  if(obj.innerText=="查看"){
+    obj.innerText="隐藏"
+    tb.rows[k*2+2].style.display="";
+  }else{
+    obj.innerText="查看"
+    tb.rows[k*2+2].style.display="none";
+  }
+}
+
+function init(){
+  try{
+     if(dtb.length==undefined){
+       tb.rows[2].style.display="none";
+     }else{
+       for(i=0;i<dtb.length;i++)
+         tb.rows[i*2+2].style.display="none";
+     }
+  }
+  catch(e){}
+}
+
+function setvalue(mon,user,anum,rnum){
+  this.form1.applymonth.value=mon;
+  this.form1.username.value=user;
+  if(parseInt(anum)>parseInt(rnum))
+  {
+     if(!confirm("还有客户的费用未申报，真的要报批吗？"))   
+     {   
+        return false;
+     }
+  }
+  this.form1.submit();
+}
+
+    </script>
+
+</head>
+<body onload="init()">
+    <div class="Main">
+        <div class="CaptionTxt">
+            客户费用申请表</div>
+        <%--<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td height="30" class="fCopy" id="help"></td></tr>
+</table>
+--%>
+        <table id="tb" class="List">
+            <tr class="trtitle" bgcolor="abcdef">
+                <th width="8%" height="25" nowrap>
+                    预算时间
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算客户数
+                </th>
+                <th width="8%" height="25" nowrap>
+                    申报客户数
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算销售
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算应收
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算其它
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算产品
+                </th>
+                <th width="8%" height="25" nowrap>
+                    预算合计
+                </th>
+                <!-- <th width="8%" height="25" nowrap>备注</th>-->
+                <th width="8%" height="25" nowrap>
+                    申报销售
+                </th>
+                <th width="8%" height="25" nowrap>
+                    申报应收
+                </th>
+                <th width="8%" height="25" nowrap>
+                    申报其它
+                </th>
+                <th width="8%" height="25" nowrap>
+                    申报产品
+                </th>
+                <th width="8%" height="25" nowrap>
+                    申报合计
+                </th>
+                <th width="8%" height="25" nowrap>
+                    操作
+                </th>
+            </tr>
+            #set($i=0) #foreach($m in $ZhrGetFeeRequest)
+            <tr class="trcolor4">
+                <td align="center" nowrap>
+                    $!m.APPLYMONTH
+                </td>
+                <td align="center" nowrap>
+                    $!m.ANUM
+                </td>
+                <td align="center" nowrap>
+                    $!m.RNUM
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_SALEAIM
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_RECEVALAIM
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_ORTHERAIM
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_PRODFEE
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_ALLFEE
+                </td>
+                <!--<td align="center" nowrap><a style="cursor:hand" onclick="showtr($i,this)">查看</a></td>-->
+                <td align="center" nowrap>
+                    $!m.PRE_SALEAIM2
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_RECEVALAIM2
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_ORTHERAIM2
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_PRODFEE2
+                </td>
+                <td align="center" nowrap>
+                    $!m.PRE_ALLFEE2
+                </td>
+                <td align="center" nowrap>
+                    <a style="cursor: hand" onclick='javascript:setvalue("$!m.APPLYMONTH","$!m.MAKEUSERNAME",$!m.ANUM,$!m.RNUM)'
+                        target="dataframe">申报</a>&nbsp;&nbsp;<a href="BudgetRequestApplyAdd.aspx?applymonth=$!m.APPLYMONTH&username=$!m.MAKEUSERNAME">录入</a>
+                </td>
+            </tr>
+            <tr class="trcolor4">
+                <td colspan="9" style="padding: 0px" id="dtb">
+                    $!m.REMARK &nbsp;
+                </td>
+            </tr>
+            #set($i=$i+1) #end #if($i==0)
+            <tr height="20" bgcolor="#eeeeee" class="trcolor">
+                <td colspan="18" bgcolor="#eeeeee" align="center" class="trcolor">
+                    没有相关信息
+                </td>
+            </tr>
+            #end
+        </table>
+        <form name="form1" method='post' action="BudgetRequestApplySubmit.aspx" target="dataframe">
+        <input name="applymonth" type="hidden" value="">
+        <input name="username" type="hidden" value="">
+        </form>
+         <div class="Control">
+            <input type="button" class="login2" value=" 刷  新 " name="B222" onclick="javascript:window.location.reload();">
+        </div>
+        <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

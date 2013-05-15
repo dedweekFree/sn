@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>		
+<title>费用申请表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+</HEAD>
+<SCRIPT LANGUAGE="javascript">
+//指定页面区域内容导入Excel
+function AllAreaExcel() 
+{
+  var oXL = new ActiveXObject("Excel.Application"); 
+  var oWB = oXL.Workbooks.Add(); 
+  var oSheet = oWB.ActiveSheet;  
+  var sel=document.body.createTextRange();
+  sel.moveToElementText(PrintAA);
+  sel.select();
+  sel.execCommand("Copy");
+  oSheet.Paste();
+  oXL.Visible = true;
+}
+//指定页面区域“单元格”内容导入Excel
+function CellAreaExcel() 
+{
+  var oXL = new ActiveXObject("Excel.Application"); 
+  var oWB = oXL.Workbooks.Add(); 
+  var oSheet = oWB.ActiveSheet; 
+  var Lenr = PrintA.rows.length;
+  for (i=0;i<Lenr;i++) 
+  { 
+  var Lenc = PrintA.rows(i).cells.length; 
+  for (j=0;j<Lenc;j++) 
+  { 
+    oSheet.Cells(i+1,j+1).value = PrintA.rows(i).cells(j).innerText; 
+  } 
+  } 
+  oXL.Visible = true; 
+}
+
+//指定页面区域内容导入Word
+function AllAreaWord()
+{
+  var oWD = new ActiveXObject("Word.Application");
+  var oDC = oWD.Documents.Add("",0,1);
+  var oRange =oDC.Range(0,1);
+  var sel = document.body.createTextRange();
+  sel.moveToElementText(PrintB);
+  sel.select();
+  sel.execCommand("Copy");
+  oRange.Paste();
+  oWD.Application.Visible = true;
+  //window.close();
+}
+</SCRIPT>
+<BODY id="PrintAA">
+<p align="left"><font size="4"><b>预订单</b></font>
+ #foreach($m in $getPreOrderH)
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+    <tr class="search"> 
+      <td height="19" width="7%" class="tdlabel">客户名称/代码</td> <td class="tdlabel" height="19" width="15%">$m.CUSTNAME/$m.CUSTCODE</td>
+      <td class="tdlabel" height="19" width="7%">收货地址</td> <td class="tdlabel" height="19" width="15%">$!m.VRECEIVEADDRESS</td>
+    </tr>
+    <tr class="search"> 
+      <td class="tdlabel" height="19" width="7%">联系人</td> <td class="tdlabel" height="19" width="15%">$!m.VDEF14</td>
+      <td class="tdlabel" height="19" width="7%">联系电话</td> <td class="tdlabel" height="19" width="15%">$!m.VDEF13</td>
+     </tr>
+    <tr class="search"> 
+      <td class="tdlabel" height="19" width="7%">备注</td> <td height="19" colspan=3>$!m.VNOTE</td>
+    </tr>
+</table>  
+#end
+
+<br>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">产品代码</td>
+	<td nowrap="nowrap">产品名称</td>
+	<td nowrap="nowrap">规格</td>
+	<td nowrap="nowrap">下单量</td>
+	<td nowrap="nowrap">安排量</td>
+        <td nowrap="nowrap">备货量</td>
+	<td nowrap="nowrap">发货量</td>
+</tr>
+                <script>
+                   var pnum=0;
+		   var anum=0;
+		   var onum=0;
+                   var snum=0;
+		</script>
+    #set($i=1) 
+    #foreach($m in $getPreOrderDetails)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.INVCODE</td>
+			<td align="center" nowrap="nowrap">$m.INVNAME</td>
+			<td align="center" nowrap="nowrap">$m.INVSPEC</td>
+		        <td align="center" nowrap="nowrap">$m.PREORDERNUM</td>
+			<td align="center" nowrap="nowrap">$m.ARRNUM</td>
+			<td align="center" nowrap="nowrap">$m.ORDERNUM</td>
+			<td align="center" nowrap="nowrap">$m.SALENUM</td>
+		 </tr>
+		 #set($i=$i+1)
+                <script>
+                    pnum+=$m.PREORDERNUM;
+		    anum+=$m.ARRNUM;
+		    onum+=$m.ORDERNUM;
+                    snum+=$m.SALENUM;
+		</script>
+   #end   
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #else
+     <tr height="20" class="trcolor">
+     <td colspan="4"  align="center" class="trcolor">合计</td>
+     <td align="center" nowrap="nowrap">
+                <script>
+                   document.write(pnum);
+		</script>
+     </td>
+     <td align="center" nowrap="nowrap">
+                <script>
+                   document.write(anum);
+		</script>
+     </td>
+          <td align="center" nowrap="nowrap">
+                <script>
+                   document.write(onum);
+		</script>
+     </td>
+          <td align="center" nowrap="nowrap">
+                <script>
+                   document.write(snum);
+		</script>
+     </td>
+     </tr>
+   #end
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 返 回 " name="B222" onClick="javascript:history.go(-1);"> <input type="button" onclick="javascript:AllAreaExcel();" value="导出到Excel"> </div>
+</BODY>
+</HTML>

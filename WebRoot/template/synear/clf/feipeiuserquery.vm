@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>用户查询</title>
+</head>
+
+<body>
+<form name="thisform" method="post" action="feipeiuserquery.aspx">
+ <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td align="left">用户编码<input type="text" style="width:100" name="custcode" value="$!form_custcode">用户名称<input type="text" style="width:100" name="custname" value="$!form_custname">&nbsp;<input type="button" value="查询" onclick="tosearch()"></td>
+  </tr>
+</table>
+</form>
+<table class="datatable" id="TableList">
+   <tr class="trcolor">
+    <td>选择</td>
+    <td>用户编码</td>
+    <td>用户名称</td>
+    <td>角色</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selfenpeiclvuser)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="ButtonSelectOk($i)"/></td>
+    <td>$!m.USERNAME</td>
+    <td>$!m.NAME<input type="hidden" name="username" id='username$i' value="$!m.USERNAME"></td>
+    <td>$!m.ROLENAME</td>
+  </tr>
+#set($i=$i+1)
+#end
+<tr >
+      <td class="tdlabel td" colspan="4">$pagecode</td>
+</tr>
+</table>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>
+<script language="javascript">
+function ButtonSelectOk(i){
+    var htmlstr = "";
+    var htmlstrname = "";
+    var pkstr = "";
+    if(document.getElementById('Checkbox'+i).checked == true){
+       htmlstr=document.getElementById('username'+i).value;
+    }
+    window.opener.document.getElementById("feipeiuser").value= htmlstr;
+    window.close();
+}
+function tosearch(){
+    document.thisform.page.value =1;
+    document.thisform.submit();
+}
+</script>

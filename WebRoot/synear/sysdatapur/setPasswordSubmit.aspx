@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>setPassword</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>密码修改成功！请记住新密码！</web:successMsg>
+  <web:failMsg>密码修改失败！</web:failMsg>
+  <web:url>setPassword.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

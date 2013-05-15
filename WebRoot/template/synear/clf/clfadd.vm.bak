@@ -1,0 +1,720 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>业务员差旅费申报</title>
+<script src="../../../js/sunnyfunc.js"></script>
+<script>
+var submitok=false;
+var ChosedList=new Array();
+var header=12;		//定单头的个数
+var thisCol=9;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=11;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+   var datatb;
+var data=new Array();//单个记录元素数据数组
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+
+var bData1=new Array(); 
+   data=new data1('产品主键','产品类别','类别代码');
+   bData1[0]=new data2(data);
+ #set($i=1)
+ #foreach($m in $getProductClass)
+   data=new data1('$m.PK_INVCL','$m.INVCLASSNAME','$m.INVCLASSCODE');
+   bData1[$i]=new data2(data);
+   #set($i=$i+1)
+ #end
+
+
+function addRow() 
+{  
+     var tempR=document.all.tb.insertRow();
+	 tempR.bgcolor="#FFFFFF";
+	 var temp1=tempR.insertCell();	
+	 var temp2=tempR.insertCell();
+	 var temp8=tempR.insertCell();
+	 var temp3=tempR.insertCell();	
+	 var temp4=tempR.insertCell();	
+	 var temp5=tempR.insertCell();
+	 var temp6=tempR.insertCell();
+	 var temp7=tempR.insertCell();
+
+         temp1.innerHTML="<input name=\"F_fileno\" id='F_fileno"+row+"' onclick='ShowDate(F_fileno"+row+")' type=\"text\" class=\"login3\" style=\"width:120\" onKeyUp=\"toNext("+row+")\" onblur=\"checkdate(F_fileno"+row+",F_difftime"+row+","+row+")\" >";
+         temp2.innerHTML="<input name=\"F_difftime\" type=\"text\"  id='F_difftime"+row+"' onclick='ShowDate(F_difftime"+row+")' class=\"login3\" style=\"width:120\" onKeyUp=\"toNext("+row+")\" onblur=\"checkedate(F_fileno"+row+",F_difftime"+row+","+row+")\">";
+	 temp8.innerHTML="<span id='daycount"+row+"'></span>";
+         temp3.innerHTML="<span id='daycountmoney"+row+"'></span><input name=\"F_policy\" id='F_policy"+row+"'  type=\"text\" class=\"login3\" style=\"width:120\" onKeyUp=\"toNext("+row+")\" readonly><input type='button' value='...' onclick=\"togetmont('bareaquery.aspx?F_policy=F_policy"+row+"')\" class='bt1'>";
+	 temp4.innerHTML="<input name='F_prodName' id='F_prodName"+row+"' type='text' style='width:120' class='login3' onKeyUp=\"toNext("+row+")\"  readonly><input type='button' value='...' onclick=\"togetmont('areaquery.aspx?daycountmoney=daycountmoney"+row+"&F_prodName=F_prodName"+row+"&F_ssubmoney=F_ssubmoney"+row+"&daycount='+document.getElementById('daycount"+row+"').innerHTML,document.getElementById('daycount"+row+"').innerHTML)\" class='bt1'>";   
+	 temp5.innerHTML="<p align=\"center\"><select name='F_pfee'  id='F_pfee"+row+"' style='width:60' onKeyUp=\"toNext("+row+")\">#foreach($m1 in $selsnvehicle)<option value=\"$m1.VEHICLEID\">$m1.VEHICLENAME</option>#end</select>";
+	 temp6.innerHTML="<p align=\"center\"><input name='F_pmemo'  id='F_pmemo"+row+"' class='login3' style='width:120' type='text' onKeyUp=\"toNext("+row+")\">";
+	 temp7.innerHTML="<p align=\"center\"><input name='F_ssubmoney'  id='F_ssubmoney"+row+"' class='login3' style='width:120' type='text' onKeyUp=\"toNext("+row+")\" readonly>";
+         document.form1.elements[row*thisCol+header].focus();
+	 row=row+1;
+     tempR=document.all.tb.insertRow();
+     temp1=tempR.insertCell(); 
+     temp1.innerHTML="<table id=\"dtb\"></table>";
+     temp1.colSpan=8; 
+}
+
+function toNext(i)
+{
+   var elms=event.srcElement;
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+      if(elms.name=="F_fileno")
+        document.form1.F_difftime[i].focus(); 
+      else if(elms.name=="F_difftime")
+        document.form1.F_policy[i].focus(); 
+      else if(elms.name=="F_policy")
+        document.form1.F_prodName[i].focus(); 
+      else  if(elms.name=="F_prodName")
+        document.form1.F_pfee[i].focus(); 
+      else if(elms.name=="F_pfee")
+        document.form1.F_pmemo[i].focus(); 
+      else if(elms.name=="F_pmemo")
+      {
+	  document.form1.F_ssubmoney[i].focus(); 
+      }
+      else if(elms.name=="F_pmemo")
+      {
+        if(i<(row-1))
+          document.form1.elements[(i+1)*thisCol+header].focus();
+        else
+          addRow();
+      }
+   }else{
+      if(elms.name=="F_pfee"){
+	   if(isNaN(elms.value))
+           { 
+              alert("费用必须为数字");
+              return;
+           } 
+      }
+   }
+}
+
+function spellStr(step,fstatus) 
+{
+    if(this.form1.banknum.value == "" || this.form1.banknum.value == "0" || this.form1.banknum.value == "1"){
+        alert("工行卡号不能为空或者不正确");
+	return false;
+    }
+    if(this.form1.daqu.value == ""){
+        alert("大区不能为空");
+	return false;
+    }
+    if(this.form1.address.value == ""){
+        alert("家庭住址不能为空");
+	return false;
+    }
+    if(this.form1.addressname.value == ""){
+        alert("常驻地不能为空");
+	return false;
+    }
+    if(this.form1.addressday.value == ""){
+        alert("驻地天数不能为空");
+	return false;
+    }
+    if(this.form1.billdate1.value==""){
+       alert("出差月份不能为空！！！");
+       this.form1.billdate1.focus();
+       return false;
+    }
+   var str="";
+   var spell_sql="";
+   var f_id="B"+getTimeStr();
+   this.form1.F_id.value=f_id;
+
+   var b_sql="";
+   var allmoney = 0;
+   for(i=0;i<row;i++){
+	//if(form1.F_fileno[i].value!="" && form1.F_difftime[i].value!=""){
+	if(form1.F_policy[i].value!=""){
+	   if(form1.F_pmemo[i].value!=""){
+	      if(isNaN(form1.F_pmemo[i].value))
+	      { 
+	         alert("申报交通费（油费）金额必须为数字");
+	         form1.F_pmemo[i].focus();
+	         return;
+	      }  
+           }else{
+	      form1.F_pmemo[i].value=0;
+	   }
+	   if(form1.F_ssubmoney[i].value!=""){
+	      if(isNaN(form1.F_ssubmoney[i].value))
+              { 
+                 alert("申报补助金额必须为数字");
+                 form1.F_ssubmoney[i].focus();
+                 return;
+              } 
+	   }else{
+	      form1.F_ssubmoney[i].value=0;
+	   }
+	   if(form1.F_pmemo[i].value!="0" || form1.F_ssubmoney[i].value!="0"){
+             b_sql="have";
+             str=str+"!"+this.form1.F_fileno[i].value;
+	   }
+	   allmoney +=parseFloat(form1.F_pmemo[i].value)+parseFloat(form1.F_ssubmoney[i].value);
+	}
+    }
+    if(b_sql==""){
+	  alert("您没有录入差旅费，请录入！！！");
+          return false;
+   }
+   if(allmoney >= 3000){
+       form1.clftype.value = "E";
+   }else{
+       form1.clftype.value = "A";
+   }
+  this.form1.F_step.value=step;
+  document.form1.fstatus.value = fstatus;
+  if(fstatus == "N"){
+     this.form1.action='clfsaveadd1.aspx';
+  }else if(fstatus == "F"){
+     this.form1.action='clfsaveadd.aspx';
+  }
+  this.form1.target='dataframe';
+  if(!submitok)
+  {
+      submitok=true;
+      this.form1.submit();
+  }else{
+      alert("请不要确认两次！");
+	  return;
+  }
+}
+
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ }
+ function ShowDate1(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue.substr(0,7);
+ }
+ function GetDateString(){
+	var MyDate=new Date();
+	var Year=MyDate.getFullYear();
+	var MonthNum=MyDate.getMonth();
+	var Month;
+	if(MonthNum<9){
+	    Month="0"+(MonthNum+1);
+	}else{
+	    Month=MonthNum+1;
+	}
+	var Day=MyDate.getDate();
+	if(Day<=9){
+	    Day="0"+Day;
+	}
+	var Today=Year+"-"+Month;
+	var v1 = "$!form_billdate1";
+	if(v1==""){ 
+	   document.getElementById('billdate1').value=Today;
+	}else{
+	   document.getElementById('billdate1').value=v1;
+	} 
+  }
+  var lllmonth=new Array(); 
+  lllmonth=[
+   ['最小月份']
+	#foreach($!m in $queryzhywsysdatepara)
+	  ,["$m.LLLMONTH"]
+	#end
+   ];
+  function tocheckdate(){
+     if(document.getElementById('billdate1').value < lllmonth[1][0]){
+        alert("出差月份不能小于"+lllmonth[1][0]);
+        document.getElementById('billdate1').select();
+	return false;
+     }
+        var MyDate=new Date();
+	var Year=MyDate.getFullYear();
+	var MonthNum=MyDate.getMonth();
+	var Month;
+	if(MonthNum<9){
+	    Month="0"+(MonthNum+1);
+	}else{
+	    Month=MonthNum+1;
+	}
+	var Day=MyDate.getDate();
+	if(Day<=9){
+	    Day="0"+Day;
+	}
+	var Today=Year+"-"+Month;
+     if(document.getElementById('billdate1').value > Today){
+        alert("出差月份不能大于"+Today);
+        document.getElementById('billdate1').select();
+	return false;
+     }
+  }
+  function checkdate(bdate,edate,i){
+      if(bdate.value != "" && bdate.value.substr(0,7) != document.form1.billdate1.value && document.form1.billdate1.value.length != 10){
+          alert("出差开始日期不正确");
+	  bdate.value = "";
+          bdate.focus();
+	  return false;
+      }
+      if(edate.value != ""){
+         if(bdate.value != "" && bdate.value > edate.value){
+           alert("出差开始日期不能大于出差截止日期");
+	   bdate.value = "";
+           bdate.focus();
+	   return false;
+         }else{
+	    var begin1=bdate.value.substr(0,10).split("-"); 
+	    var end1=edate.value.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+	    var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60/60/24); 
+	    document.getElementById("daycount"+i).innerHTML=m;
+	    if(document.getElementById("daycountmoney"+i).value != undefined){
+	        document.getElementById("F_ssubmoney"+i).value = m * document.getElementById("daycountmoney"+i).value;
+	    }
+	 }
+      }
+  }
+  function checkedate(bdate,edate,i){
+      if(bdate.value == ""){
+         alert("请先选择出差开始日期");
+         bdate.focus();
+	 return false;
+      }
+      if(edate.value != "" && document.form1.billdate1.value.length != 10){
+          if(edate.value.substr(0,7) != document.form1.billdate1.value){
+	      if(edate.value.substr(8,2) != '01'){
+		  alert("出差截止日期不正确");
+		  edate.value = "";
+		  edate.focus();
+		  return false;
+	       }
+	  }
+      }
+      if(edate.value != ""){
+         if(bdate.value != "" && bdate.value > edate.value){
+           alert("出差截止日期不能小于出差开始日期");
+	   edate.value = "";
+           edate.focus();
+	   return false;
+         }
+      }
+      if(bdate.value != "" && edate.value != ""){
+	      var begin1=bdate.value.substr(0,10).split("-"); 
+	      var end1=edate.value.substr(0,10).split("-");
+	      var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+	      var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	      var m=parseInt((date2-date1)/1000/60/60/24); 
+	      document.getElementById("daycount"+i).innerHTML=m;
+	      if(document.getElementById("daycountmoney"+i).value != undefined){
+	        document.getElementById("F_ssubmoney"+i).value = m * document.getElementById("daycountmoney"+i).value;
+	      }
+      }
+  }
+  function togetmont(url,bb){
+    if(bb == ""){
+       alert("出差天数不能为空");
+       return false;
+    }
+    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+ }
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="GetDateString()">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  bgcolor="#999999">
+  <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">报销差旅费时涉及以下四类票据的粘贴：
+</td>
+  </tr>
+    <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">
+1、正规交通票粘贴单：包含机打汽车票、火车票、飞机票
+   粘贴要求：从月初第一天至最后一天按顺序依次粘贴。报销金额大小写、报账人填写完整。
+</td>
+  </tr>
+ <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">
+2、非正规票据粘贴单：包含车辆相关费用、长条车票、保险费、订票退票费、邮寄费等正规交通票之外的票据
+   粘贴要求：长条车票上要注明时间、起止地、报销金额。报销金额大小写、报账人填写完整。长条车票往返不能连续，如连续只报销单程。
+   区域经理以上职务可凭票报销邮寄费，其他职务不得报销。
+</td>
+  </tr>
+    <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">
+3、出差补助票据粘贴单：大区总监、省区经理、省区KA经理  、省区市场经理  、大区KA经理  、大区市场经理  、大区推广经理  、大区拓展经理，出差补助需凭票标准限额内报销，其他职务无需贴票。所有人员常驻地住房补助不需贴票。
+</td>
+  </tr>
+  <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">
+4、业务招待费、电话费粘贴单：大区总监职务可报销，其他职务不涉及此两项费用的报销。
+</td>
+  </tr>
+    <tr>
+    <td class="fCopy" bgcolor="#E3E3E3">
+以上1-4类票据粘贴单寄至销售管理部，出差日程表不需打印、邮寄。
+</td>
+  </tr>
+</table>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">营销中心人员差旅费申报明细表</div></td>
+  </tr>
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" style="color:red">适用职务：辅销所主管\企划专员\销售代表\驻地业代</div></td>
+  </tr>
+</table>
+<form name="form1" method='post' action="">
+<input name="F_id" type="hidden" value=''>
+<input name="F_step" type="hidden" value='0'>
+<input name="fstatus" type="hidden" value=''>  
+<input name="clftype" type="hidden" value="">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+  #foreach($mm in $selbasicuserinfobasicbyusername)
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">出差人姓名</td>
+        <td>$!mm.NAME</td>
+	<td height="24" nowrap align="right">工商银行卡号</td>
+	<td colspan="4">$!mm.BANKNUM</td>
+	<td height="24" nowrap align="right">任职级别</td>
+	<td>$!mm.LEVELNAME</td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">所属区域</td>
+        <td>$!mm.DAQU</td>
+	<td align="right">$!mm.DEPTNAME</td>
+	<td height="24" nowrap align="right">家庭住址</td>
+	<td>$!mm.ADDRESS</td>
+	<td height="24" nowrap align="right">常驻地</td>
+	<td>$!mm.ADDRESSNAME</td>
+	<td height="24" nowrap align="right">驻地天数</td>
+	<td>$!mm.ADDRESSDAY</td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">出差月份</td>
+        <td colspan="8"><input type="text" name="billdate1" id="billdate1" value="$!form_month"  style="width:100" readonly/></td>
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">签批附件</td>
+        <td colspan="8"><input name="paper" type="text" size="80" value="" contenteditable="false"/><input type="button" name="Submit22" class="bt1" value="文件上传" onClick="window.open('pfile.jsp?formname=form1&picurl=paper&type=clffile','','status=no,scrollbars=no,top=160,left=150,width=450,height=365')"></td>
+     </tr>
+     <input type="hidden" name="clrname" value="$!mm.NAME">
+     <input type="hidden" name="clrusername" value="$!session_USERNAME">
+     <input type="hidden" name="banknum" value="$!mm.BANKNUM">
+     <input type="hidden" name="levelname" value="$!mm.LEVELNAME">
+     <input type="hidden" name="daqu" value="$!mm.DAQU">
+     <input type="hidden" name="deptname" value="$!mm.DEPTNAME">
+     <input type="hidden" name="addressname" value="$!mm.ADDRESSNAME">
+     <input type="hidden" name="addressday" value="$!mm.ADDRESSDAY">
+     <input type="hidden" name="pkfatherdeptdoc" value="$!mm.PK_DEPTDOC_FATHER">
+     <input type="hidden" name="pkdeptdoc" value="$!mm.PK_DEPTDOC">
+     <input type="hidden" name="sssbasicid" value="$!mm.BASICID">
+     <input type="hidden" name="address" value="$!mm.ADDRESS">
+  #end
+</table>
+<br>
+
+<table id="tb" width="100%" height="313" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <th width="12%" height="25" nowrap class="fCopy">出差开始日期</th>
+    <th width="12%" height="25" nowrap class="fCopy">出差截止日期</th>
+    <th width="12%" height="25" nowrap class="fCopy">出差天数</th>
+    <th width="12%" height="25" nowrap class="fCopy">开始地点</th>
+    <th width="12%" height="25" nowrap class="fCopy">截止地点</th>
+    <th width="12%" height="25" nowrap class="fCopy">交通工具</th>
+    <th width="12%" height="25" nowrap class="fCopy">申报交通费（油费）金额</th>
+    <th width="12%" height="25" nowrap class="fCopy">申报补助金额</th>
+  </tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno0" onclick="ShowDate(F_fileno0)" type="text" class="login3" style="width:120" onKeyUp="toNext(0)"  onblur="checkdate(F_fileno0,F_difftime0,0)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime0"  onclick="ShowDate(F_difftime0)" type="text" class="login3" style="width:120" onKeyUp="toNext(0)" onblur="checkedate(F_fileno0,F_difftime0,0)"></td>
+     <td id="daycount0"></td>
+     <td align="center" nowrap>
+        <span id="daycountmoney0"></span>
+	<input name="F_policy" id="F_policy0" type="text" class="login3" style="width:120" onKeyUp="toNext(0)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy0')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName"  id="F_prodName0" type="text"  style="width:120" class='login3' onKeyUp="toNext(0)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney0&F_prodName=F_prodName0&F_ssubmoney=F_ssubmoney0&daycount='+document.getElementById('daycount0').innerHTML,document.getElementById('daycount0').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(0)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo0" type="text" class="login3" style="width:120" onKeyUp="toNext(0)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney0" type="text" class="login3" style="width:120" onKeyUp="toNext(0)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+    <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno1" onclick="ShowDate(F_fileno1)" type="text" class="login3" style="width:120" onKeyUp="toNext(1)"  onblur="checkdate(F_fileno1,F_difftime1,1)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime1"  onclick="ShowDate(F_difftime1)" type="text" class="login3" style="width:120" onKeyUp="toNext(1)" onblur="checkedate(F_fileno1,F_difftime1,1)"></td>
+     <td id="daycount1"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney1"></span>
+	 <input name="F_policy" id="F_policy1" type="text" class="login3" style="width:120" onKeyUp="toNext(1)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy1')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName"  id="F_prodName1" type="text"  style="width:120" class='login3' onKeyUp="toNext(1)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney1&F_prodName=F_prodName1&F_ssubmoney=F_ssubmoney1&daycount='+document.getElementById('daycount1').innerHTML,document.getElementById('daycount1').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(1)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo1" type="text" class="login3" style="width:120" onKeyUp="toNext(1)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney1" type="text" class="login3" style="width:120" onKeyUp="toNext(1)" readonly></td>
+  </tr>
+ 
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+    <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno2" onclick="ShowDate(F_fileno2)" type="text" class="login3" style="width:120" onKeyUp="toNext(2)"  onblur="checkdate(F_fileno2,F_difftime2,2)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime2"  onclick="ShowDate(F_difftime2)" type="text" class="login3" style="width:120" onKeyUp="toNext(2)" onblur="checkedate(F_fileno2,F_difftime2,2)"></td>
+     <td id="daycount2"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney2"></span>
+         <input name="F_policy" id="F_policy2" type="text" class="login3" style="width:120" onKeyUp="toNext(2)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy2')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName"  id="F_prodName2" type="text"  style="width:120" class='login3' onKeyUp="toNext(2)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney2&F_prodName=F_prodName2&F_ssubmoney=F_ssubmoney2&daycount='+document.getElementById('daycount2').innerHTML,document.getElementById('daycount2').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(2)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo2" type="text" class="login3" style="width:120" onKeyUp="toNext(2)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney2" type="text" class="login3" style="width:120" onKeyUp="toNext(2)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+    <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno3" onclick="ShowDate(F_fileno3)" type="text" class="login3" style="width:120" onKeyUp="toNext(3)"  onblur="checkdate(F_fileno3,F_difftime3,3)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime3"  onclick="ShowDate(F_difftime3)" type="text" class="login3" style="width:120" onKeyUp="toNext(3)" onblur="checkedate(F_fileno3,F_difftime3,3)"></td>
+     <td id="daycount3"></td>
+     <td align="center" nowrap>
+          <span id="daycountmoney3"></span>
+          <input name="F_policy" id="F_policy3" type="text" class="login3" style="width:120" onKeyUp="toNext(3)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy3')" class="bt1" readonly></td>
+     <td align="center" nowrap><input name="F_prodName"  id="F_prodName3" type="text"  style="width:120" class='login3' onKeyUp="toNext(3)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney3&F_prodName=F_prodName3&F_ssubmoney=F_ssubmoney3&daycount='+document.getElementById('daycount3').innerHTML,document.getElementById('daycount3').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(3)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo3" type="text" class="login3" style="width:120" onKeyUp="toNext(3)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney3" type="text" class="login3" style="width:120" onKeyUp="toNext(3)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+    <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno4" onclick="ShowDate(F_fileno4)" type="text" class="login3" style="width:120" onKeyUp="toNext(4)"  onblur="checkdate(F_fileno4,F_difftime4,4)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime4"  onclick="ShowDate(F_difftime4)" type="text" class="login3" style="width:120" onKeyUp="toNext(4)" onblur="checkedate(F_fileno4,F_difftime4,4)"></td>
+     <td id="daycount4"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney4"></span>
+	 <input name="F_policy" id="F_policy4" type="text" class="login3" style="width:120" onKeyUp="toNext(4)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy4')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName4" type="text"  style="width:120" class='login3' onKeyUp="toNext(4)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney4&F_prodName=F_prodName4&F_ssubmoney=F_ssubmoney4&daycount='+document.getElementById('daycount4').innerHTML,document.getElementById('daycount4').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(4)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo4" type="text" class="login3" style="width:120" onKeyUp="toNext(4)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney4" type="text" class="login3" style="width:120" onKeyUp="toNext(4)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno5" onclick="ShowDate(F_fileno5)" type="text" class="login3" style="width:120" onKeyUp="toNext(5)"  onblur="checkdate(F_fileno5,F_difftime5,5)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime5"  onclick="ShowDate(F_difftime5)" type="text" class="login3" style="width:120" onKeyUp="toNext(5)" onblur="checkedate(F_fileno5,F_difftime5,5)"></td>
+     <td id="daycount5"></td>
+     <td align="center" nowrap>
+        <span id="daycountmoney5"></span>
+        <input name="F_policy" id="F_policy5" type="text" class="login3" style="width:120" onKeyUp="toNext(5)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy5')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName5" type="text"  style="width:120" class='login3' onKeyUp="toNext(5)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney5&F_prodName=F_prodName5&F_ssubmoney=F_ssubmoney5&daycount='+document.getElementById('daycount5').innerHTML,document.getElementById('daycount5').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(5)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo5" type="text" class="login3" style="width:120" onKeyUp="toNext(5)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney5" type="text" class="login3" style="width:120" onKeyUp="toNext(5)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno6" onclick="ShowDate(F_fileno6)" type="text" class="login3" style="width:120" onKeyUp="toNext(6)"  onblur="checkdate(F_fileno6,F_difftime6,6)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime6"  onclick="ShowDate(F_difftime6)" type="text" class="login3" style="width:120" onKeyUp="toNext(6)" onblur="checkedate(F_fileno6,F_difftime6,6)"></td>
+     <td id="daycount6"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney6"></span>
+	 <input name="F_policy" id="F_policy6" type="text" class="login3" style="width:120" onKeyUp="toNext(6)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy6')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName6" type="text"  style="width:120" class='login3' onKeyUp="toNext(6)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney6&F_prodName=F_prodName6&F_ssubmoney=F_ssubmoney6&daycount='+document.getElementById('daycount6').innerHTML,document.getElementById('daycount6').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(6)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo6" type="text" class="login3" style="width:120" onKeyUp="toNext(6)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney6" type="text" class="login3" style="width:120" onKeyUp="toNext(6)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno7" onclick="ShowDate(F_fileno7)" type="text" class="login3" style="width:120" onKeyUp="toNext(7)"  onblur="checkdate(F_fileno7,F_difftime7,7)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime7"  onclick="ShowDate(F_difftime7)" type="text" class="login3" style="width:120" onKeyUp="toNext(7)" onblur="checkedate(F_fileno7,F_difftime7,7)"></td>
+     <td id="daycount7"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney7"></span>
+	 <input name="F_policy" id="F_policy7" type="text" class="login3" style="width:120" onKeyUp="toNext(7)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy7')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName7" type="text"  style="width:120" class='login3' onKeyUp="toNext(7)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney7&F_prodName=F_prodName7&F_ssubmoney=F_ssubmoney7&daycount='+document.getElementById('daycount7').innerHTML,document.getElementById('daycount7').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(7)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo7" type="text" class="login3" style="width:120" onKeyUp="toNext(7)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney7" type="text" class="login3" style="width:120" onKeyUp="toNext(7)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno8" onclick="ShowDate(F_fileno8)" type="text" class="login3" style="width:120" onKeyUp="toNext(8)"  onblur="checkdate(F_fileno8,F_difftime8,8)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime8"  onclick="ShowDate(F_difftime8)" type="text" class="login3" style="width:120" onKeyUp="toNext(8)" onblur="checkedate(F_fileno8,F_difftime8,8)"></td>
+     <td id="daycount8"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney8"></span>
+         <input name="F_policy" id="F_policy8" type="text" class="login3" style="width:120" onKeyUp="toNext(8)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy8')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName8" type="text"  style="width:120" class='login3' onKeyUp="toNext(8)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney8&F_prodName=F_prodName8&F_ssubmoney=F_ssubmoney8&daycount='+document.getElementById('daycount8').innerHTML,document.getElementById('daycount8').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(8)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo8" type="text" class="login3" style="width:120" onKeyUp="toNext(8)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney8" type="text" class="login3" style="width:120" onKeyUp="toNext(8)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+ <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_fileno" id="F_fileno9" onclick="ShowDate(F_fileno9)" type="text" class="login3" style="width:120" onKeyUp="toNext(9)"  onblur="checkdate(F_fileno9,F_difftime9,9)"></td>
+     <td align="center" nowrap><input name="F_difftime"  id="F_difftime9"  onclick="ShowDate(F_difftime9)" type="text" class="login3" style="width:120" onKeyUp="toNext(9)" onblur="checkedate(F_fileno9,F_difftime9,9)"></td>
+     <td id="daycount9"></td>
+     <td align="center" nowrap>
+         <span id="daycountmoney9"></span>
+	 <input name="F_policy" id="F_policy9" type="text" class="login3" style="width:120" onKeyUp="toNext(9)" readonly><input type="button" value="..." onclick="togetmont('bareaquery.aspx?F_policy=F_policy9')" class="bt1"></td>
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName9" id="F_prodName9" type="text"  style="width:120" class='login3' onKeyUp="toNext(9)" readonly><input type="button" value="..." onclick="togetmont('areaquery.aspx?daycountmoney=daycountmoney9&F_prodName=F_prodName9&F_ssubmoney=F_ssubmoney9&daycount='+document.getElementById('daycount9').innerHTML,document.getElementById('daycount9').innerHTML)" class="bt1" readonly></td>
+      <td align="center" nowrap>
+         <select name="F_pfee" class="login3" style="width:60" onKeyUp="toNext(9)">
+	  #foreach($m1 in $selsnvehicle)
+            <option value="$m1.VEHICLEID">$m1.VEHICLENAME</option>
+	  #end
+	  </select>
+      </td>
+        <td align="center" nowrap><input name="F_pmemo"  id="F_pmemo9" type="text" class="login3" style="width:120" onKeyUp="toNext(9)"></td>
+	<td align="center" nowrap><input name="F_ssubmoney" id="F_ssubmoney9" type="text" class="login3" style="width:120" onKeyUp="toNext(9)" readonly></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td>
+  </tr>
+  </table>
+  #foreach($mm in $selbasicuserinfobasicbyusername)
+	  #if($!mm.LEVELNAME != "驻地业代") 
+	      <div align="center">
+		  <table width="100%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+		     <tr bgcolor="#FFFFFF" class="fCopy">
+		     <td align="center" nowrap colspan="2">申报常驻地
+		     <input name="F_policy" type="text" style="width:100"  class='login3' value="$!mm.ADDRESSNAME">
+		     <input name="F_fileno" type="hidden" class="login3" style="width:120"></td>
+		     <td align="center" width="95"  nowrap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="F_difftime"   type="hidden" class="login3" style="width:120" ></td>
+		     <td align="center" width="95"  nowrap><input name="F_prodName" type="hidden"  class='login3'></td>
+		      <td align="center"width="95"  nowrap>
+			 <input type="hidden" name="F_pfee" class="login3" style="width:60">
+		      </td>
+			<td align="center" colspan="2" nowrap>&nbsp;<input name="F_pmemo" type="hidden" class="login3" style="width:120">申报补助金额<input name="F_ssubmoney" type="text" class="login3" style="width:120" ></td>
+		       </tr>
+		     </table>
+		  </div>
+	  #else
+	      <div align="center" style="display:none">
+		  <table width="100%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+		     <tr bgcolor="#FFFFFF" class="fCopy">
+		     <td align="center" nowrap colspan="2">
+		     <input name="F_policy" type="hidden" style="width:100"  class='login3' value="">
+		     <input name="F_fileno" type="hidden" class="login3" style="width:120"></td>
+		     <td align="center" width="95"  nowrap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="F_difftime"   type="hidden" class="login3" style="width:120" ></td>
+		     <td align="center" width="95"  nowrap><input name="F_prodName" type="hidden"  class='login3'></td>
+		      <td align="center"width="95"  nowrap>
+			 <input type="hidden" name="F_pfee" class="login3" style="width:60">
+		      </td>
+			<td align="center" colspan="2" nowrap>&nbsp;<input name="F_pmemo" type="hidden" class="login3" style="width:120"><input name="F_ssubmoney" type="hidden" class="login3" style="width:120" ></td>
+		       </tr>
+		     </table>
+		  </div>
+	  #end
+  #end
+   <div align="center">
+  <input type="button" class="login2" value=" 保  存 " name="B22" onClick="spellStr(0,'N');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 上  报 " name="B222" onClick="spellStr(1,'F');">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="javascript:document.location.href='clfquery.aspx'">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 添加行 " name="B222" onClick="addRow();">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

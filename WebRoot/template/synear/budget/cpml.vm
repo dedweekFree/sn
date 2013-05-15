@@ -1,0 +1,146 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+	<title>===预算===</title> 
+	<script>
+		$(function(){
+			//计算固定费用小计
+			
+		});	
+	</script>
+</head>
+
+<body>
+ 	<input type="button" class="bt1" value=" 返   回 " onClick="javascript:window.location='report.aspx?code=$!form_deptcode&date=$!form_billdate';">
+	 <input type="button" class="bt1" value="导出Excel" onclick="javascript:exportMethod('tb');"> <br/> 
+	<!-- <label style="font-size:12px;">如果点击导出按钮后没有起效，请点击浏览器 工具--Internet选项--安全--自定义级别--对未标记为可安全执行脚本的ActiveX控件初始化并执行脚本   设置为启用 </label> -->
+	<div class="mainDiv" id="mdiv"> 
+	<table  border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+			<tr>
+				<td height="19"  width="3100" align="center" colspan="31"  style="font:25px; font-weight:bold;" >
+					$!form_billdate $!form_deptname 销售部销售计划表
+				</td> 
+			</tr>
+			<tr  class="FixedTitleRow">
+				<td height="19" width="100" align="center" rowspan="2"  nowrap="nowrap" class="FixedTitleColumn">产品规格</td> 
+				<td height="19" width="100" align="center" rowspan="2"  nowrap="nowrap" class="FixedTitleColumn">产品名称</td> 
+				<td height="19" width="100" align="center" rowspan="2"  nowrap="nowrap" class="FixedTitleColumn">包装规格</td> 
+				<td height="19" width="100" align="center" rowspan="2">公司统一出厂价（含税）</td> 
+				<td height="19" width="100" align="center" rowspan="2">标准成本（未税）</td> 
+				<td height="19" width="100" align="center" rowspan="2">分支经销商执行价格（含税）</td> 
+				<td height="19" width="100" align="center" rowspan="2">卖场平均供价（含税）</td> 
+				<td height="19" width="100" align="center" rowspan="2">经销商数量</td> 
+				<td height="19" width="100" align="center" rowspan="2">卖场数量</td> 
+				
+				<td height="19" width="700" align="center" colspan="7">卖场</td> 
+				<td height="19" width="700" align="center" colspan="7">经销商</td> 
+				<td height="19" width="800" align="center" colspan="8">合计</td> 
+			</tr>	
+			<tr>	
+				<td height="19" width="100" align="center">卖场供价未税收入</td> 
+				<td height="19" width="100" align="center">统一出厂价未税收入</td> 
+				<td height="19" width="100" align="center">标准成本金额</td> 
+				<td height="19" width="100" align="center">毛利</td> 
+				<td height="19" width="100" align="center">毛利率</td> 
+				<td height="19" width="100" align="center">卖场加价</td> 
+				<td height="19" width="100" align="center">毛利总额</td> 
+				
+				<td height="19" width="100" align="center">经销商供价未税收入</td> 
+				<td height="19" width="100" align="center">统一出厂价未税收入</td> 
+				<td height="19" width="100" align="center">标准成本金额</td> 
+				<td height="19" width="100" align="center">毛利</td> 
+				<td height="19" width="100" align="center">毛利率</td> 
+				<td height="19" width="100" align="center">经销商加价</td> 
+				<td height="19" width="100" align="center">毛利总额</td> 
+				
+				<td height="19" width="100" align="center">数量</td> 
+				<td height="19" width="100" align="center">供价未税收入</td> 
+				<td height="19" width="100" align="center">统一出厂价未税收入</td> 
+				<td height="19" width="100" align="center">标准成本金额</td> 
+				<td height="19" width="100" align="center">毛利</td> 
+				<td height="19" width="100" align="center">毛利率</td> 
+				<td height="19" width="100" align="center">卖场加价</td> 
+				<td height="19" width="100" align="center">毛利总额</td> 
+			</tr>
+			#foreach($m in $reportgetcpml)
+			<tr >
+				<td height="19" align="center">$!m.NAME1</td> 
+				<td height="19" align="center" name="yearz">$!m.NAME2</td> 
+				<td height="19" align="center" name="yearhj">$!m.SPEC</td> 
+				<td height="19" align="center" name="monthhj">$!m.NBZYJ</td> 
+				<td height="19" align="center" name="cy">$!m.CKCB</td>
+				<td height="19" align="center" name="cy">$!m.JXSZXJ</td>
+				<td height="19" align="center" name="cy">$!m.MCPJGJ</td>
+				<td height="19" align="center" name="cy">$!m.ZYMC</td>
+				<td height="19" align="center" name="cy">$!m.JXS</td>
+				
+				<td height="19" align="center">$!m.M1</td> 
+				<td height="19" align="center">$!m.M2</td> 
+				<td height="19" align="center">$!m.M3</td> 
+				<td height="19" align="center">$!m.M4</td> 
+				<td height="19" align="center">$!m.M5</td> 
+				<td height="19" align="center">$!m.M6</td> 
+				<td height="19" align="center">$!m.M7</td>
+				
+				<td height="19" align="center">$!m.J1</td> 
+				<td height="19" align="center">$!m.J2</td> 
+				<td height="19" align="center">$!m.J3</td> 
+				<td height="19" align="center">$!m.J4</td> 
+				<td height="19" align="center">$!m.J5</td> 
+				<td height="19" align="center">$!m.J6</td> 
+				<td height="19" align="center">$!m.J7</td>
+				
+				<td height="19" align="center">$!m.H0</td> 
+				<td height="19" align="center">$!m.H1</td> 
+				<td height="19" align="center">$!m.H2</td> 
+				<td height="19" align="center">$!m.H3</td> 
+				<td height="19" align="center">$!m.H4</td> 
+				<td height="19" align="center">$!m.H5</td> 
+				<td height="19" align="center">$!m.H6</td> 
+				<td height="19" align="center">$!m.H7</td> 
+				
+				
+			</tr>
+			#end
+			<tr>
+				<td height="19" align="center">固定费用合计</td> 
+				<td height="19" align="center" class="gdyearz"></td> 
+				<td height="19" align="center" class="gdyearhj"></td> 
+				<td height="19" align="center" class="gdmonthhj"></td> 
+				<td height="19" align="center" class="gdcy"></td> 
+				<td height="19" align="center">无</td> 
+			</tr>
+		</table>  
+		</div>
+	<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</html>
+

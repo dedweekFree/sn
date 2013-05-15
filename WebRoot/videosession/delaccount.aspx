@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>delaccount</web:sql>
+  <web:sql_type>delete</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>É¾³ý³É¹¦£¡</web:successMsg>
+  <web:failMsg>É¾³ýÊ§°Ü£¡</web:failMsg>
+  <web:url>account.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>videosession/message.vm</web:template>
+</web:page>

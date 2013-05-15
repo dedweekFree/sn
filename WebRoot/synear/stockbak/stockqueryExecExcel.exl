@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>stockqueryExecEx</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产品分类##产品名称##产品代码##批次号##库位##上期结存##入库数量##出库数量##回流数量##本期结存</web:col>
+  <web:key>INVCLASSNAME##INVNAME##INVCODE##BATCHCODE##UNITCODE##SQNNUMBER##INNNUMBER##OUTNNUMBER##TKNNUMBER##LEAVNNUMBER</web:key>
+  <web:name>产品出入库汇总</web:name>
+</web:page>
+
+
+

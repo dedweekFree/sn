@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>exportnewquerycompares</web:sql>
+  <web:db>Login</web:db>
+  <web:col>公司名称##系统名称##卖场产品编码##卖场产品名称##对应##NC产品编号##NC产品名称##NC产品规格</web:col>
+  <web:key>UNITNAME##DOCNAME##MCCPBM##MCCPMC##DUIYING##INVCODE##INVNAME##INVSPEC</web:key>
+  <web:name>卖场产品与NC产品对照明细表</web:name>
+</web:page>
+
+
+

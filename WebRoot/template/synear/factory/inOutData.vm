@@ -1,0 +1,102 @@
+<HTML>
+<HEAD>		
+<title>出入库流水帐</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<style type="text/css">
+<!--
+.size {
+	font-size: 12px;
+}
+-->
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+</SCRIPT>
+</head>
+<body>
+<table  border="1" cellspacing="0" cellpadding="0" bordercolor="#000000">
+  <tr>
+    <td width="60" rowspan="2" align="center" valign="bottom" class="size">产品编码</td>
+    <td width="60" rowspan="2" align="center" valign="bottom" class="size">产品品称</td>
+    <td width="60" rowspan="2" align="center" valign="bottom" class="size">产品规格</td>
+    <td width="60" rowspan="2" align="center" valign="bottom" class="size">期初库存</td>
+     #foreach ($m in $getInTeam)
+     $m.TEAM
+       #if($m.TEAM=='10')
+          <td colspan="$m.NNUM" align="center" class="size">A班入库</td>
+       #end
+     #end
+     #foreach ($m in $getInTeam)
+       #if($m.TEAM=='20')
+          <td colspan="$m.NNUM" align="center" class="size">B班入库</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeam)
+       #if($m.TEAM=='10')
+          <td colspan="$m.NNUM" align="center" class="size">A班出库</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeam)
+       #if($m.TEAM=='20')
+          <td colspan="$m.NNUM" align="center" class="size">B班出库</td>
+       #end
+     #end
+    <td width="40" rowspan="2" align="center" valign="bottom" class="size">盈亏</td>
+    <td width="63" rowspan="2" align="center" valign="bottom" class="size">期末库存</td>
+  </tr>
+  <tr class="size">
+     #foreach ($m in $getInTeamType)
+       #if($m.TEAM=='10')
+         <td width="61" align="center" class="size">$m.INDISNAME</td>
+       #end
+     #end
+     #foreach ($m in $getInTeamType)
+       #if($m.TEAM=='20')
+         <td width="61" align="center" class="size">$m.INDISNAME</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeamType)
+       #if($m.TEAM=='10')
+         <td width="61" align="center" class="size">$m.OUTDISNAME</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeamType)
+       #if($m.TEAM=='20')
+         <td width="61" align="center" class="size">$m.OUTDISNAME</td>
+       #end
+     #end
+  </tr>
+  #foreach ($n in $getStockProd)
+  <tr>
+    <td>$n.ITEMCODE</td>
+    <td>$n.ITEMDESC</td>
+    <td>$n.ITEMSPEC</td>
+    <td align="center" id="QC${n.INVCODE}">&nbsp;</td>
+     #foreach ($m in $getInTeamType)
+       #if($m.TEAM=='10')
+         <td width="61" align="center" class="size" id="A${m.INDISCODE}IN${n.INVCODE}">0</td>
+       #end
+     #end
+     #foreach ($m in $getInTeamType)
+       #if($m.TEAM=='20')
+         <td width="61" align="center" class="size" id="B${m.INDISCODE}IN${n.INVCODE}">0</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeamType)
+       #if($m.TEAM=='10')
+         <td width="61" align="center" class="size" id="A${m.OUTDISCODE}IN${n.INVCODE}">0</td>
+       #end
+     #end
+     #foreach ($m in $getOutTeamType)
+       #if($m.TEAM=='20')
+         <td width="61" align="center" class="size" id="B${m.OUTDISCODE}IN${n.INVCODE}">0</td>
+       #end
+     #end
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  #end
+</table>
+</body>
+</html>

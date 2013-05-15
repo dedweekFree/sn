@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>selsnfixedcontractdetailbypageexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>签报号##招标流水号##合同编号##供应商编码##供应商名称##资产名称##规格型号##数量##单价##金额##使用部门##清单明细##付款条款</web:col>
+  <web:key>QBH##LSH##HTBH##CUSTCODE##CUSTNAME##INVNAME##GGXH##SL##DJ##JE##DEPTNAME##VNOTE##FKTK</web:key>
+  <web:name>固定资产类合同信息</web:name>
+</web:page>
+
+
+

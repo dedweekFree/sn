@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>freeaccount</web:sql>
+  <web:sql_type>delete</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>释放成功！</web:successMsg>
+  <web:failMsg>释放失败！</web:failMsg>
+  <web:url>account.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>videosession/message.vm</web:template>
+</web:page>

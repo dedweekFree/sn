@@ -1,0 +1,57 @@
+<html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('monthdate1').value=Today;
+	document.getElementById('monthdate2').value=Today;
+    }
+ function init(){
+    GetDateString();
+    }
+</script>
+<title>季度供方评价表</title>
+</head>
+
+<body onload="init()">
+<form name="thisform" action="Monreportdetail.aspx" method="post">
+  <table class="datatable">
+     <tr class="trcolor">
+	<td>时间:</td>
+	<td align="left"><input type="text" name="monthdate1" id="monthdate1" value="" onclick="ShowDate(this)">-<input type="text" name="monthdate2" id="monthdate2" value="" onclick="ShowDate(this)"></td>
+	<td>供应商:</td>
+	<td align="left"><input type="text" name="custname" value=""></td>
+     </tr>
+	<tr class="trcolor">
+	<td>供货产品:</td>
+	<td align="left"><input type="text" name="invname" value=""></td>
+	<td colspan="2"><input type="submit" name="btn" class="bt1" value="查&nbsp;&nbsp;询"></td>
+    </tr>
+</table>
+</form>
+</body>
+</html>

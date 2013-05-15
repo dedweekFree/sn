@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+	var abc = new Array();
+	 a = [['序号','质检','质检时间']
+	 #set($i=0)
+	 #foreach($!m in $iszhijian)
+	 ,['$i','$m.QUALITYTYPE','$m.QUALITYDATE']
+	 #set($i=$i+1)
+	 #end
+	 ]
+	 function aabbcc(){
+	 var x = a.length;
+		if(x!=1){
+			document.getElementById("td").style.display='none'
+		}
+	 }
+	function sadd(id,k){
+		var a  = parseFloat(document.getElementById("lejidaohuo"+k).value);
+		if(isNaN(a)){
+			a=0;
+		}
+		var b = parseFloat(document.getElementById(id).value);
+		var c = parseFloat(a+b);
+		var d = parseFloat(document.getElementById("nordernum"+k).value);
+		var e = parseFloat(document.getElementById("bcslhidden"+k).value);
+		if(parseFloat(b+a-e)>d*1.05){
+			alert("输入不能超过5%");
+			document.getElementById(id).value=0;
+			return false;
+		}
+		document.getElementById("naccumarrvnum"+k).value = c;
+	}
+	function ssub(){
+		var tab = document.getElementById("table1");
+		var a=parseFloat(0);
+		for(var i=0;i<tab.rows.length-3;i++){
+			if(document.getElementById("narrvnum"+i).value=="0"||document.getElementById("narrvnum"+i).value==""){				
+				a = 0;
+			}else{
+				a +=parseFloat(document.getElementById("narrvnum"+i).value);
+			}
+document.getElementById("leijidh"+i).value=((parseFloat(document.getElementById("lejidaohuo"+i).value)+parseFloat(document.getElementById("narrvnum"+i).value))-parseFloat(document.getElementById("bcslhidden"+i).value));
+		}alert(a);
+		if(a=="0"){
+			if(confirm("输入0将会删除到货单，是否确定")){
+			form1.action="PrayBillInfodelsub.aspx";
+			form1.submit();
+			}
+		}else{
+		  form1.action="updatePrayBillListsub.aspx";
+		  form1.submit();
+		}
+	}
+</script>
+</head>
+
+<body onload="aabbcc()">
+<form name="form1" action="" method="post" target="dataframe">
+<table class="datatable" id="table1">
+  <tr class="trcolor">
+    <td colspan="5" align="left">采购订单:$form_varrordercode
+    <input type="hidden" name="varrordercode" value=$form_varrordercode>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>存货编码/存货名称</td>
+    <td>批次号</td>
+    <td>订单数量</td>
+    <td>已到数量</td>
+    <td>本次数量</td>
+  </tr>
+#set($i=0)
+#foreach($!m in $selPrayBillArriveInfo)
+  <tr class="trcolor">
+    <td>$!m.INVCODE / $!m.INVNAME</td>
+    <td>$!m.VPRODUCENUM</td>
+    <td>$!m.NORDERNUM<input type="hidden" name="nordernum" id="nordernum$i" value="$!m.NORDERNUM"></td>
+    <td>$!m.LEIJIDAOHUO<input type="hidden" name="lejidaohuo" id="lejidaohuo$i" value="$!m.LEIJIDAOHUO">
+    </td>
+    <td>
+    <input type="text" name="narrvnum" id="narrvnum$i" value="$!m.NARRVNUM" onblur=sadd(this.id,$i) onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+    <input type="hidden" name="bcslhidden" id="bcslhidden$i" value="$!m.NARRVNUM">
+    <input type="hidden" name="leijidh" id="leijidh$i" value="$!m.LEIJIDAOHUO">
+    <input type="hidden" name="carriveorderid" value="$!m.CARRIVEORDERID">
+    <input type="hidden" name="carriveorder_bid" value="$!m.CARRIVEORDER_BID">
+    <input type="hidden" name="naccumarrvnumm" id="naccumarrvnumm$i" value="$!m.NACCUMARRVNUM">
+    <input type="hidden" name="naccumarrvnum" id="naccumarrvnum$i" value="">
+    <input type="hidden" name="corderid" value="$!m.CORDERID">
+    <input type="hidden" name="corder_bid" value="$!m.CORDER_BID">
+    </td>
+  </tr>
+#set($i=$i+1)
+#end
+  <tr class="trcolor">
+	<td colspan="2" id="td"><input type="button" class="bt1" name="b1" value="确&nbsp;&nbsp;定" onclick="ssub()"/></td>
+	<td colspan="3"><input type="button" class="bt1" name="b2" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/><td>
+  </tr>
+</table>
+</form>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

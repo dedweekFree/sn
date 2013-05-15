@@ -1,0 +1,200 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>企业往来对账单</title>
+<script language="javascript">
+   var num1=0;
+   var num2=0;
+   var num3=0;
+   var num4=0;
+   var weikaimoney = 0;
+   var remark = "";
+   var resultype = "";
+   function toadd(url){
+       document.form1.action=url;
+       document.all.form1.target="saveframe";
+       document.form1.submit();
+   }
+   function testok2(){
+	document.thisform.action="addaccount.aspx";
+	document.thisform.submit();
+   }
+   function toedit(url){
+       document.form1.action=url;
+       document.all.form1.target="saveframe";
+       document.form1.submit();
+   }
+   function testok(){
+	document.thisform.action="editaccount.aspx";
+	document.thisform.submit();
+   }
+    function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue.substring(0,7);
+	 }
+   function printpr1(){
+	oldhtml=window.document.body.innerHTML;
+        bdhtml=window.document.body.innerHTML;
+        sprnstr="<!--startprint1-->";
+        eprnstr="<!--endprint1-->";
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+18);
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML=prnhtml;
+        window.print();
+        window.document.body.innerHTML=oldhtml; 
+   }
+   function tosave(url){
+      if(document.form2.result.value == ""){
+	 alert("对账结果不能为空");
+	 return false;
+      }
+      document.form1.result.value=document.form2.result.value;
+      document.form1.accountremark.value = document.form2.accountremark.value;
+      if(document.form2.result.value == "1"){
+          document.form1.action=url+"?ischecked=1";
+      }else{
+          document.form1.action=url+"?ischecked=0";
+      }
+      document.form1.target="saveframe";
+      document.form1.submit();
+   }
+   function Subtr(arg1,arg2){
+     var r1,r2,m,n;
+     try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+     try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+     m=Math.pow(10,Math.max(r1,r2));
+     n=(r1>=r2)?r1:r2;
+     return ((arg1*m-arg2*m)/m).toFixed(n);
+ } 
+ function accAdd(arg1,arg2){ 
+	var r1,r2,m; 
+	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+	m=Math.pow(10,Math.max(r1,r2)) 
+	return (arg1*m+arg2*m)/m 
+ } 
+</script>
+</head>
+<body>
+<form name="form1" method="post">
+<input onClick="history.back(-1)" type=button value=返回 class="bt1">&nbsp;
+</form>
+<!--startprint1-->
+<form name="form2" method="post">
+<p><h3 align="center">企业往来对账单</h1></p>
+<table class="datatable" border=0 cellpadding=0 cellspacing=0>
+#foreach($!m1 in $selenteraccount1)
+  <tr align="center">
+    <td width="20%">公司名称：</td>
+    <td colspan="4" width="40%">#if($m1.CUSTNAME != "")$m1.CUSTNAME#else&nbsp;#end</td>
+  </tr>
+  <tr  align="center">
+    <td width="20%">对账时间：</td>
+    <td colspan="4" width="40%">$m1.YEAR$m1.MONTHNAME</td>
+  </tr>
+  <tr  align="center">
+    <td width="20%">$m1.MONTHNAME初期初余额：</td>
+    <td colspan="4" width="40%">#if($m1.BALANCE != "")$m1.BALANCE#else&nbsp;#end</td>
+  </tr>
+  <script>
+weikaimoney = $m1.MONEY;
+remark = '$m1.REMARK';
+resultype = '$m1.RESULTYPE'
+  </script>
+
+  <tr  align="center">
+    <td colspan="3">$m1.MONTHNAME发货明细</td>
+    <td colspan="2">$m1.MONTHNAME收款额</td>
+  </tr>
+  <tr  align="center">
+    <td>存货名称</td>
+    <td width="10%">数量</td>
+    <td width="10%">含税金额</td>
+    <td width="10%">日期</td>
+    <td width="10%">金额</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $selenteraccountdetail1)
+  <tr align="center">
+    <td>$m.INVNAME</td>
+    <td width="10%">#if($m.QUANTITY!="")$m.QUANTITY#else&nbsp;#end</td>
+    <td width="10%">#if($m.TAXMONEY!="")$m.TAXMONEY#else&nbsp;#end</td>
+    <td width="10%">#if($m.GETMONEYDATE!="")$m.GETMONEYDATE#else&nbsp;#end</td>
+    <td width="10%">#if($m.GETMONEY!="")$m.GETMONEY#else&nbsp;#end</td>
+  </tr>
+  #set($i=$i+1)
+  <script>
+        num1=accAdd(num1,$m.QUANTITY);
+	num2=accAdd(num2,$m.TAXMONEY);
+	num3=accAdd(num3,$m.GETMONEY);
+   </script>
+  #end
+  <tr align="center">
+    <td>合计</td>
+    <td width="10%">
+        <script>
+	    document.write(num1);
+	  </script></td>
+    <td width="10%">
+    <script>
+	    document.write(num2);
+	  </script></td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">
+    <script>
+	    document.write(num3);
+	  </script></td>
+  </tr>
+  <tr align="center">
+    <td>$m1.MONTHNAME期末余额</td>
+    <td width="10%"><script>
+	    document.write(Subtr($m1.BALANCE,Subtr(num3,num2)));
+	  </script></td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">对账结果</td>
+    <td width="10%">
+	<select name="result">
+	<option value=""></option>
+	#foreach($!m1 in $selenteraccount1)  
+	   <option value="1" #if($m1.RESULTYPE == "1") selected #end>相符</option>
+	   <option value="0" #if($m1.RESULTYPE == "0") selected #end>不符</option>
+	#end
+	</select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>截止$m1.MONTHNAME$m1.DAYNAME未开发票金额</td>
+    <td width="10%"><script>
+	    document.write(weikaimoney);
+	  </script></td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+  </tr>
+  <tr align="center">
+      <td>供应商备注</td>
+      <td colspan="4" align="left">$!m1.VENDORREMARK&nbsp;</td>
+  </tr>
+  <tr align="center">
+    <td>财务备注</td>
+    <td colspan="4" align="left"><script>
+    document.write(remark);
+	  </script>&nbsp;
+	  </td>
+  </tr>
+  #end
+</table>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="font-size:12px">公司签章：</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="font-size:12px">日期：</font>
+</form>
+<!--endprint1-->
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

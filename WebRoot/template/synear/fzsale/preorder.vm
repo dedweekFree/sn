@@ -1,0 +1,570 @@
+<HTML>
+<HEAD>		
+<title>费用申请表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var bData1=new Array(); 
+customer=[
+      ['客户主键','客户名称','档案主键','价格组','信誉额度','客户代码','小客户','预订单占用金额','库存组织','客户类型','是否信用控制','是否两地发货']
+ #foreach($m in $getCustomerDoc)
+      ,['$m.PK_CUBASDOC','$m.CUSTNAME','$m.PK_CUMANDOC','$m.PK_PRICEGROUPCORP','$m.ORDAWMNY','$m.CUSTCODE','$m.DEF2','$m.PREMNY','$m.PK_CALBODY','$m.ORGROLE','$m.FREEOFCREMNYCHECK','$m.STATUS']
+ #end
+]
+
+ #foreach($m in $getSysPara)
+     var planscroll='$m.PLANSCROLL'
+ #end
+
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form1.pk_preorder.value = paras[0];
+      #if($session_ROLES=="R1834")
+         document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	 document.all.form1.custdocpk.value =document.all.thisform.custdocpk.value;
+	 document.all.form1.pricegroup.value =document.all.thisform.pricegroup.value;
+	 document.all.form1.maxmoney.value =document.all.thisform.maxmoney.value;
+	 document.all.form1.smallcust.value =document.all.thisform.smallcust.value;
+      #else
+	  for(var i=1;i<customer.length;i++){
+	    if(paras[1]==customer[i][0]){
+	      document.all.form1.custpk.value =customer[i][0];
+	      document.form1.custname.value =customer[i][1];
+	      document.all.form1.custdocpk.value =customer[i][2];
+	      document.all.form1.pricegroup.value =customer[i][3];
+	      document.all.form1.maxmoney.value =customer[i][4];
+	      document.form1.custcode.value =customer[i][5];
+	      document.form1.smallcust.value =customer[i][6];
+            }
+	 }
+      #end
+       document.form1.scroll.value = planscroll;
+       document.form1.target="_self";
+       document.form1.action="viewPreorder.aspx";
+       document.form1.submit();
+}
+
+//修改
+function editRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form1.pk_preorder.value = paras[0];
+       document.form1.vreceiptcode.value = paras[4];
+      #if($session_ROLES=="R1834")
+         document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	 document.all.form1.custdocpk.value =document.all.thisform.custdocpk.value;
+	 document.all.form1.pricegroup.value =document.all.thisform.pricegroup.value;
+	 document.all.form1.maxmoney.value =document.all.thisform.maxmoney.value;
+	 document.all.form1.smallcust.value =document.all.thisform.smallcust.value;
+	 document.all.form1.pk_calbody.value =document.all.thisform.pk_calbody.value;
+	 
+      #else
+	  for(var i=1;i<customer.length;i++){
+	    if(paras[1]==customer[i][0]){
+	      document.all.form1.custpk.value =customer[i][0];
+	      document.form1.custname.value =customer[i][1];
+	      document.all.form1.custdocpk.value =customer[i][2];
+	      document.all.form1.pricegroup.value =customer[i][3];
+	      document.all.form1.maxmoney.value =customer[i][4];
+	      document.form1.custcode.value =customer[i][5];
+	      document.form1.smallcust.value =customer[i][6];
+	      document.all.form1.pk_calbody.value =customer[i][8];
+            }
+	 }
+      #end
+       document.all.form1.custcls.value = paras[3];
+       document.form1.scroll.value = planscroll;
+       document.form1.target="_self";
+       //if(document.form1.pk_preorder.value.charAt(6)=='P'){
+	  if(paras[3]=='C'){
+	     if(paras[5]=='Y'){
+	       document.form1.action="editPreorderSt.aspx";
+	     }else{
+	       document.form1.action="editPreorder.aspx";
+	     }
+	  }else{
+	      document.form1.action="sseditPreorder.aspx";
+	  }
+       /*}
+       else{
+	  if(paras[3]=='C'){
+	     if(paras[5]=='Y'){
+	       document.form1.action="editPreorderYJSt.aspx";
+	     }else{
+	       document.form1.action="editPreorderYJ.aspx";
+	     }
+	  }else{
+	      alert("目前不支持");
+	      return false;
+	      //document.form1.action="sseditPreorderYJ.aspx";
+	  }
+       }*/
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.pk_preorder.value = paras[0];
+	   document.form1.proc.value ='delete'
+	   document.form1.action="delPreorderSubmit.aspx";
+	   //document.form1.action="newPreorderSubmittest.nc";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+   }
+}
+
+function testNc(){
+    
+      //document.all.form1.action="newPreorderSubmittest.nc";
+      //document.all.form1.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   thisform.page.value=1;
+   thisform.submit();
+}
+
+function checkinput2()
+{  
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择客户！");
+	 return false;
+      }
+      #if($session_ROLES=="R1834")
+         document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	 document.all.form1.custdocpk.value =document.all.thisform.custdocpk.value;
+	 document.all.form1.pricegroup.value =document.all.thisform.pricegroup.value;
+	 document.all.form1.maxmoney.value =document.all.thisform.maxmoney.value;
+	 document.all.form1.smallcust.value =document.all.thisform.smallcust.value;
+	 document.all.form1.premny.value =document.all.thisform.premny.value;
+	 if(document.all.thisform.custcls.value=='C'){
+	   if(document.all.thisform.freeofcremnycheck.value=='N'){
+	      if((parseFloat(document.all.form1.maxmoney.value)-parseFloat(document.all.form1.premny.value))<=0){
+	         alert("信誉余额:"+document.all.form1.maxmoney.value+",预订单占用"+document.all.form1.premny.value+",不能订货！");
+		 return false;
+	      }
+	    }
+	    document.all.form1.action="testPreorder.aspx";
+	 }else{
+	       document.all.form1.action="sstestPreorder.aspx";
+	 }
+      #else
+	  for(var i=1;i<customer.length;i++){
+	    if(document.all.thisform.custpk.value==customer[i][0]){
+	      document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	      document.form1.custname.value =customer[i][1];
+	      document.all.form1.custdocpk.value =customer[i][2];
+	      document.all.form1.pricegroup.value =customer[i][3];
+	      document.all.form1.maxmoney.value =customer[i][4];
+	      document.all.form1.pk_calbody.value =customer[i][8];
+	      document.all.form1.custcls.value =customer[i][9];
+	      document.all.thisform.status.value =customer[i][11];
+	      
+	      if(customer[i][9]=='C'){
+	        if(customer[i][10]=='N'){
+	         if((parseFloat(customer[i][4])-parseFloat(customer[i][7]))<=0){
+	            alert("信誉余额:"+customer[i][4]+",预订单占用"+customer[i][7]+",不能订货！");
+		    return false;
+		 }
+		}
+		document.all.form1.action="testPreorder.aspx";
+	      }else{
+	         document.all.form1.action="sstestPreorder.aspx";
+	      }
+
+	      document.form1.custcode.value =customer[i][5];
+	      document.form1.smallcust.value =customer[i][6];
+
+	      document.thisform.custname.value =customer[i][1];
+	      document.all.thisform.custdocpk.value =customer[i][2];
+	      document.all.thisform.pricegroup.value =customer[i][3];
+	      document.all.thisform.maxmoney.value =customer[i][4];
+	      document.thisform.custcode.value =customer[i][5];
+	      document.thisform.smallcust.value =customer[i][6];
+	      document.thisform.custcls.value =customer[i][9];
+	      document.thisform.scroll.value = planscroll;
+            }
+	 }
+      #end
+      document.form1.scroll.value = planscroll;
+      document.thisform.scroll.value = planscroll;
+      
+      document.all.form1.target="saveframe";
+      document.all.form1.submit();
+}
+
+function checkinput3()
+{  
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择客户！");
+	 return false;
+      }
+      #if($session_ROLES=="R1834")
+         document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	 document.all.form1.custdocpk.value =document.all.thisform.custdocpk.value;
+	 document.all.form1.pricegroup.value =document.all.thisform.pricegroup.value;
+	 document.all.form1.maxmoney.value =document.all.thisform.maxmoney.value;
+	 document.all.form1.smallcust.value =document.all.thisform.smallcust.value;
+	 document.all.form1.premny.value =document.all.thisform.premny.value;
+	 if(document.all.thisform.custcls.value=='C'){
+	   if(document.all.thisform.freeofcremnycheck.value=='N'){
+	      if((parseFloat(document.all.form1.maxmoney.value)-parseFloat(document.all.form1.premny.value))<=0){
+	         alert("信誉余额:"+document.all.form1.maxmoney.value+",预订单占用"+document.all.form1.premny.value+",不能订货！");
+		 return false;
+	      }
+	    }
+	  }
+      #else
+	  for(var i=1;i<customer.length;i++){
+	    if(document.all.thisform.custpk.value==customer[i][0]){
+	      document.all.form1.custpk.value =document.all.thisform.custpk.value;
+	      document.form1.custname.value =customer[i][1];
+	      document.all.form1.custdocpk.value =customer[i][2];
+	      document.all.form1.pricegroup.value =customer[i][3];
+	      document.all.form1.maxmoney.value =customer[i][4];
+	      if(customer[i][9]=='C'){	      
+	        if(customer[i][10]=='N'){
+	         if((parseFloat(customer[i][4])-parseFloat(customer[i][7]))<=0){
+	            alert("信誉余额:"+customer[i][4]+",预订单占用"+customer[i][7]+",不能订货！");
+		    return false;
+		 }
+		}
+	      }
+	      document.form1.custcode.value =customer[i][5];
+	      document.form1.smallcust.value =customer[i][6];
+	      document.all.form1.pk_calbody.value =customer[i][8];
+	      document.all.form1.custcls.value =customer[i][9];
+
+	      document.thisform.custname.value =customer[i][1];
+	      document.all.thisform.custdocpk.value =customer[i][2];
+	      document.all.thisform.pricegroup.value =customer[i][3];
+	      document.all.thisform.maxmoney.value =customer[i][4];
+	      document.thisform.custcode.value =customer[i][5];
+	      document.thisform.smallcust.value =customer[i][6];
+	      document.thisform.pk_calbody.value =customer[i][8];
+	      document.thisform.custcls.value =customer[i][9];
+	      document.thisform.scroll.value = planscroll;
+	      document.all.thisform.status.value =customer[i][11];
+            }
+	 }
+      #end
+      document.form1.scroll.value = planscroll;
+      document.thisform.scroll.value = planscroll;
+      document.all.form1.action="testPreorderYJ.aspx";
+      document.all.form1.target="saveframe";
+      document.all.form1.submit();
+}
+
+function aaa(){
+	var a ='$!form_aaa';
+	if(a=='1'){
+		formx.submit();
+	}else{
+	
+	}
+}
+
+function testok()
+{  
+   if(document.all.thisform.status.value=='N')
+       thisform.action="newPreorder.aspx";
+   else
+       thisform.action="newPreorderSt.aspx";
+   thisform.submit();
+}
+
+function testok2()
+{  
+   //alert("OK")
+   document.all.form1.action="prenewPreorderYJ.aspx";
+   document.all.form1.submit();
+}
+
+function testok3()
+{  
+   if(document.all.thisform.status.value=='N')
+       thisform.action="newPreorderYJ.aspx";
+   else
+       thisform.action="newPreorderYJSt.aspx";
+   thisform.submit();
+}
+
+function sstestok()
+{  
+   thisform.action="ssnewPreorder.aspx";
+   thisform.submit();
+}
+
+function sstestok2()
+{  
+   //alert("OK")
+   document.all.form1.action="ssprenewPreorderYJ.aspx";
+   document.all.form1.submit();
+}
+
+function sstestok3()
+{  
+   thisform.action="ssnewPreorderYJ.aspx";
+   thisform.submit();
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" action="preorder.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">下单时间(起)</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate" type="text" class="login" id="billdate" value="$!form_billdate" readonly><input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >
+			</td>	
+			
+			<td class="tdlabel" width="10%">下单时间(止)</td>
+			<td class="tdinput" width="20%">
+                         <input name="billdate2" type="text" class="login" id="billdate2" value="$!form_billdate2" readonly><input type="button" value="↓" onClick="ShowDate(billdate2);" class="button" name="button23" >
+			</td>
+			
+			</td>	
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%"><span class="style3 style1">
+		#if($session_ROLES=="R1834") 
+			#foreach($n in $getFzCustomerInfo) 
+			      $!n.CUSTNAME<input type=hidden name=custpk value="$!n.PK_CUBASDOC" >
+			      <input type=hidden name=custdocpk value="$!n.PK_CUMANDOC" >
+			      <input type=hidden name=pricegroup value="$!n.PK_PRICEGROUPCORP" >
+			      <input type="hidden" name="maxmoney" value="$!n.ORDAWMNY">
+			      <input type="hidden" name="custname" value="$!n.CUSTNAME">
+			      <input type="hidden" name="smallcust" value="$!n.DEF2">
+			      <input type="hidden" name="premny" value="$!n.PREMNY">
+			      <input type="hidden" name="pk_calbody" value="$!n.PK_CALBODY">
+			      <input type="hidden" name="custcls" value="$!n.ORGROLE">
+			      <input type="hidden" name="freeofcremnycheck" value="$!n.FREEOFCREMNYCHECK">
+			      <input type="hidden" name="status" value="$!n.STATUS">
+			#end		   
+		#else  
+			<select name="custpk"><option value=''>请选择客户</option>
+			   #foreach($m in $getCustomerDoc)
+			      <option value="$m.PK_CUBASDOC"  #if($form_custpk==$m.PK_CUBASDOC) selected #end>$m.CUSTNAME</option>
+			   #end
+			</select>
+			      <input type=hidden name=custdocpk value="">
+			      <input type=hidden name=pricegroup value="">
+			      <input type="hidden" name="maxmoney" value="0">
+			      <input type="hidden" name="custname" value="">
+			      <input type="hidden" name="smallcust" value="0">
+			      <input type="hidden" name="premny" value="0">
+			      <input type="hidden" name="pk_calbody" value="">
+			      <input type="hidden" name="custcls" value="">
+			      <input type="hidden" name="status" value="">
+			      
+	        #end
+		<input type="hidden" name="scroll" value="">
+              </span>		
+			</td>	
+			<td class="tdlabel" width="10%">客户代码</td>
+			<td class="tdinput" width="20%">
+		#if($session_ROLES=="R1834")
+			  #foreach($n in $getFzCustomerInfo)
+			      $!n.CUSTCODE<input type=hidden name=custcode value="$!n.CUSTCODE">	
+			   #end	
+		#else
+			 <input type=text name=custcode value="$!form_custcode" >
+	        #end
+			       	  		
+			</td>
+                </tr>
+		<tr>
+		  <td>
+		  </td><td align="left" colsapn="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;</td>
+		  <td>
+		  </td><td align="left"><input type="button" id="newc" value="新 建" onclick="checkinput2()"  class="bt1">
+		  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  <script>
+		  #foreach($m in $getPlanDate)
+		   if('$m.PLANMON'!='$m.PLANMON2' && '$m.HH'>'14'){
+			      //document.write("<input type=\"button\" id=\"newc\" value=\"有奖抢报\" onclick=\"checkinput3()\"  class=\"bt1\">");
+		   }else {
+		     if('$m.REALMON'!='$m.PLANMON2'){
+		        //document.write("<input type=\"button\" id=\"newc\" value=\"有奖抢报\" onclick=\"checkinput3()\"  class=\"bt1\">");
+		     }
+		   }
+		 #end
+		 </script>
+		  <!--input type="button" id="newc" value="有奖抢报" onclick="checkinput3()"  class="bt1"--></td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">订单编号</td>
+	<td nowrap="nowrap">客户名称</td>
+	<td nowrap="nowrap">客户代码</td>
+	<td nowrap="nowrap">下单时间</td>
+	<td nowrap="nowrap">产品总量</td>
+        <td nowrap="nowrap">单据状态</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getFzPreOrder) 
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.VRECEIPTCODE</td>
+			<td align="center" nowrap="nowrap">$m.CUSTNAME</td>
+			<td align="center" nowrap="nowrap">$m.CUSTCODE</td>
+		        <td align="center" nowrap="nowrap">$m.DBILLDATE</td>
+			<td align="center" nowrap="nowrap">$m.NNUMBER</td>
+			<td align="center" nowrap="nowrap">
+                           #if($m.FSTATUS=="1") 
+			           自由/$!m.FSTATUS
+			   #else
+				   #if($m.XXSTATUS=="3") 提交/$!m.XXSTATUS #end
+				   #if($m.XXSTATUS=="2") 审批/$!m.XXSTATUS #end
+				   #if($m.XXSTATUS=="0") 未上报/$!m.XXSTATUS #end
+				   #if($m.XXSTATUS=="4") 关闭/$!m.XXSTATUS #end
+				   #if($m.XXSTATUS=="5") 作废/$!m.XXSTATUS #end
+			   #end
+                        </td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.PK_PREORDER,$!m.PK_CUBASDOC,$!m.CCALBODYID,$!m.ORGROLE,$!m.VRECEIPTCODE,$!m.STATUS"">
+			<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>查看</font></a>&nbsp;&nbsp;
+			   #if($m.FSTATUS==1)
+			     <a style='cursor:hand' onclick="javascript:editRow()"><font color=blue>修改</font></a>&nbsp;&nbsp;
+			     <a style='cursor:hand' onclick="javascript:DelRow()"><font color=blue>删除</font></a>&nbsp;&nbsp;
+			   #end
+			</span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end   
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="pk_preorder">
+  <input type="hidden" name="vreceiptcode">
+  <input type="hidden" name="roleid" value="$!session_ROLES">
+  <input type="hidden" name="custdocpk" value="">
+  <input type="hidden" name="pricegroup" value="">
+  <input type="hidden" name="custpk" value="">
+  <input type="hidden" name="custname" value="">
+  <input type="hidden" name="custcode" value="">
+  <input type="hidden" name="maxmoney" value="">
+  <input type="hidden" name="smallcust" value="">
+  <input type="hidden" name="scroll" value="">
+  <input type="hidden" name="premny" value="">
+  <input type="hidden" name="pk_calbody" value="">
+  <input type="hidden" name="custcls" value="">
+  <input type="hidden" name="proc" value="">
+</form>
+
+<form name="form2" method="post" action="editInbill2.aspx">
+   <input type="hidden" name="vbillcode" value="">
+   <input type="hidden" name="vbatchcode" value="">
+   <input type="hidden" name="indate" value="">
+   <input type="hidden" name="pdate" value="">
+</form>
+<form name="formx" method="post" action="">
+   <input type="hidden" name="pk_preorder" value="">
+   <input type="hidden" name="aaa" value="1">
+   <span id = "subdata"></span>
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+
+</BODY>
+</HTML>

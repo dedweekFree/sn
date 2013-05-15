@@ -1,0 +1,383 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>产品毛利分析</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+		var dept=new Array(); 
+		dept=[
+		   ['区域主键','区域名称','大区主键']
+			#foreach($!m in $getSysSaleDept2)
+			  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+			#end
+		   ];
+
+function setF(departid,objid)
+{
+    if(departid==""){
+          var obj = document.getElementById(objid);
+          var length = obj.length;
+          for (var j=length-1; j>0; j--)
+          {
+            obj.options.remove(j);
+          }
+    	  for(var i=1;i<dept.length;i++){   
+              var oOption = document.createElement("OPTION");
+              obj.options.add(oOption);
+              oOption.innerText = dept[i][1];
+              oOption.value = dept[i][0];
+          }	  
+    }else{
+      var obj = document.getElementById(objid);
+      var length = obj.length;
+      for (var j=length-1; j>0; j--)
+      {
+        obj.options.remove(j);
+      }
+         
+      for(var i=1;i<dept.length;i++){
+        if(dept[i][2]==departid){
+          var oOption = document.createElement("OPTION");
+          obj.options.add(oOption);
+          oOption.innerText = dept[i][1];
+          oOption.value = dept[i][0];
+        }
+      }
+    }
+}
+
+function fsubmit()
+{
+    thisform.action="prodProfit.aspx"
+    thisform.page.value=1;
+    thisform.submit();
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+ function init()
+{
+ #foreach($m in $getProdProfitP)
+  try{
+     	      eval("document.all.PN${m.INVCODE}.innerText='$m.INVNAME'");
+	      eval("document.all.PS${m.INVCODE}.innerText='$m.INVSPEC'");
+	      eval("document.all.PN${m.INVCLASSCODE}P${m.INVCODE}.innerText='$m.INVCLASSNAME'");
+	      eval("document.all.Pa${m.INVCODE}.innerText=(parseFloat(document.all.NMNY${m.INVCODE}.innerText)-parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.NMNY${m.INVCODE}.innerText)>0){
+	         eval("document.all.Pav${m.INVCODE}.innerText=((parseFloat(document.all.NMNY${m.INVCODE}.innerText)- parseFloat(document.all.ACCMNY${m.INVCODE}.innerText))/ parseFloat(document.all.NMNY${m.INVCODE}.innerText)).toFixed(2)");
+	      }
+	      eval("document.all.Pb${m.INVCODE}.innerText=(parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)- parseFloat(document.all.PRODMNY${m.INVCODE}.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)>0){
+	         eval("document.all.Pbv${m.INVCODE}.innerText=((parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)- parseFloat(document.all.PRODMNY${m.INVCODE}.innerText))/ parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)).toFixed(2)");
+	      }
+	      eval("document.all.PN${m.INVCLASSCODE}.innerText='$m.INVCLASSNAME'");
+  }catch(e){}
+  try{
+	      eval("document.all.Pa${m.INVCLASSCODE}.innerText=(parseFloat(document.all.NMNY${m.INVCLASSCODE}.innerText)-parseFloat(document.all.ACCMNY${m.INVCLASSCODE}.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.NMNY${m.INVCLASSCODE}.innerText)>0){
+	         eval("document.all.Pav${m.INVCLASSCODE}.innerText=((parseFloat(document.all.NMNY${m.INVCLASSCODE}.innerText)- parseFloat(document.all.ACCMNY${m.INVCLASSCODE}.innerText))/ parseFloat(document.all.NMNY${m.INVCLASSCODE}.innerText)).toFixed(2)");
+	      }
+	      eval("document.all.Pb${m.INVCLASSCODE}.innerText=(parseFloat(document.all.ACCMNY${m.INVCLASSCODE}.innerText)- parseFloat(document.all.PRODMNY${m.INVCLASSCODE}.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.ACCMNY${m.INVCODE}.innerText)>0){
+	         eval("document.all.Pbv${m.INVCLASSCODE}.innerText=((parseFloat(document.all.ACCMNY${m.INVCLASSCODE}.innerText)- parseFloat(document.all.PRODMNY${m.INVCLASSCODE}.innerText))/ parseFloat(document.all.ACCMNY${m.INVCLASSCODE}.innerText)).toFixed(2)");
+	      }
+  }catch(e){}
+ #end
+  try{
+	      eval("document.all.Pa.innerText=(parseFloat(document.all.NMNY.innerText)-parseFloat(document.all.ACCMNY.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.NMNY.innerText)>0){
+	         eval("document.all.Pav.innerText=((parseFloat(document.all.NMNY.innerText)- parseFloat(document.all.ACCMNY.innerText))/ parseFloat(document.all.NMNY.innerText)).toFixed(2)");
+	      }
+	      eval("document.all.Pb.innerText=(parseFloat(document.all.ACCMNY.innerText)- parseFloat(document.all.PRODMNY.innerText)).toFixed(2)");
+	      if(parseFloat(document.all.ACCMNY.innerText)>0){
+	         eval("document.all.Pbv.innerText=((parseFloat(document.all.ACCMNY.innerText)- parseFloat(document.all.PRODMNY.innerText))/ parseFloat(document.all.ACCMNY.innerText)).toFixed(2)");
+	      }
+  }catch(e){}
+}
+
+function fsubmit2()
+{
+    thisform.action="prodProfit.exl";
+    thisform.submit();
+}
+</script>
+<body  onload="init();">	
+  <form name="thisform" method="post" action="prodProfit.aspx">
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="$!form_page">
+   <table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+      <input type="hidden" name="first" value="1">	
+      #if($session_ROLES=="R1465")
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">开始时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate" type="text" class="login" id="billdate" value="$!form_billdate" readonly><input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >
+			</td>
+                      <td class="tdlabel" width="10%">截止时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate2" type="text" class="login" id="billdate2" value="$!form_billdate2" readonly><input type="button" value="↓" onClick="ShowDate(billdate2);" class="button" name="button23" >
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%">
+				$session_NAME	<input type="hidden" name="custcode" value="$session_USERNAME">	
+			</td>
+			<td class="tdlabel" width="10%"></td>
+			<td class="tdinput" width="20%">
+			</td>
+                </tr>
+		<input type="hidden" name="iscust" value="1">
+      #else
+                <input type="hidden" name="iscust" value="">
+		<tr class="search"> 
+                      <td class="tdlabel" width="10%">开始时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate" type="text" class="login" id="billdate" value="$!form_billdate" readonly><input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >
+			</td>
+                      <td class="tdlabel" width="10%">截止时间</td>
+		  	<td class="tdinput" width="20%">
+                         <input name="billdate2" type="text" class="login" id="billdate2" value="$!form_billdate2" readonly><input type="button" value="↓" onClick="ShowDate(billdate2);" class="button" name="button23" >
+			</td>
+                </tr>
+	        <tr class="search"> 
+			<td class="tdlabel" width="10%">所属大区</td>
+			<td class="tdinput" width="20%">
+				<select name=dq_pk  onchange="javascript:setF(this.value,'areapk');"><option value=''>请选择大区</option>
+                              #foreach($m in $getSysSaleBigDept2)
+                                     <option value="$!m.NC_PK" #if($form_dq_pk==$m.NC_PK) selected #end>$!m.DEPTNAME</option>
+                              #end
+                                </select>			
+			</td>
+			<td class="tdlabel" width="10%">所属区域</td>
+			<td class="tdinput" width="20%">
+				<select name=areapk><option value=''>请选择区域</option>
+                              #foreach($m in $getSysSaleDept2)
+                                     <option value="$!m.NC_PK">$!m.DEPTNAME</option>
+                              #end
+                                </select>
+			</td>
+                </tr>
+		<script>
+                    setF('$form_dq_pk','areapk');
+		    document.getElementById('areapk').value='$form_areapk';
+		</script>
+	        <tr class="search"> 
+			<td class="tdlabel" width="10%">库存组织</td>
+			<td class="tdinput" width="20%">
+				<select name=calbody><option value=''>请选择库存组织</option>
+                                 #foreach($m in $getCalbody)
+                                     <option value="$!m.PK_CALBODY" #if($form_calbody==$m.PK_CALBODY) selected #end>$!m.BODYNAME</option>
+                                 #end
+                                </select>			
+			</td>
+			<td class="tdlabel" width="10%">客户名称</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="cname" value="$!form_cname">
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">产品分类</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="ptypename" value="$!form_ptypename" readonly>
+				<input type="hidden" name="ptype" value="$!form_ptype">
+				<input type='button' name=bt class='btn' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+				<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>				
+			</td>	
+			<td class="tdlabel" width="10%">产品名称</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="pname" value="$!form_pname">		
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">业务类型</td>
+			<td class="tdinput" width="20%">
+				<select name=busitype><option value=''>请选择业务类型</option>
+                                 #foreach($m in $getBusitype)
+                                     <option value="$!m.PK_BUSITYPE" #if($form_busitype==$m.PK_BUSITYPE) selected #end>$!m.BUSINAME</option>
+                                 #end
+                                </select>				
+			</td>	
+			<td class="tdlabel" width="10%"></td>
+			<td class="tdinput" width="20%">
+			</td>
+                </tr>
+                <tr>
+
+             #end    
+			
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" value="查询" onclick="fsubmit()">&nbsp;&nbsp;&nbsp;
+				<input type="button" name="search" class="bt1" value="导出EXCEL" onclick="fsubmit2()">
+			</td>
+		</tr>	
+		
+</table>
+
+
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">产品分类</td>
+	<td nowrap="nowrap">产品代码</td>
+	<td nowrap="nowrap">产品名称</td>
+	<td nowrap="nowrap">规格</td>
+	<td nowrap="nowrap">数量</td>
+	<td nowrap="nowrap">实际成本价</td>
+	<td nowrap="nowrap">计划价</td>
+	<td nowrap="nowrap">结算价</td>
+	<td nowrap="nowrap">分支结算价</td>
+	<td nowrap="nowrap">销售价</td>
+	<td nowrap="nowrap">销售金额</td>
+	<td nowrap="nowrap">不含税销售收入</td>
+	<td nowrap="nowrap">成本金额</td>
+	<td nowrap="nowrap">结算金额</td>
+	<td nowrap="nowrap">不含税结算金额</td>
+	<td nowrap="nowrap">分支结算金额</td>
+	<td nowrap="nowrap">计划成本</td>
+	<td nowrap="nowrap">毛利(1)=(不含税)开票收入-结算金额</td>
+	<td nowrap="nowrap">毛利率(1)=毛利(1)/不含税开票收入</td>
+	<td nowrap="nowrap">毛利(2)=不含税结算金额-计划成本</td>
+	<td nowrap="nowrap">毛利率(2)=毛利(2)/不含税结算金额</td>
+</tr>
+ #if($form_first=="1")
+    #set($i=1) 
+    #foreach($m in $getProdProfit)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			#if($m.INVCODE=="小计")
+			  <td align="center" nowrap="nowrap" id="PN${m.INVCLASSCODE}">$m.INVCLASSCODE</a></td>
+			#else
+			  <td align="center" nowrap="nowrap" id="PN${m.INVCLASSCODE}P${m.INVCODE}">$m.INVCLASSCODE</a></td>
+			#end
+			<td nowrap="nowrap">$m.INVCODE 
+			</td>
+			<td align="center" nowrap="nowrap" id="PN$m.INVCODE">&nbsp;
+                        </td>
+		        <td align="center" nowrap="nowrap" id="PS$m.INVCODE">&nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.NNUMBER</td>
+			<td align="center" nowrap="nowrap">$m.NCOSTPRICE</td>
+			<td align="center" nowrap="nowrap">$m.PLANPRICE</td>
+			<td align="center" nowrap="nowrap">$m.ACCPRICE</td>
+			<td align="center" nowrap="nowrap">$m.BRACCPRICE</td>
+			<td align="center" nowrap="nowrap">$m.NPRICE</td>
+                        #if($m.INVCLASSCODE=="总计")
+					<td align="center" nowrap="nowrap" id="NSUMMNY">$m.NSUMMNY</td>
+					<td align="center" nowrap="nowrap" id="NMNY">$m.NSUMMNY2</td>
+					<td align="center" nowrap="nowrap" id="NCOSTMNY">$m.NCOSTMNY</td>
+					<td align="center" nowrap="nowrap" id="ACCMNY">$m.ACCMNY</td>
+					<td align="center" nowrap="nowrap">$m.ACCMNY2</td>
+					<td align="center" nowrap="nowrap" id="BRACCMNY">$m.BRACCMNY</td>
+					<td align="center" nowrap="nowrap" id="PRODMNY">$m.PLANMNY</td>
+					<td align="center" nowrap="nowrap" id="Pa">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pav">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pb">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pbv">&nbsp;</td>
+			#else
+				#if($m.INVCODE=="小计")
+					<td align="center" nowrap="nowrap" id="NSUMMNY$m.INVCLASSCODE">$m.NSUMMNY</td>
+					<td align="center" nowrap="nowrap" id="NMNY$m.INVCLASSCODE">$m.NSUMMNY2</td>
+					<td align="center" nowrap="nowrap" id="NCOSTMNY$m.INVCLASSCODE">$m.NCOSTMNY</td>
+					<td align="center" nowrap="nowrap" id="ACCMNY$m.INVCLASSCODE">$m.ACCMNY</td>
+					<td align="center" nowrap="nowrap">$m.ACCMNY2</td>
+					<td align="center" nowrap="nowrap" id="BRACCMNY$m.INVCLASSCODE">$m.BRACCMNY</td>
+					<td align="center" nowrap="nowrap" id="PRODMNY$m.INVCLASSCODE">$m.PLANMNY</td>
+					<td align="center" nowrap="nowrap" id="Pa$m.INVCLASSCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pav$m.INVCLASSCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pb$m.INVCLASSCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pbv$m.INVCLASSCODE">&nbsp;</td>
+				#else
+					<td align="center" nowrap="nowrap" id="NSUMMNY$m.INVCODE">$m.NSUMMNY</td>
+					<td align="center" nowrap="nowrap" id="NMNY$m.INVCODE">$m.NSUMMNY2</td>
+					<td align="center" nowrap="nowrap" id="NCOSTMNY$m.INVCODE">$m.NCOSTMNY</td>
+					<td align="center" nowrap="nowrap" id="ACCMNY$m.INVCODE">$m.ACCMNY</td>
+					<td align="center" nowrap="nowrap">$m.ACCMNY2</td>
+					<td align="center" nowrap="nowrap" id="BRACCMNY$m.INVCODE">$m.BRACCMNY</td>
+					<td align="center" nowrap="nowrap" id="PRODMNY$m.INVCODE">$m.PLANMNY</td>
+					<td align="center" nowrap="nowrap" id="Pa$m.INVCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pav$m.INVCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pb$m.INVCODE">&nbsp;</td>
+					<td align="center" nowrap="nowrap" id="Pbv$m.INVCODE">&nbsp;</td>
+				#end
+			#end
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+#else
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">请选择条件查询</td>
+     </tr>
+#end
+</table>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</form>	
+</body>
+</html>

@@ -1,0 +1,162 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>派车单打印</title>
+</head>
+<script language="javascript">
+   function toclose(){
+	window.close();
+   }
+</script>
+<script language="JavaScript" type="text/javascript">
+function printpr1()
+     {
+        oldhtml=window.document.body.innerHTML;
+        bdhtml=window.document.body.innerHTML;
+        sprnstr="<!--startprint1-->";
+        eprnstr="<!--endprint1-->";
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+18);
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML=prnhtml;
+        window.print();
+        window.document.body.innerHTML=oldhtml;
+     }
+function printpr2()
+     {
+        oldhtml=window.document.body.innerHTML;
+        bdhtml=window.document.body.innerHTML;
+        sprnstr="<!--startprint2-->";
+        eprnstr="<!--endprint2-->";
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+18);
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML=prnhtml;
+        window.print();
+        window.document.body.innerHTML=oldhtml;
+     }
+function printpr11(){
+   document.all("dayinDiv").style.display="none"; //打印之前先隐藏不想打印输出的元素（此例中隐藏“打印”和“打印预览”两个按钮）   
+	var OLECMDID = 7;   
+	var PROMPT = 1;   
+	var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';   
+	document.body.insertAdjacentHTML('beforeEnd', WebBrowser);   
+	WebBrowser1.ExecWB(OLECMDID, PROMPT);   
+	WebBrowser1.outerHTML = "";   
+	document.all("dayinDiv").style.display="";//打印之后将该元素显示出来（显示出“打印”和“打印预览”两个按钮，方便别人下次打印）   
+}
+function printTure11(){
+   document.all("dayinDiv").style.display="none";//同上   
+   window.print();   
+   document.all("dayinDiv").style.display="";   
+}
+</script>
+
+
+<body>
+<DIV align="center" id="dayinDiv" name="dayinDiv">
+<OBJECT ID="WebBrowser" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>
+<input type="button" class="bt1" value="返回" onclick="javascript:history.back(-1)">&nbsp;&nbsp;<input type="button" class="bt1" value="打印单据1" onclick="printpr1();">&nbsp;&nbsp;<input type="button" class="bt1" value="打印单据2" onclick="printpr2();">&nbsp;&nbsp;<input name=Button onClick=document.all.WebBrowser.ExecWB(8,1) type=button value=页面设置 class="bt1">     
+<input type="hidden" name="qingkongyema" id="qingkongyema" class="tab" value="清空页码" onclick="pagesetup_null()">&nbsp;&nbsp;   
+<input type="hidden" class="tab" value="恢复页码" onclick="pagesetup_default()">
+</DIV> 
+<br>
+<!--startprint1-->
+<p align="center">派车单</p>
+<table class="datatable" cellpadding="0" cellspacing="0" border="0">
+#foreach($m in $querydriverorderno)
+  <tr class="trcolorxx">
+    <td style="text-align: right;width:15%">单据号：</td>
+    <td style="width:18%">$form_Id</td>
+    <td style="text-align: right;width:15%">车号：</td>
+    <td style="width:18%">#if($m.DRIVNO!="")$m.DRIVNO#else&nbsp;#end</td>
+    <td style="text-align: right;width:15%">司机：</td>
+    <td style="width:18%">#if($m.DRIVERNAME!="")$m.DRIVERNAME#else&nbsp;#end</td>
+ </tr>
+ <tr class="trcolorxx">
+    <td style="text-align: right;">制单人：</td>
+    <td>$m.VDEF13</td>
+    <td style="text-align: right;">送货时间：</td>
+    <td>$m.VDEF12</td>
+    <td style="text-align: right;">数量：</td>
+    <td>$m.NNUMBER</td>
+ </tr>
+ <tr class="trcolorxx">
+    <td style="text-align: right;">备注：</td>
+    <td colspan="3">#if($m.VDEF14!="")$m.VDEF14#else&nbsp;#end</td>
+    <td style="text-align: right;">辅数量：</td>
+    <td>$m.NPACKNUMBER</td>
+  </tr>
+ #end
+</table>
+<br>
+<table class="datatable" cellpadding="0" cellspacing="0" border="0">
+<tr class="trcolorxx">
+  <td align="center">订单号</td>
+  <td align="center">客户名称</td>
+  <td align="center">类型</td>
+  <td align="center">数量</td>
+  <td align="center">备注</td>
+</tr>
+#foreach($m in $seldriveorderbyidprint)
+<tr class="trcolorxx">
+  <td align="center">$m.VRECEIPTCODE</td>
+  <td align="center">$m.CUSTNAME</td>
+  <td align="center">#if($m.BILLTYPE=='s')订单#else赠品#end </td>
+  <td align="center">$m.NNUMBER</td>
+  <td align="center">&nbsp;</td>
+</tr>
+#end
+</table>
+<!--endprint1-->
+<br>
+<!--startprint2-->
+<p align="center">派车单</p>
+<table class="datatable" cellpadding="0" cellspacing="0" border="0">
+#foreach($m in $querydriverorderno)
+  <tr class="trcolorxx">
+    <td style="text-align: right;width:15%">单据号：</td>
+    <td style="width:18%">$form_Id</td>
+    <td style="text-align: right;width:15%">车号：</td>
+    <td style="width:18%">#if($m.DRIVNO!="")$m.DRIVNO#else&nbsp;#end</td>
+    <td style="text-align: right;width:15%">司机：</td>
+    <td style="width:18%">#if($m.DRIVERNAME!="")$m.DRIVERNAME#else&nbsp;#end</td>
+ </tr>
+ <tr class="trcolorxx">
+    <td style="text-align: right;">制单人：</td>
+    <td>$m.VDEF13</td>
+    <td style="text-align: right;">送货时间：</td>
+    <td>$m.VDEF12</td>
+    <td style="text-align: right;">数量：</td>
+    <td>$m.NNUMBER</td>
+ </tr>
+ <tr class="trcolorxx">
+    <td style="text-align: right;">备注：</td>
+    <td colspan="3">#if($m.VDEF14!="")$m.VDEF14#else&nbsp;#end</td>
+    <td style="text-align: right;">辅数量：</td>
+    <td>$m.NPACKNUMBER</td>
+  </tr>
+ #end
+</table>
+<br>
+<table class="datatable" cellpadding="0" cellspacing="0" border="0">
+<tr class="trcolorxx">
+  <td align="center">存货编码</td>
+  <td align="center">存货名称</td>
+  <td align="center">数量</td>
+  <td align="center">辅数量</td>
+</tr>
+#foreach($m in $seldriveproducts)
+<tr class="trcolorxx">
+  <td align="center">$m.INVCODE</td>
+  <td align="center">$m.INVNAME</td>
+  <td align="center">$m.NNUMBER</td>
+  <td align="center">$m.NPACKNUMBER</td>
+</tr>
+#end
+</table>
+
+<!--endprint2-->
+<br>
+</body>
+</html>

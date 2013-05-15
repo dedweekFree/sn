@@ -1,0 +1,157 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+    <title>视频会议信息导出</title>
+</head>
+<body>
+	<input type="button" class="bt1" onclick="javascript:AllAreaWord();" value="导出会议内容到Word"></input>
+    <!-- <input type="button" onclick="javascript:AllAreaExcel();" value="导出页面指定区域内容到Excel"></input> -->
+    <input type="button" class="bt1" onclick="javascript:CellAreaExcel();" value="导出会议内容到Excel"></input>
+    <input type="button" class="bt1" onclick="javascript:history.back();" value="返 回"></input>
+	<p></p>
+		#foreach($!m in $queryVsessionByVid)
+            <table  id="PrintA" class="datatable">
+			<tr class="trcolor">
+				<td align="right">会议主题</td>
+				<td align="left">$!m.VNAME</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议概要</td>
+				<td align="left">$!m.VREMARK</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议时间</td>
+				<td align="left">$!m.VDATE</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议时长</td>
+				<td align="left">$!m.VDATESCOPE 小时</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议室名称</td>
+				<td align="left">$!m.VADDRESS</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">所属部门名称</td>
+				<td align="left">$!m.DEPTNAME</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">申请人</td>
+				<td align="left">$!m.VMAKER</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">参会人员名单</td>
+				<td align="left">
+					#foreach($!n in $queryVaccouneByVid)
+						姓名：$!n.USERNAME &nbsp;&nbsp; 手机号码：$!n.USERPHONE &nbsp;&nbsp; 视频账号：$!n.ACODE &nbsp;&nbsp; 账号密码：$!n.APWD<br/>
+					#end
+				</td>
+			</tr>	
+            </table>
+			#end
+            
+
+            <script type="text/javascript" language="javascript">
+
+//指定页面区域内容导入Excel
+
+function AllAreaExcel()
+
+{
+
+var oXL = new ActiveXObject("Excel.Application");
+
+var oWB = oXL.Workbooks.Add();
+
+var oSheet = oWB.ActiveSheet;
+
+var sel=document.body.createTextRange();
+
+sel.moveToElementText(PrintA);
+
+sel.select();
+
+sel.execCommand("Copy");
+
+oSheet.Paste();
+
+oXL.Visible = true;
+
+}
+
+//指定页面区域“单元格”内容导入Excel
+
+function CellAreaExcel()
+
+{
+
+var oXL = new ActiveXObject("Excel.Application");
+
+var oWB = oXL.Workbooks.Add();
+
+var oSheet = oWB.ActiveSheet;
+
+var Lenr = PrintA.rows.length;
+
+for (i=0;i<Lenr;i++)
+
+{
+
+   var Lenc = PrintA.rows(i).cells.length;
+
+   for (j=0;j<Lenc;j++)
+
+   {
+
+    oSheet.Cells(i+1,j+1).value = PrintA.rows(i).cells(j).innerText;
+
+   }
+
+}
+
+oXL.Visible = true;
+
+}
+
+//指定页面区域内容导入Word
+
+function AllAreaWord()
+
+{
+
+var oWD = new ActiveXObject("Word.Application");
+
+var oDC = oWD.Documents.Add("",0,1);
+
+var oRange =oDC.Range(0,1);
+
+var sel = document.body.createTextRange();
+
+
+sel.moveToElementText(PrintA);
+
+sel.select();
+
+sel.execCommand("Copy");
+
+oRange.Paste();
+
+oWD.Application.Visible = true;
+
+//window.close();
+
+oWD.ActiveWindow.ActivePane.View.Type=3
+
+oWD.Application.close;
+
+}
+
+            </script>
+</body>
+</html>

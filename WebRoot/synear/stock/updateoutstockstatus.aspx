@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>updateoutstockstatus</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>提交成功！</web:successMsg>
+  <web:failMsg>提交失败！</web:failMsg>
+  <web:url>outstock.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

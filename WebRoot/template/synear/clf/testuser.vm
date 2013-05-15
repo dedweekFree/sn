@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+	         var lllmonth=new Array(); 
+		  lllmonth=[
+		   ['最小月份']
+			#foreach($!m in $queryzhywsysdatepara)
+			  ,["$m.YESMONTH","$m.LLLMONTH"]
+			#end
+		   ];
+		 var feenum='F';
+		 var feenum1='0';
+		 #foreach($m in $selbasicuserinfobasiccount)
+		   feenum='$m.FEENUM';
+		 #end
+		 if(parseInt(feenum)==0) {
+		   alert("当前用户未分配！");
+		   parent.submitok=false;
+		 }else if(parseInt(feenum)>'0'){
+		   if("$!form_month" < lllmonth[1][1] ){
+		      alert("出差月份不能小于"+lllmonth[1][1]);
+		      parent.submitok=false;
+		   }
+		   if("$!form_month" > lllmonth[1][0]){
+		      alert("出差月份不能大于"+lllmonth[1][0]);
+		      parent.submitok=false;
+		   }
+		   if("$!form_month" >= lllmonth[1][1] && "$!form_month" <= lllmonth[1][0]){
+			   #foreach($m1 in $selsbclfcount)
+			     feenum1='$m1.FEENUM';
+			   #end
+			   if(parseInt(feenum1)>'0'){
+			      alert("$!form_month差旅费已经申报");
+			      parent.submitok=false;
+			   }else{
+			      parent.testok();
+			   }
+		   }
+		 }else{
+		   alert("出现未知错误！");
+		   parent.submitok=false;
+		 }
+	</script>
+</head>
+<body>
+</body>
+</html>
+

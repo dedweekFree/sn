@@ -1,0 +1,644 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>装车明细</title>
+<script language="javascript">
+var s1 = 0;
+var s2 = 0;
+
+function JFormatDatepmz(strDate)
+{
+var strPdate=strDate;
+var iYear,iMonth,iDate,ihour,iminute,sec,sDate;
+iYear=strPdate.getYear();
+iMonth=strPdate.getMonth()+1;
+iDate=strPdate.getDate();
+ihour=strPdate.getHours();
+iminute=strPdate.getMinutes();
+sec = strPdate.getSeconds();
+sDate=String(iYear);
+
+if(iMonth<10)
+{
+sDate = sDate+"-0"+ String(iMonth) ;
+}
+else
+{
+sDate = sDate+"-"+String(iMonth) ;
+}
+if (iDate < 10)
+{
+sDate = sDate+"-0"+String(iDate) ;
+}
+else
+{
+sDate = sDate+"-"+String(iDate) ;
+}
+if(ihour<10)
+{
+sDate = sDate+" "+"0"+ String(ihour) ;
+}
+else
+{
+sDate = sDate+" "+String(ihour) ;
+}
+if(iminute<10)
+{
+sDate = sDate+":"+"0"+ String(iminute) ;
+}
+else
+{
+sDate = sDate+":"+String(iminute) ;
+}
+sDate = sDate;
+return sDate;
+}
+</script>
+</head>
+
+<body >
+<table class="datatable" cellspacing=0 cellpadding=0 border=0 id="tb">
+  <tr class="trcolor">
+    <td nowrap rowspan="2">派车单</td>
+    <td nowrap rowspan="2">物流公司</td>
+    <td nowrap rowspan="2">应发件数</td>
+    <td nowrap rowspan="2">实发件数</td>
+    <td nowrap rowspan="2">领出库单</td>
+    <td nowrap rowspan="2">设定温控仪</td>
+    <td nowrap rowspan="2">温控仪编号</td>
+    <td nowrap rowspan="2">间隔时长</td>
+    <td nowrap rowspan="2">到达</td>
+    <td nowrap rowspan="2">件数</td>
+    <td nowrap rowspan="2">SKU</td>
+    <td nowrap colspan="5">在途时间</td>
+    <td nowrap colspan="2">等待时间</td>
+    <td nowrap colspan="8">装车时间</td>
+    <td nowrap rowspan="2" bgcolor="yellow">到达</td>
+    <td nowrap rowspan="2" bgcolor="yellow">件数</td>
+    <td nowrap rowspan="2" bgcolor="yellow">SKU</td>
+    <td nowrap colspan="5" bgcolor="yellow">在途时间</td>
+    <td nowrap colspan="2" bgcolor="yellow">等待时间</td>
+    <td nowrap colspan="8" bgcolor="yellow">装车时间</td>
+    <td nowrap colspan="2">发车时长</td>
+  </tr>
+  <tr class="trcolor">
+    <td nowrap>预约时间</td>
+    <td nowrap>第一到库时间</td>
+    <td nowrap>预约误差</td>
+    <td nowrap>在途时长</td>
+    <td nowrap>第二到库时间</td>
+    <td nowrap>装车时间</td>
+    <td nowrap>等待时长</td>
+    <td nowrap>开始时间</td>
+    <td nowrap>结束时间</td>
+    <td nowrap>装车时长</td>
+    <td nowrap>开始时间</td>
+    <td nowrap>结束时间</td>
+    <td nowrap>装车时长</td>
+    <td nowrap>总装车时长</td>
+    <td nowrap>标准时长</td>
+    <td nowrap bgcolor="yellow">预计到库时间</td>
+    <td nowrap bgcolor="yellow">第一到库时间</td>
+    <td nowrap bgcolor="yellow">预计误差</td>
+    <td nowrap bgcolor="yellow">在途时长</td>
+    <td nowrap bgcolor="yellow">第二到库时间</td>
+    <td nowrap bgcolor="yellow">装车时间</td>
+    <td nowrap bgcolor="yellow">等待时长</td>
+    <td nowrap bgcolor="yellow">开始时间</td>
+    <td nowrap bgcolor="yellow">结束时间</td>
+    <td nowrap bgcolor="yellow">装车时长</td>
+    <td nowrap bgcolor="yellow">开始时间</td>
+    <td nowrap bgcolor="yellow">结束时间</td>
+    <td nowrap bgcolor="yellow">装车时长</td>
+    <td nowrap bgcolor="yellow">总装车时长</td>
+    <td nowrap bgcolor="yellow">标准时长</td>
+    <td nowrap>换发货单</td>
+    <td nowrap>间隔时长</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $sendmanagestockdetail)
+  <tr class="trcolor">
+    <td>$!m.SENDID</td>
+    <td>$!m.SENDCORPNAME</td>
+    <td>$!m.QUANTITY</td>
+    <td>$!m.NOUTNUM3</td>
+    <td>#if($!m.OUTTIME!="")$!m.OUTTIME#else&nbsp;#end</td>
+    <td>#if($!m.WENTIME!="")$!m.WENTIME#else&nbsp;#end</td>
+    <td>#if($!m.WENNO!="")$!m.WENNO#else&nbsp;#end</td>
+    <td>
+       <script language="javascript">
+          var time1 = '$!m.OUTTIME';
+	  var time2 = '$!m.WENTIME';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script>
+    </td>
+    <td>#if($!m.ADDRESS=="chenzhai")陈砦#elseif($!m.ADDRESS=="sinian")思念#end</td>
+    <td>$m.NOUTNUM1</td>
+    <td>$m.CC1</td>
+    <td>$!m.ORDERDATE&nbsp;$!m.ORDERTIME</td>
+    <td>#if($!m.WAITTIME1!="")$!m.WAITTIME1#else&nbsp;#end</td>
+    <td>
+       <script language="javascript">
+          var time1 = '$!m.ORDERDATE $!m.ORDERTIME';
+	  var time2 = '$!m.WAITTIME1';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script>
+    </td>
+    <td>
+       <script language="javascript">
+          var time1 = '$!m.WENTIME';
+	  var time2 = '$!m.WAITTIME1';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script>
+    </td>
+    <td>#if($!m.WAITTIME3!="")$!m.WAITTIME3#else&nbsp;#end</td>
+    <td>#if($!m.BEGINTIME1!="")$!m.BEGINTIME1#else&nbsp;#end</td>
+    <td><script language="javascript">
+          var time1 = '$!m.WAITTIME1';
+	  var time2 = '$!m.BEGINTIME1';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script></td>
+    <td>
+       #if($!m.BEGINTIME1!="")$!m.BEGINTIME1#else&nbsp;#end
+    </td>
+    <td>#if($!m.ENDTIME1!="")$!m.ENDTIME1#else&nbsp;#end</td>
+    <td><script language="javascript">
+          var time1 = '$!m.BEGINTIME1';
+	  var time2 = '$!m.ENDTIME1';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+	    s1 = minutes;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script></td>
+    <td>
+       #if($!m.BEGINTIME3!="")$!m.BEGINTIME3#else&nbsp;#end
+    </td>
+    <td>#if($!m.ENDTIME3!="")$!m.ENDTIME3#else&nbsp;#end</td>
+    <td><script language="javascript">
+          var time1 = '$!m.BEGINTIME3';
+	  var time2 = '$!m.ENDTIME3';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	    s2 = minutes;
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script></td>
+    <td><script language="javascript">
+      document.writeln(s1+s2+"分");
+      </script>
+    </td>
+    <td><script language="javascript">
+          var time1 = '$!m.BEGINTIME1';
+	  var time2 = '$!m.ENDTIME1';
+	  if(time1 != "" && time2 != ""){
+	    var minutes=parseInt(Math.round('$m.NOUTNUM1'*2/60));
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+      </script></td>
+    <td nowrap align="left" bgcolor="yellow">#if($!m.ADDRESS1=="chenzhai")陈砦#elseif($!m.ADDRESS1=="sinian")思念#else&nbsp;#end</td>
+    <td bgcolor="yellow">#if($!m.ADDRESS1!="")$m.NOUTNUM2#else&nbsp;#end</td>
+    <td bgcolor="yellow">#if($!m.ADDRESS1!="")$m.CC2#else&nbsp;#end</td>
+    <td bgcolor="yellow">
+        <script language="javascript">
+        if('$m.ADDRESS1' != ''  && $!m.CC2!="0"){
+          var time1 = '$!m.ENDTIME1';
+	  if(time1 != ""){
+	    var date=time1.replace("-","/").replace("-","/");
+	    var minutes=30;
+	    var   interTimes=minutes*60*1000;
+	    interTimes=parseInt(interTimes); 
+	    var milliseconds=Date.parse(date)+interTimes;
+	    var d=new Date();
+	    d.setTime(milliseconds);
+            document.writeln(JFormatDatepmz(d));
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+	}else{
+	    document.writeln("&nbsp;");
+	}
+       </script>
+    </td>
+    <td bgcolor="yellow">#if($!m.WAITTIME2!="")$!m.WAITTIME2#else&nbsp;#end</td>
+    <td bgcolor="yellow">
+       <script language="javascript">
+       if('$m.ADDRESS1' != ''){
+          var time1 = '$!m.ENDTIME1';
+	  if(time1 != ""){
+	    var date=time1.replace("-","/").replace("-","/");
+	    var minutes=30;
+	    var   interTimes=minutes*60*1000;
+	    interTimes=parseInt(interTimes); 
+	    var milliseconds=Date.parse(date)+interTimes;
+	    var d=new Date();
+	    d.setTime(milliseconds);
+            time1 = JFormatDatepmz(d);
+	  }
+	  var time2 = '$!m.WAITTIME2';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       }else{
+	    document.writeln("&nbsp;");
+       }
+       </script>
+    </td>
+    <td bgcolor="yellow">
+       <script language="javascript">
+       if('$m.ADDRESS1' != ''){
+          var time1 = '$!m.ENDTIME1';
+	  var time2 = '$!m.WAITTIME2';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       }else{
+	    document.writeln("&nbsp;");
+       }
+       </script>
+    </td>
+    <td bgcolor="yellow">#if($!m.WAITTIME4!="")$!m.WAITTIME4#else&nbsp;#end</td>
+    <td bgcolor="yellow">#if($!m.BEGINTIME2!="")$!m.BEGINTIME2#else&nbsp;#end</td>
+    <td bgcolor="yellow">
+       <script language="javascript">
+       if('$m.ADDRESS1' != ''){
+          var time1 = '$!m.WAITTIME2';
+	  var time2 = '$!m.BEGINTIME2';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+	}else{
+	    document.writeln("&nbsp;");
+       }
+       </script>
+    </td>
+    <td bgcolor="yellow">#if($!m.BEGINTIME2!="")$!m.BEGINTIME2#else&nbsp;#end</td>
+    <td bgcolor="yellow">#if($!m.ENDTIME2!="")$!m.ENDTIME2#else&nbsp;#end</td>
+    <td bgcolor="yellow">
+       <script language="javascript">
+       var s3 = 0;
+       var s4 = 0;
+       if('$m.ADDRESS1' != ''){
+          var time1 = '$!m.BEGINTIME2';
+	  var time2 = '$!m.ENDTIME2';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+	    s3 = minutes;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+	}else{
+	    document.writeln("&nbsp;");
+       }
+       </script>
+    </td>
+    <td bgcolor="yellow">#if($!m.BEGINTIME4!="")$!m.BEGINTIME4#else&nbsp;#end</td>
+    <td bgcolor="yellow">#if($!m.ENDTIME4!="")$!m.ENDTIME4#else&nbsp;#end</td>
+    <td bgcolor="yellow">
+       <script language="javascript">
+       if('$m.ADDRESS1' != ''){
+          var time1 = '$!m.BEGINTIME4';
+	  var time2 = '$!m.ENDTIME4';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+	    s4 = minutes;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+	}else{
+	    document.writeln("&nbsp;");
+       }
+       </script>
+    </td>
+    <td bgcolor="yellow"><script language="javascript">
+      if('$m.ADDRESS1' != '' && $!m.CC2!="0"){
+          if(s4=="" || s4=="0"){
+	    document.writeln(s3+"分");
+	  }else{
+            document.writeln(s3+s4+"分");
+	  }
+      }
+      </script>&nbsp;</td>
+    <td bgcolor="yellow"><script language="javascript">
+          var time1 = '$!m.BEGINTIME2';
+	  var time2 = '$!m.ENDTIME2';
+	  if(time1 != "" && time2 != ""){
+	    var minutes=parseInt(Math.round('$m.NOUTNUM2'*2/60));
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+      </script></td>
+    <td>#if($!m.SENDTIME!="")$!m.SENDTIME#else&nbsp;#end</td>
+    <td>
+       <script language="javascript">
+       var time1 = '';
+       if('$m.ADDRESS1' != ''){
+          #if($!m.CC2=="0")
+            time1 = '$!m.ENDTIME1';
+	  #else
+            time1 = '$!m.ENDTIME2';
+	  #end
+       }else{
+          time1 = '$!m.ENDTIME1';
+       }
+	  var time2 = '$!m.SENDTIME';
+	  if(time1 != "" && time2 != ""){
+	    var begin1=time1.substr(0,10).split("-"); 
+            var end1=time2.substr(0,10).split("-");
+	    var date1=new Date(begin1[1] + - + begin1[2] + - + begin1[0]);
+            var date2=new Date(end1[1] + - + end1[2] + - + end1[0]);
+	    var m=parseInt((date2-date1)/1000/60); 
+	    var min1 = "";
+	    if(time1.substr(11,2) < 10){
+                 min1=parseInt(time1.substr(12,1))*60+parseInt(time1.substr(14,2));
+	    }else{
+		 min1=parseInt(time1.substr(11,2))*60+parseInt(time1.substr(14,2));
+	    }
+            var min2 = "";
+	    if(time2.substr(11,2) < 10){
+                 min2=parseInt(time2.substr(12,1))*60+parseInt(time2.substr(14,2));
+	    }else{
+		 min2=parseInt(time2.substr(11,2))*60+parseInt(time2.substr(14,2));
+	    }
+	    var n=min2-min1;
+	    var minutes=m+n;
+            document.writeln(minutes+"分");
+	  }else{
+	    document.writeln("&nbsp;");
+	  }
+       </script>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+<form method="post" name="form2">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

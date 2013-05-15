@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script  src="../../../inc/js/time.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>项目类型</title>
+<script language="javascript">
+	function s(){
+	        var time = getnowtime();
+		document.form1.areaid.value=time;
+	    if(document.form1.areaname.value==""){
+		alert("类别名称不能为空！");
+		document.form1.areaname.focus();
+		return false;
+	    }
+	    document.form1.action="insertentdarea.aspx";
+	    document.form1.target="dataframe"
+	    form1.submit();
+	}
+	function todelete(url){
+	    if(confirm("确定要删除吗？")){
+                 document.form1.action=url;
+		 form1.submit();
+	    }
+	}
+</script>
+</head>
+
+<body>
+<form name="form1" method="post"  target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>新增招标地区:<input type="text" name="areaname" value="" onkeydown="if(event.keyCode==13){s();}"/><input type="hidden" name="areaid">
+    </td>
+    <td><input type="button" name="button" value="提交" onclick="s()" class="bt1"/>
+    </td>
+  </tr>
+  </table>
+  </form>
+  <form name="form2" post="method" action="">
+  <table class="datatable">
+  <tr class="trcolor">
+    <td>地区ID</td>
+    <td>地区名称</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selecttendarea)
+  <tr>
+    <td align="center">$!m.AREAID</td>
+    <td align="center">$!m.AREANAME</td>
+    <td><a href='modtendarea.aspx?id=$!m.AREAID'>修改</a>&nbsp;&nbsp;
+        <a href='#' onclick="todelete('deltendarea.aspx?id=$!m.AREAID')">删除</a>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</form>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

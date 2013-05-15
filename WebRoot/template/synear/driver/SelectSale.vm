@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script type="text/javascript" src="../../../inc/js/calendarnew.js"></script>
+<title>添加单据</title>
+</head>
+<script language="javascript">
+   function tonext(){
+      document.form1.action = "CreateAllotNext.aspx";
+      form1.submit();
+   }
+   function toadddanju(url){
+	 window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+   }
+   function toselected(i){
+	if(document.getElementById("chkbox"+i).checked){
+	    document.getElementById("chkbox"+i).value = 'Y';
+	}else{
+	    document.getElementById("chkbox"+i).value = 'N';
+	}
+   }
+   function toimp(j,id){
+        var datahtml = "";
+	var m = 0;
+	   for(var i = 1;i < j ; i ++){
+	       if(document.getElementById("chkbox"+i).value == 'Y'){
+		    datahtml+="<input type='hidden' name='vreceiptcodes' value='"+document.getElementById('vreceiptcode'+i).value+"'>"; 
+		    m ++;
+	       }
+	   }
+	   if(m == 0){
+		alert("请至少选择一条记录！");
+		return false;
+	   }
+	subdata.innerHTML=datahtml;
+	form2.action="SelectSaleUpdate.aspx?driverid="+id;
+	form2.submit();
+	window.close();
+	//window.opener.location.reload(); 
+	window.opener.location.href="CreateAllot.aspx?Id="+id;
+   }
+   function totest(){
+        window.close();
+	window.opener.location.reload(); 
+   }
+</script>
+<body>
+<form name="form1" method="post">
+<table width="100%">
+<tr>
+<td>
+<table class="datatable">
+  <tr align="left"> 
+	<td align="right" width="25%">日期：</td>
+	<td>
+            <input name="TextBoxData1" type="text" id="TextBoxData1" class="Input_text1" value="#if($form_TextBoxData1!='')$form_TextBoxData1#end" onclick="calendar()" />
+	    &nbsp;&nbsp;-&nbsp;&nbsp;
+	    <input name="TextBoxData2" type="text" id="TextBoxData2" class="Input_text1" value="#if($form_TextBoxData2!='')$form_TextBoxData2#end" onclick="calendar()" />
+	</td>
+  </tr>
+      <td colspan="2" align="center">
+	    <input type="submit" name="ButtonLookSpace" value="查询" class="bt1" id="ButtonLookSpace" style="width:200px;" />
+      </td>
+  </tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<div style="text-align: center;">
+    <div style="width: 100%; height: 250px; overflow-y: scroll;">
+    <table class="datatable">
+    <tr bgcolor="#80B3B0">
+	<td></td>
+	<td>单据号</td>
+	<td>客户编码</td>
+	<td>客户名称</td>
+	<td>单据日期</td>
+	<td>类型</td>
+	<td>数量</td>
+	<td>辅数量</td>
+    </tr>
+    #set($i = 1)
+    #foreach($!m in $seldriveorder)
+	<tr><input type="hidden" name="vreceiptcode$i" id="vreceiptcode$i" value="$m.VRECEIPTCODE">
+	     <td><input type="checkbox" name="chkbox$i" id="chkbox$i" onclick="toselected($i)"></td>
+	     <td>$m.VRECEIPTCODE</td>
+	     <td>$m.CUSTCODE</td>
+	     <td>$m.CUSTNAME</td>
+	     <td>$m.DBILLDATE</td>
+	     <td>#if($m.BILLTYPE=='s')订单#else赠品#end</td>
+	     <td>$m.NNUMBER</td>
+	     <td>$m.NPACKNUMBER</td>
+	</tr>
+    #set($i = $i+1)
+    #end 
+    </table>
+    <div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div style="text-align: center;">
+         <table class="datatable">
+    <tr>
+	<td colspan="2" align="center">
+	    <input type="button" name="ButtonInput" class="bt1" value="导入" id="ButtonInput" onclick="toimp($i,$form_time)" />
+	</td>
+    </tr>
+</table>
+    </div>
+</td>
+</tr>
+<br>
+
+</td>
+</tr>
+</table>
+</form>
+<form name="form2" method="post">
+<input type="hidden" name="time" value="$form_time">
+<span id="subdata"></span>
+</form>
+      <div>
+        <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

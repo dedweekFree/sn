@@ -1,0 +1,357 @@
+<HTML>
+<HEAD>		
+<title>出库管理</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.vbillcode.value = paras[0];
+       document.form1.billtype.value = paras[2];
+       document.form1.billno.value = paras[3];
+       document.form1.cgeneralhid.value = paras[4];
+       document.form1.upstatus.value = paras[5];
+       document.form1.custname.value = paras[7];
+       document.form1.target="_self";
+       document.form1.action="viewoutstock.aspx";
+       document.form1.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+
+function checkinput2(vbillcode)
+{
+      document.form1.vbillcode.value=vbillcode;
+      document.all.form1.action="woutstockdetail.aspx";
+      document.all.form1.submit();
+}
+
+
+//删除
+function DelRow()
+{      
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.billno.value = paras[0];
+	   document.form1.cgeneralhid.value =  paras[4];
+	   document.form1.action="deloutstocksubmit.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+   }
+}
+
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.billno.value = paras[0];
+   document.form1.action="updateoutstockstatus.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+//修改
+function editRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.billno.value = paras[0];
+       document.form1.vbillcode.value = paras[3];
+       document.form1.cgeneralhid.value = paras[4];
+       document.form1.target="_self";
+       document.form1.action="editoutstockdetail.aspx";
+       document.form1.submit();
+}
+
+//回流
+function editRow1()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");//alert(paras[0]+"**"+paras[1]+"**"+"**"+paras[2]+"**"+paras[4]);
+       document.form1.billno.value = paras[0];
+       document.form1.vbillcode.value = paras[3];
+       document.form1.cgeneralhid.value = paras[4];
+       document.form1.target="_self";
+       document.form1.action="editoutstockdetail1.aspx";
+       document.form1.submit();
+}
+
+function editRow2()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.billno.value = paras[0];
+       document.form1.vbillcode.value = paras[3];
+       document.form1.cgeneralhid.value = paras[4];
+       document.form1.instoredate.value = paras[6];
+       document.form1.action="testhuiliu.aspx";
+       document.form1.target="saveframe";
+       document.form1.submit();
+}
+function testok(){
+    document.form1.target="_self";
+    document.form1.action="woutstockdetail2.aspx";
+    document.form1.submit();
+}
+
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	if(document.getElementById('begintime').value == ""){
+           document.getElementById('begintime').value=Today;
+	}
+	if(document.getElementById('endtime').value == ""){
+	  document.getElementById('endtime').value=Today;
+	}
+    }
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY onload="GetDateString()">
+<div>
+  <form name="thisform" method="post" action="outstock.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable"  id="table3">
+      		      		<tr class="search"> 
+			  <td class="tdlabel" width="10%">开始日期</td>
+				<td class="tdinput" width="20%">
+		         <input type=text name=begintime size=10 readonly value='$!form_begintime'>
+		<input type="button" value="↓" onClick="ShowDate(begintime);" class="button" name="button23" >
+			
+			</td>	
+			
+			<td class="tdlabel" width="10%">结束日期</td>
+			<td class="tdinput" width="20%">
+			  #if(!$form_endtime)
+			<script>
+				document.write("<input type=text name=endtime size=10 readonly value='"+last+"'>");
+			  </script>
+			    #else
+		         <input type=text name=endtime size=10 readonly value='$form_endtime'>
+		       #end
+			<input type="button" value="↓" onClick="ShowDate(endtime);" class="button" name="button23" >
+
+			</td>
+			
+			</td>	
+                </tr>
+		<tr>
+		     <td class="tdlabel" width="10%">NC销售出库单号</td>
+			<td class="tdinput" width="20%">
+			 <input name='vbillcode' id='vbillcode' style='width:130' class='login3' type='text'   value="#if($form_vbillcode!="")$form_vbillcode#end">	
+			</td>
+			<td class="tdlabel" width="10%">拣货单号</td>
+			<td class="tdinput" width="20%">
+			 <input name='billno' id='billno' style='width:130' class='login3' type='text'   value="#if($form_billno!="")$form_billno#end">	
+			</td>
+		</tr>
+		<tr>
+		     <td class="tdlabel" width="10%">所属仓库</td>
+			<td class="tdinput" width="20%">
+			 <select name='stockcode'>	
+                             <option value="">请选择仓库</option>
+                             #foreach($m in $selsynearstockzz)
+                                  <option value="$m.PK_STORDOC" #if($form_stockcode==$m.PK_STORDOC)selected#end>$m.STORNAME</option>
+			     #end
+			 </select>
+			</td>
+			<td class="tdlabel" width="10%">&nbsp;</td>
+			<td class="tdinput" width="20%">
+			&nbsp;
+			</td>
+		</tr>
+		<tr>
+		</tr>
+		<tr>
+		   <td colspan="4"></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;
+		  </td><td align="left" colsapn="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;</td>
+		  <td>&nbsp;
+		  </td><td align="left">&nbsp;</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+		
+	  </table>
+</form>
+</div>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">NC出库单号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">客户名称</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">单据类型</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">NC单据日期</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #foreach($m in $seloutstockallbyxgyy)
+       <tr height="20" class="trcolor">
+	   <td align="center" nowrap="nowrap" class="FixedDataColumn">$m.VBILLCODE</td>
+	   <td align="center" class="FixedDataColumn">$m.CUSTNAME&nbsp;</td>
+	   <td align="center" class="FixedDataColumn">#if($m.CBILLTYPECODE == '4C')销售出库单#elseif($m.CBILLTYPECODE == '4Y')<font color="red">调拨出库单</font>#end</td>
+	   <td align="center" class="FixedDataColumn">$m.DBILLDATE</td>
+	   <td align="center" class="FixedDataColumn">
+	   <a style='cursor:hand' onclick="javascript:checkinput2('$m.VBILLCODE')"><font color=blue>新建</font></a></td>
+       </tr>
+    #set($i=$i+1)
+    #end  
+</table>
+<br>
+<br>
+<!--<div class="mainDiv" id="mdiv"> -->
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<form name="form2">
+<tr height="20"  align="center" >
+	<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">拣货单号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">NC出库单号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">单据类型</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">单据日期</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $seloutstockquantityhead)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		        <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLNO</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.VBILLCODE</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">
+				 #if($m.BILLTYPE=="2")
+				    销售出库
+				 #elseif($m.BILLTYPE=="3")
+                                     零托退库
+				 #end
+			</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLDATE</td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.BILLNO,!$!session_ROLES,!$!m.BILLTYPE,!$!m.VBILLCODE,!$!m.NC_PK,!$!m.STATUS,!$!m.BILLDATE,!$m.CUSTNAME">
+			<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>查看</font></a>&nbsp;&nbsp; #if($m.STATUS=="Y")#if($m.CTS != "2")<a style='cursor:hand' onclick="javascript:editRow2()"><font color=blue>回流</font></a>#end&nbsp;&nbsp;#end
+			#if($m.STATUS=="N")
+                            <!--<a style='cursor:hand' onclick="javascript:okRow()"><font color=blue>提交</font></a>&nbsp;&nbsp;-->
+			    <a style='cursor:hand' onclick="javascript:editRow()"><font color=blue>修改</font></a>&nbsp;&nbsp;
+			     <a style='cursor:hand' onclick="javascript:DelRow()"><font color=blue>删除</font></a>&nbsp;&nbsp;
+			#end
+			</span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</form></table>
+<!--</div>-->
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="vbillcode">
+  <input type="hidden" name="billtype">
+  <input type="hidden" name="billno">
+  <input type="hidden" name="cgeneralhid">
+  <input type="hidden" name="upstatus">
+  <input type="hidden" name="instoredate">
+  <input type="hidden" name="custname">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

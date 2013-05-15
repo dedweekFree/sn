@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../js/string.js"></script>
+	<script type="text/javascript">
+	function sub(){
+	    //mTarget转向目标窗口，空为不作处理
+      var message="$!app_message";
+	var mTarget="$!app_target";
+	var mUrl="$!app_url";
+        if(mTarget==""){
+          alert(message);
+	}else{
+          if(mUrl==""){
+            mUrl=top.oldurl;
+	  }else{
+	    mUrl=mTarget+".location.replace('"+mUrl+"')";
+	    if('$form_zhid' == "100.100.1.74"){
+                document.thisform.action =  "http://100.100.1.72/general/sendoasms.php";
+	    }else if('$form_zhid' == "222.88.22.70"){
+                document.thisform.action =  "http://222.88.22.72/general/sendoasms.php";
+	    }else if('$form_zhid' == "218.28.198.238:200"){
+                document.thisform.action =  "http://218.28.198.237:1000/general/sendoasms.php";
+	    }else{
+                document.thisform.action =  "http://192.168.60.66:8555/general/sendoasms.php";
+	    }
+	    document.all.thisform.submit();
+	    alert(message);
+            eval(mUrl);	
+	  }
+	}
+	}
+	</script>
+</head>
+<body onload="sub()">
+<form name="thisform" method="post">
+<!--<form name="thisform" action="/SmsSendServlet">-->
+	<input type="hidden" name="user_id" value="$!form_form_id">
+	<input type="hidden" name="content" value="您的IT报修已处理完毕！请进入报修平台进行满意度评价，如果超过24小时不评价，系统会自动视为满意">
+	<input type="hidden" name="sendtime" value="$!form_sendtime">
+	<input type="hidden" name="to_id" value="$!form_to_id">
+	<input type="hidden" name="remind_time" value="$!form_remind_time">
+</form>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<script language="javascript">
+        var num1=0;
+	var num2=0;
+	var num3=0;
+	var num4=0;
+	var num5=0;
+	var sysmonth = "";
+	var month = "";
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+function setVals(dm) {
+	      //setVal(dm,mc);
+	     // document.thisform.ptype.value=code;
+	      document.thisform.ptypename.value=mc;
+	 }
+	 
+	 function togetmont(url){
+	    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	 }
+	 function accAdd(arg1,arg2){ 
+		var r1,r2,m; 
+		try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+		try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+		m=Math.pow(10,Math.max(r1,r2)) 
+		return (arg1*m+arg2*m)/m 
+	 } 
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" action="invnamegoods.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>产品分类</td>
+   <td align="left"><input type="text" name="ptypename" id="ptypename" value="$!form_ptypename" readonly><input type="hidden" name="ptype" id="ptype" value="$!form_ptype"><input type="button" value="..." onClick="togetmont('invleft.aspx')" class="bt1" name="button24" >
+    </td>
+    <td>月份</td>
+    <td align="left"> <input name="month" type="text" class="login" id="month" value="$!form_month" readonly><input type="button" value="..." onClick="togetmont('snmonthquery.aspx')" class="bt1" name="button23" ></td>
+  </tr>
+  <tr class="trcolor">
+    
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input type="button" name="b1" class="bt1" value="查  询" onclick="sub()"/>&nbsp;<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');"></td>
+  </tr>
+</table>
+</form>
+<form name="form1" method="post" target="dataframe">
+<table class="datatable" id="tb" bgcolor="#ffffff" >
+  <tr align="center" bgcolor="#abcdef" class="fixedHeaderTr">
+    <td width="4%">序号</td>
+    <td width="16%">产品编码</td>
+    <td width="16%">产品名称</td>
+    <td width="16%">计划量</td>
+    <td width="16%">下单量</td>
+    <td width="16%">拉货量</td>
+    <td width="16%">拉货占比</td>
+    <td width="16%">累计占比</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $invnamegoodsfenxiquery)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.PLANNUM</td>
+    <td>$!m.PRENUMBER</td>
+    <td>$!m.SENDNUM</td>
+    <td>$!m.LHZB%</td>
+    <td>$!m.LJZB%</td>
+  </tr>
+  #set($i=$i+1)
+  <script>
+  /*   num1 = accAdd(num1,$m.PLANNUM);
+     num2 = accAdd(num2,$m.PRENUMBER);
+     num3 = accAdd(num3,$m.SENDNUM);
+     num4 = accAdd(num4,$m.LHZB);
+     num5 = accAdd(num5,$m.LJZB);*/
+  </script> 
+  #end
+ <!-- <tr height="20" class="trcolor">
+       <td colspan="3" align="center">小    计</td>
+       <td align="center" nowrap="nowrap">
+	  <script>
+	    document.write(num1);
+	  </script>
+	</td>
+	<td align="center" nowrap="nowrap">
+	  <script>
+	    document.write(num2);
+	  </script>
+	</td>
+	<td align="center" nowrap="nowrap">
+	  <script>
+	    document.write(num3);
+	  </script>
+	</td>
+	<td align="center" nowrap="nowrap">
+	  <script>
+	    document.write(num4);
+	  </script>
+	</td>
+	<td align="center" nowrap="nowrap">
+	  <script>
+	    document.write(num5);
+	  </script>
+	</td>
+  </tr>-->
+  #foreach($!m in $invnamegoodsfenxiquerysum)
+      <tr height="20" class="trcolor">
+       <td colspan="3" align="center">总    计</td>
+          <td>$!m.PLANNUM</td>
+	    <td>$!m.PRENUMBER</td>
+	    <td>$!m.SENDNUM</td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+      </tr>
+  #end
+  <tr><td align="right" colspan="15">$pagecode</td>
+   </tr>
+</table>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

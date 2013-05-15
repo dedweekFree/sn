@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>===</title>
+</head>
+
+<body>
+<form name="thisform" action="modcustsub.aspx" method="post" target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="2" align='left'>供应商用户修改</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selcustdetail)
+  <tr class="trcolor">
+    <td>供应商编码:</td>
+    <td align='left'><input type="text" name="custcode" value="$!m.USERNAME"/>
+			<input type="hidden" name="custcode1" value="$!m.USERNAME"/
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>供应商名称：</td>
+    <td align='left'><input type="text" name="custname" value="$!m.NAME"/>
+			<input type="hidden" name="custname1" value="$!m.NAME"/>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td><input class="bt1" type="submit" name="b1" value="确认" /></td>
+    <td><input class="bt1" type="button" name="b2" value="返回" onclick="javascript:history.go(-1)"/></td>
+  </tr>
+</table>
+</form>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

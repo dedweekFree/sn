@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>年度计划表上传</title>
+
+<script>
+	$(function(){
+		$("#Businessdiv").hide();
+		$("#costdiv").hide();
+	});
+	function  upLoadFileBusiness(){
+		var Area=$("#dq_Area").val();
+		var year=$("#year").val();
+		if(Area == ""){
+			alert("请选择预算部门");
+			return false;
+		}
+		if(year == ""){
+			alert("请选择年份");
+			return false;
+		}
+	    if(document.getElementById("filepathBusiness").value!=""){
+			document.thatform.action="/BudgetCpmlFileUploadServlet?area="+Area+"&year="+year;
+			document.thatform.submit();
+		}else{
+			alert('请选择上传文件');
+		}
+	}
+	function  upLoadFileCost(){
+		var Area=$("#dq_Area").val();
+		var year=$("#year").val();
+		if(Area == ""){
+			alert("请选择预算部门");
+			return false;
+		}
+		if(year == ""){
+			alert("请选择年份");
+			return false;
+		}
+		if(document.getElementById("filepathcost").value!=""){
+			document.thisform.action="/BudgetFyFileUploadServlet?area="+Area+"&year="+year;
+			document.thisform.submit();
+		}else{
+			alert('请选择上传文件');
+		}
+	}
+	function changedName(){
+		$("#Businessdiv").hide();
+		$("#costdiv").hide();
+		if($("#dq_AreaTable").val()=="cost"){
+			$("#costdiv").show();
+		}
+		if($("#dq_AreaTable").val()=="Business"){
+			$("#Businessdiv").show();
+		}
+	}
+</script>
+</head>
+<body>
+   <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+		
+			<td class="tdlabel" width="10%">预算部门</td>
+			<td class="tdinput" width="20%">
+				<select name=dq_Area id="dq_Area"><option value="">请选择预算部门</option>
+                              #foreach($m in $getCustomerBudgetDept)
+                                     <option value="$!m.NC_PK">$!m.DEPTNAME</option>
+                              #end
+                                </select>			
+			</td>
+			<td class="tdlabel" width="10%">年份</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="year" id="year" readonly onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy'})" class="Wdate" />
+			</td>			
+			<td class="tdlabel" width="10%">请选择上传文件的类型</td>
+			<td class="tdinput" width="20%">
+				<select name=dq_AreaTable id="dq_AreaTable"onchange="changedName()"><option value=''>请选择文件</option>
+							<option value="cost"  >费用预算上报</option>
+							<option value="Business">产品毛利预算</option>
+                 </select>					 
+			</td>	
+                </tr>
+		<tr>
+		  <td>
+		  </td><td align="middle"></td>
+		</tr>
+	  </table  border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable" >
+<div width=100%>
+ <div id="costdiv">
+  <form name="thisform" method="post"  target="saveframe" enctype="multipart/form-data">
+		<table>
+		<tr class="search">
+		  <td class="tdlabel" width="10%"><input type="file" id="filepathcost" name="filepath"></input ></td>
+		  <td class="tdlabel" width="10%"><input type="button"  name="uploadfile" id="uploadfile" onclick="upLoadFileCost()"  value="上传"></input></td>
+		  <td class="tdlabel" width="10%"><a href="/synear/budget/fyys.xls" target="_block">下载并填写费用预算模板</a> </td>
+		</tr>
+		<tr>
+		  <td align="left"></td>
+		</tr>
+		</table>
+ </form>
+  </div>	
+  
+  <div id="Businessdiv">
+	<form name="thatform" method="post" target="saveframe" enctype="multipart/form-data">
+		<table>
+		<tr class="search">
+		  <td class="tdlabel" width="10%"><input type="file" id="filepathBusiness" name="filepath"></input ></td>
+		  <td class="tdlabel" width="10%"><input type="button"  name="uploadfile" id="uploadfile" onclick="upLoadFileBusiness()"  value="上传"></input></td>
+		  <td class="tdlabel" width="10%"><a href="/synear/budget/cpmlys.xls" target="_block">下载并填写产品毛利预算模板</a> </td>
+		</tr>
+		<tr>
+		  <td align="left"></td>
+		</tr>
+		</table>
+	</form>
+  </div>		
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

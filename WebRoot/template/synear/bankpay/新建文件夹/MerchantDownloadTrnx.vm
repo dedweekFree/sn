@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>		
+<title>客户网上付款</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../include/js/PopCalendar.js"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+</HEAD>
+<BODY>
+<FORM name=form1 action='MerchantDownloadTrnx.jsp' method=post>
+    <TABLE class="datatable">
+      <TR class="trcolor"><TD>商户交易日期      </TD>
+          <TD align="left">
+	  #foreach($m in $getabcbanktime)
+	  <INPUT NAME='MerchantTrnxDate'       VALUE='$m.TODAYDATE'>（YYYY/MM/DD）
+	  #end
+	  </TD></TR>
+      <TR class="trcolor"><TD>MerchantRemarks</TD>
+          <TD align="left"><INPUT NAME='MerchantRemarks'        VALUE=''></TD></TR>
+      <TR class="trcolor"><TD colspan=2><INPUT type=submit>
+    </TABLE>
+  </FORM>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</HTML>

@@ -1,0 +1,250 @@
+<HTML>
+<HEAD>		
+<title>分厂调拨装车统计表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<style>
+.changecolor{
+font: 13px/200% 宋体;
+}
+.one{
+ background:#fff;
+ text-align:left;
+}
+.two{
+ background:#eeeeee;
+ text-align:left;
+}
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function set(id){
+  var obj=eval("document.all."+id);
+  var num=obj.rows.length-1
+  for(var i=1;i<num;i++){
+	if(i%2==1){
+		obj.rows[i].className="one";
+		}		
+	else{
+		obj.rows[i].className="two";
+	}
+  }
+}
+
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form1.PID.value = paras[0];
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+alert("功能暂不开放");
+return;
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.PID.value = paras[0];
+	   //document.form1.submit();
+   }
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+function clearVals() {
+      thisform.ptype.value='';
+      thisform.ptypename.value='';
+}
+
+function checkinput()
+{  
+  thisform.action="diaobocount.aspx";
+  thisform.page.value=1;
+  thisform.submit();
+}
+
+function checkinput2()
+{  
+  
+  thisform.page.value=1;
+  thisform.action="diaobocount.aspx";
+  thisform.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+//-->
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#E0F4FC" style="SCROLLBAR-HIGHLIGHT-COLOR:#73C5E8;SCROLLBAR-SHADOW-COLOR:#73C5E8;SCROLLBAR-3DLIGHT-
+
+COLOR:#73C5E8;SCROLLBAR-TRACK-COLOR: #C2E8F8;SCROLLBAR-DARKSHADOW-COLOR:#73C5E8;scrollbar-Base-Color:#73C5E8;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr bgcolor="#E0F4FC" height="5"><td height="5"></td></tr>
+<tr bgcolor="#E0F4FC"><td>
+	<table border="0" cellspacing="0" cellpadding="0" width="98%" align="center" >
+	  <tr height="23">
+	    <td align=left height="20">
+		   <table border="0" cellspacing="3" cellpadding="0">
+		      <tr>
+			     <td height=20>&nbsp;<div id="qx"></div></td>
+			  </tr>
+		   </table>
+		</td>
+		<td align="right">&nbsp;</td>
+	   </tr>
+      </table>
+     </td>
+</tr>
+<tr>
+  <form name="thisform" method="post" action="querycarTimeinfo.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+       <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      		      		<tr class="search"> 
+			  <td class="tdlabel" width="10%">开始日期</td>
+				<td class="tdinput" width="20%">
+                      #if(!$form_begintime)
+                       <script>
+			document.write("<input type=text name=begintime size=10 readonly value='"+first+"'>");
+                       </script>
+		       #else
+		         <input type=text name=begintime size=10 readonly value='$form_begintime'>
+		       #end
+			<img src="../../../images/common/datetime.gif" style="cursor:hand;" align="absmiddle" alt="弹出日历下拉菜单" onClick="fPopCalendar(begintime,begintime);return false">
+			
+			</td>	
+			
+			<td class="tdlabel" width="10%">结束日期</td>
+			<td class="tdinput" width="20%">
+			  #if(!$form_endtime)
+			<script>
+				document.write("<input type=text name=endtime size=10 readonly value='"+last+"'>");
+			  </script>
+			    #else
+		         <input type=text name=endtime size=10 readonly value='$form_endtime'>
+		       #end
+			<img src="../../../images/common/datetime.gif" style="cursor:hand;" align="absmiddle" alt="弹出日历下拉菜单" onClick="fPopCalendar(endtime,endtime);return false">
+
+			</td>
+			
+			</td>	
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">生产分厂</td>
+			<td class="tdinput" width="20%">
+				<select name=factory onchange="javascript:setF(this.value,'storname');"><option value=''>请选择生产分厂</option>
+                           #foreach ($name in $getStockPur)
+				<option value="$name.PK_UCODE"  #if($form_factory==$name.PK_UCODE) selected  #else unselected   #end>$name.UNAME</option>
+                           #end
+                                </select><input type="hidden" name="facname" value="">			
+			</td>	
+			
+                </tr>
+		
+	
+	
+
+		
+                <tr height="5" bgcolor="#A6DDF4"> 
+		  <td colspan=4 height="5"></td>
+		</tr>
+		<tr bgcolor="#f3f3f3">
+		  <td colspan=4 >
+		  		<input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;
+                	</td>
+		</tr>
+
+	  </table>
+   </td></form>
+</tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+	<td nowrap="nowrap">出库单号</td>
+	<td nowrap="nowrap">分厂</td>
+	<td nowrap="nowrap">车牌号</td>
+	<td nowrap="nowrap">车次</td>
+	<td nowrap="nowrap">分厂开装时间</td>
+	<td nowrap="nowrap">分厂装货结束时间</td>
+	<td nowrap="nowrap">成品库入库结束时间</td>
+
+</tr>
+    #set($i=1) 
+    #foreach($m in $diaobocount)
+  		<tr height="20" class="trcolor">
+		        <td align="center" nowrap="nowrap">$!m.CBILLID &nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.UNAME&nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.CARCODE&nbsp;</td>
+                        <td align="center" nowrap="nowrap">$!m.CARNUM&nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.STDATE&nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.ENDDATE&nbsp;</td>
+			<td align="center" nowrap="nowrap">$!m.TS&nbsp;</td>
+		 </tr>
+ #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="13"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</td></tr>
+<tr><td height=5></td></tr>
+<tr><td>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td"><!--$pagecode--></td>
+   </tr>
+</table>
+</td></tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+<form name="form1" method="post" action="viewDayInbill.aspx">
+  <input type="hidden" name="PID">
+</form>
+
+<form name="form2" method="post" action="editInbill2.aspx">
+   <input type="hidden" name="vbillcode" value="">
+   <input type="hidden" name="vbatchcode" value="">
+   <input type="hidden" name="indate" value="">
+   <input type="hidden" name="pdate" value="">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

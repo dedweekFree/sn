@@ -1,0 +1,92 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>客户计划完成情况</title>
+</head>
+
+<body>	
+ 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">客户名称</td>
+	<td nowrap="nowrap">产品名称</td>
+
+        <td nowrap="nowrap">计划数量</td>
+        <td nowrap="nowrap">追加数量</td>
+	<td nowrap="nowrap">调整数量</td>
+
+        <td nowrap="nowrap">下单数量</td>
+	<td nowrap="nowrap">订单追加数量</td>
+	<td nowrap="nowrap">抢报数量</td>
+	<td nowrap="nowrap">安排数量</td>
+
+	<td nowrap="nowrap">备货数量</td>
+	<td nowrap="nowrap">发货数量</td>
+
+	<td nowrap="nowrap">剩余计划</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $yygetCustPlanExec)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.ORGDESC</td>
+			<td align="center" nowrap="nowrap">$m.INVNAME</td>
+			<td align="center" nowrap="nowrap">$m.PLANNUM</td>
+			<td align="center" nowrap="nowrap">$m.ZPLANNUM</td>
+			<td align="center" nowrap="nowrap">$m.TPLANNUM</td>
+		
+			<td align="center" nowrap="nowrap">$m.PREORDERNUM</td>
+			<td align="center" nowrap="nowrap">$m.HHNUM</td>
+			<td align="center" nowrap="nowrap">$m.YJNUM</td>
+			<td align="center" nowrap="nowrap">$m.ARRNUM</td>
+
+			<td align="center" nowrap="nowrap">$m.ORDERNUM</td>
+			<td align="center" nowrap="nowrap">$m.SALENUM</td>
+
+			<td align="center" nowrap="nowrap">$m.PLUSPALNNUM</td>
+
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+<input type="button" name="search" class="bt1" value=" 返  回 " onclick="javascript:history.go(-1)">
+</div>
+</body>
+</html>

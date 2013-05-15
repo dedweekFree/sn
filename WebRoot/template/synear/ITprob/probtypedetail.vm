@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+</script>
+</head>
+
+<body>
+<form name="form1" action="probtypedetailsub.aspx" method="post" target="saveframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="2" align="left">故障类型修改</td>
+  </tr>
+  <tr class="trcolor">
+    <td>类型名称</td>
+    <td align="left">
+    #foreach($m in $selmodsendtype)
+    <input type="text" name="probtypename" value="$!m.SENDTYPENAME"/>
+    <input type="hidden" name="pkprobtype" value="$!m.PK_SENDTYPE">
+    #end
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>选择</td>
+    <td>姓名</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $selmoduser)
+  <tr class="trcolor">
+    <td><input type="checkbox" name="name" value="$!m.NAME" #if($!m.PK_SENDTYPE!='*') checked=ture #else #end ></td>
+    <td>$!m.NAME</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td><input type="button" name="back" class="bt1" value="返回" onclick="javascript:history.go(-1)"></td>
+    <td><input type="submit" name="button" value="确认提交" class="bt1"/></td>
+  </tr>
+</table>
+</form>
+
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

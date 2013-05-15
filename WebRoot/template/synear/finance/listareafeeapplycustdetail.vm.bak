@@ -1,0 +1,205 @@
+<html>
+<head>
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+</style> 
+<script>
+var undefined;
+
+function init(){
+  uniteCols(document.all.tb);//执行
+}
+
+function uniteTable(thistab,colLength){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=0;   
+  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[j].rowSpan;   
+        thistab.rows[i].deleteCell(j);   
+      }else{   
+        thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+        rowspann=0;   
+      }   
+    }   
+    //检测无表头的表   
+    if(i==0&&rowspann>0){   
+      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+      rowspann=0;   
+    }   
+    
+  }   
+}  
+//本业务合并
+function uniteCols(thistab){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=0;   
+  for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[0].innerText==thistab.rows[i-1].cells[0].innerText&&thistab.rows[i].cells[0].colSpan==thistab.rows[i-1].cells[0].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[0].rowSpan;   
+        thistab.rows[i].deleteCell(0);  
+	thistab.rows[i].deleteCell(4);
+	thistab.rows[i].deleteCell(4);
+	thistab.rows[i].deleteCell(4);
+	thistab.rows[i].deleteCell(4);
+      }else{   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[5].rowSpan+=rowspann;
+	thistab.rows[i].cells[6].rowSpan+=rowspann;
+	thistab.rows[i].cells[7].rowSpan+=rowspann;
+	thistab.rows[i].cells[8].rowSpan+=rowspann;
+        rowspann=0;   
+      }   
+  }   
+  //检测无表头的表   
+  if(i==0&&rowspann>0){   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+        thistab.rows[i].cells[5].rowSpan+=rowspann;
+        thistab.rows[i].cells[6].rowSpan+=rowspann;
+	thistab.rows[i].cells[7].rowSpan+=rowspann;
+	thistab.rows[i].cells[8].rowSpan+=rowspann;
+      rowspann=0;   
+  }   
+} 
+
+function setvalue(step,status){
+  document.form1.step.value=step;
+  document.form1.status.value=status;
+  document.form1.submit();
+}
+
+</script>
+
+</head>
+<body onload="init()">
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">费用申请表</div></td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td height="30">$!form_applymonth 费用申请清单</td></tr>
+</table>
+
+<div id="scrollDiv" style="width:expression((document.body.clientWidth-this.offsetLeft)); overflow: auto; cursor: default; display: inline; 
+position: absolute; height:expression((document.body.clientHeight-this.offsetTop))">  
+<table id="tb" width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="FixedTitleRow" bgcolor="abcdef">
+    <th width="18%" class="FixedTitleColumn" height="25" nowrap>客户名称</th>
+    <th width="8%" class="FixedTitleColumn" height="25" nowrap>部门</th>
+    <th width="8%" class="FixedTitleColumn" height="25" nowrap>产品类别</th>
+    <th width="8%" class="FixedTitleColumn" height="25" nowrap>产品费用预算</th>
+    <th width="8%" height="25" nowrap>说明</th>
+    <th width="8%" height="25" nowrap>终端费用预算</th>
+    <th width="8%" height="25" nowrap>返利预算</th>
+    <th width="8%" height="25" nowrap>备注</th>
+    <th width="8%" height="25" nowrap>费用预算合计</th>
+  </tr>
+ #set($i=0)
+ #foreach($m in $getEditAreaFeeApply3)
+  <tr class="trcolor">
+      <td align="center" class="FixedDataColumn" nowrap>$!m.CUSTNAME</td>
+      <td align="center" class="FixedDataColumn" nowrap>$!m.DEPTNAME</td>
+      <td align="center" class="FixedDataColumn" nowrap>$!m.INVCLASSNAME</td>
+       <td align="center" class="FixedDataColumn" nowrap>$!m.PRE_PRODFEE</td>
+        <td align="center" nowrap>$!m.REMARK &nbsp;</td>
+        <td align="center" nowrap>$!m.PRE_ENDFEE</td>
+      <td align="center" nowrap>$!m.PRE_RETURN</td>
+      <td align="center" nowrap>$!m.HREMARK &nbsp;</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE</td>
+ </tr>
+  #set($i=$i+1)
+ #end
+ #foreach($m in $getEditAreaFeeApplyTotal)
+  <tr class="trcolor">
+      <td align="center" class="FixedDataColumn" nowrap>合计</td>
+      <td align="center" class="FixedDataColumn" nowrap>&nbsp;</td>
+      <td align="center" class="FixedDataColumn" nowrap>&nbsp;</td>
+       <td align="center" class="FixedDataColumn" nowrap>$!m.PRE_PRODFEE</td>
+        <td align="center" nowrap>&nbsp;</td>
+        <td align="center" nowrap>$!m.PRE_ENDFEE</td>
+      <td align="center" nowrap>$!m.PRE_RETURN</td>
+      <td align="center" nowrap>&nbsp;</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE</td>
+ </tr>
+ #end
+  </table>
+
+ <br>
+
+  <p align="center">审核记录</p>
+  <table width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="trtitle" bgcolor="abcdef">
+    <th width="8%" height="25" nowrap>审核时间</th>
+    <th width="8%" height="25" nowrap>审核人</th>
+    <th width="8%" height="25" nowrap>审核结果</th>
+    <th width="58%" height="25" nowrap>审核意见</th>
+  </tr>
+ #foreach($m in $getAudiRemark)
+  <tr class="trcolor">
+      <td align="center" nowrap>$!m.AUDIDATE</td>
+      <td align="center" nowrap>$!m.NAME</td>
+      <td align="center" nowrap><script>'$!m.AUDISTATUS'.toRealText('F','同意','不同意').write()</script></td>
+      <td align="center" nowrap>$!m.REMARK &nbsp;</td>
+ </tr>
+ #end
+  </table> 
+<form name="form1" method='post' action="areafeeapplyaudisubmit.aspx" target="dataframe">  
+  <input name="applymonth" type="hidden" value="$!form_applymonth">
+  <input name="username" type="hidden" value="$!form_username">
+  <input name="areacode" type="hidden" value="$!form_areacode">
+  <input name="step" type="hidden" value="1">
+  <input name="oldstep" type="hidden" value="$!form_step">
+  <input name="status" type="hidden" value="F">
+ #if($form_step==0)
+ #else
+  <div align="center">
+  审核意见：<textarea name="remark" cols="120" rows="3"></textarea>
+  </div>
+ #end 
+</form>
+
+<form name="form2" method='post' action="editareafeeapply.aspx">  
+  <input name="applymonth" type="hidden" value="$!form_applymonth">
+  <input name="custpk" type="hidden" value="$!form_custpk">
+</form>
+
+ <div align="center">
+ #if($form_step==0)
+    <input type="button" class="login2" value=" 修  改 " name="B222" onClick="javascript:document.form2.submit();">&nbsp;&nbsp;&nbsp;&nbsp;
+ #elseif($form_step=="")
+ #else
+    <input type="button" class="login2" value=" 通  过 " name="B222" onClick="javascript:setvalue('1','F');">&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="button" class="login2" value=" 退  回 " name="B222" onClick="javascript:setvalue('-1','R');">&nbsp;&nbsp;&nbsp;&nbsp;
+ #end   
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="javascript:history.go(-1);">
+  </div>
+   </div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

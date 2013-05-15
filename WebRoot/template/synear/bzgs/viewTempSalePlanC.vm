@@ -1,0 +1,172 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===销售计划===</title>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var rdata=new Array(); 
+rdata=[
+      ['产品代码','产品名称','产品规格','计划排产量','实际产量']
+ #set($i=1)
+ #foreach($m in $getFzByNo)
+      ,['$m.INVCODE','$m.INVNAME','$m.INVSPEC','$m.UNITVOLUME','$m.PLANNUM','$m.REALHOURS','$m.PLANNUM'*'$m.REALHOURS']
+   #set($i=$i+1)
+ #end
+]
+var pageSize=50;
+var pageno=0;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][4]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][5]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][6]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][7]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][8]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][9]
+      row.insertCell().innerText=rdata[(page-1)*pageSize+i][10]
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function init()     
+{  
+   toPage(1);
+}
+</script>
+
+
+<body onload="init()">
+
+<p align="left"><font size="4"><b>产品明细</b></font>
+
+<br>
+<div class="mainDiv" id="mdiv"> 
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+      <td height="19" bgcolor="#EFEFEF"  Name="invcode" >产品编码</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="invname">产品名称</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="invspec">产品规格</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="unitvolume">单位体积</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="plannum">计划排产量</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="realhours">实际用时</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="realnum">实际产量</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="ts1">标准用时</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="cycl">差异产量</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="cyys">差异用时</td>
+      <td height="19" bgcolor="#EFEFEF"  Name="cygs">差异工时</td>
+    </tr>
+</table>
+ </div>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="javascript:history.go(-1);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+</body>
+
+</html>
+

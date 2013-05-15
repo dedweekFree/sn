@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>selsncontractdetailbypageexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>供应商编码##供应商名称##级别##账期##合同期间##供货名称##备注</web:col>
+  <web:key>CUSTCODE##CUSTNAME##GRADE##ACCOUNTNAME##CONTRACTPERIOD##ZCMC##VNOTE</web:key>
+  <web:name>物料合同信息</web:name>
+</web:page>
+
+
+

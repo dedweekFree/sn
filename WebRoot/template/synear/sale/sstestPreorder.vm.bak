@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ #foreach($m in $testPreorder)
+   feenum='$m.BILLNUM';
+ #end
+ #foreach($m in $getPlanDate)
+ if(parseInt(feenum)>0) {
+   alert("该客户存在未提交的预订单！");
+   parent.submitok=false;
+ }else if(feenum=='0'){
+   if('$m.PLANMON'!='$m.PLANMON2' && '$m.HH'>'14'){
+      alert("截止本日15点，$m.REALMON 月已停止报货！");
+      parent.submitok=false;
+   }else {
+     if( '$m.HH'>'14'){
+        try{
+           parent.document.all.form_submit.dbilldate.value='$m.TDATE2';
+	}catch(e){}
+     }else{
+        try{
+           parent.document.all.form_submit.dbilldate.value='$m.TDATE';
+	}catch(e){}
+     }
+     parent.testok();
+   }
+ }else{
+   alert("出现未知错误！");
+   parent.submitok=false;
+ }
+ #end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

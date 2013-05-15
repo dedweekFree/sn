@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>供应商资料查询</title>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+  <form name="thisform" method="post" action="querytenduservendor.aspx">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <input type="hidden" name="addusername" value="$form_addusername"></form>
+    <td colspan="4" align="left">供应商资料查询</td>
+  </tr>
+  <tr class="trcolor">
+    <td>注册时间</td>
+    <td>供应商名字</td>
+    <td>公司名称</td>
+    <td>是否通过审核</td>
+  </tr>
+  #set($i=0)   
+  #foreach($!m in $querytenduservendor)
+     <tr class="trcolor">
+    <td>$!m.MAKETIME</td>
+    <td><a href="vendorview.aspx?userid=$!m.USERID">$!m.USERNAME</a></td>
+    <td>$!m.COMPANY</td>
+    <td>#if($!m.MAKESTATUS=='B')<font color='red'>是</font>#else否#end</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  
+  <tr class="trcolor">
+    <td colspan="4">      
+      <input type="button" name="b2" value="刷&nbsp;&nbsp;新" class="bt1" onclick="javascript:location.reload()"/>&nbsp;<input type="button" name="b2" value="返&nbsp;&nbsp;回" class="bt1" onclick="history.back(-1)"/></td>
+  </tr>
+  <tr >
+        <td class="tdlabel td" colspan="4">$pagecode</td>
+   </tr>
+</table>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

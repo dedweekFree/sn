@@ -1,0 +1,556 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>新建其他出库单</title>
+<script language="javascript" src="../../../js/stockyearout.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(3,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon = '0'+mon; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd = '0'+dd;  
+clock += dd;
+if (parseInt(hh) < 10) hh = '0'+hh;  
+clock += hh; 
+if (parseInt(ss) < 10) ss = '0'+ss;  
+clock += ss;
+if (parseInt(mil) < 10){mil = '00'+mil;
+}else if(10 <= parseInt(mil) < 100){mil = '0'+mil;}
+clock += (mil.substr(0,3));
+var bid=0;
+var a = 'bck';
+var b = clock;
+var c = bid;
+var d = a+b+c
+var a1 = 'QC1002'+clock;
+var a2 = '1002tk'+clock;
+
+var gsh=0;
+var gcount=0;
+var gre=0;
+var gmsg='';
+
+var bData1=new Array(); 
+bData1=[
+      ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','仓库主键9','批次号10','仓库11']
+ #set($i=1)
+ #foreach($m in $stockyearkucunquery)
+      ,['$m.INVCODE','$m.INVNAME','$m.INVSPEC',$m.NNUMBER,'0','0','N','$i','$m.NC_PROD_PK','$m.NC_STOCK_PK','$m.BATCHCODE','$m.STORNAME']
+   #set($i=$i+1)
+ #end
+]
+
+var pageSize=50;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked>";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox'>";
+	  }
+    //       ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  for(var j=5;j<6;j++){
+	     with (row.insertCell())
+             {
+	       innerHTML=rdata[(page-1)*pageSize+i][j];
+	       if(rdata[(page-1)*pageSize+i][j]!=rdata[(page-1)*pageSize+i][j+5]){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	     }
+	 }
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][11];
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][10]; 
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+
+function search111()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+    //       ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+  for(var i=1;i<bData1.length;i++){
+    badd=document.form1.stockname.value==""?true:(bData1[i][9].indexOf(document.form1.stockname.value)>-1);
+    if(badd){
+       rdata[m]=bData1[i];
+	   m++;
+	}
+ }
+ toPage(1);
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  var stockstatus = true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+    //       ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="O"){
+        bstatus=(bData1[i][3]>0);
+    }else{
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+    }
+    if(document.form1.stockname.value != ""){
+       stockstatus = bData1[i][9]==document.form1.stockname.value;
+       if(bname && badd && bstatus && stockstatus){
+            rdata[m]=bData1[i];
+	    m++;
+	}
+    }else{
+        if(bname && badd && bstatus){
+            rdata[m]=bData1[i];
+	    m++;
+	}
+    }
+ }
+ toPage(1);
+}
+
+function save(step,status)
+{
+  if(document.form1.F_dealDate.value == ""){
+       alert("单据日期不能为空");
+       return false;
+    }
+    if(document.form1.billdate.value == ""){
+       alert("出库日期不能为空");
+       return false;
+    }
+    if(document.form1.stockname.value == ""){
+       alert("仓库不能为空");
+       document.form1.stockname.focus();
+       return false;
+    }
+  savepage(pageno);
+  var datahtml="";
+  var hdatahtml="";
+
+
+  hdatahtml+="<input type=hidden name=instoredate value='"+document.getElementById('instoredate').value+"'>";
+   hdatahtml+="<input type=hidden name=billdate value='"+document.getElementById('billdate').value+"'>";
+   hdatahtml+="<input type=hidden name=billtype value='D'>";
+   hdatahtml+="<input type=hidden name=billno value='"+a1+"'>";
+   hdatahtml+="<input type=hidden name=sourceaddr value=''>";
+   hdatahtml+="<input type=hidden name=stockname value='"+document.getElementById('stockname').value+"'>";
+   hdatahtml+="<input type=hidden name=status value='"+status+"'>";
+   //alert(hdatahtml);return false;
+
+ 
+    // ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' &&  bData1[i][5]>0){
+        if(document.form1.stockname.value == bData1[i][9]){
+           datahtml+="<input type=hidden name='F_nc_pk' value='"+bData1[i][8]+"'></br>"; //产品主键
+           datahtml+="<input type=hidden name='F_batchcode' value='"+bData1[i][10]+"'></br>"; //批次
+           datahtml+="<input type=hidden name='F_number' value='"+bData1[i][5]+"'></br>"; //出库储量
+        }
+    }
+ }
+
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ var parasave = "";
+ if(status=='N'){
+    parasave = "保存";
+ }else{
+    parasave = "提交";
+ }
+ subdata.innerHTML=hdatahtml+datahtml;
+ document.form_submit.action="stockyearotheroutsaveadd.aspx";
+ form_submit.submit();
+}
+
+function savepage(page)
+{
+   if(page>0){
+     for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked){ 
+          rdata[(page-1)*pageSize+i][6]='Y';
+      }else{
+        rdata[(page-1)*pageSize+i][6]='N';
+      }
+      for(var j=5;j<6;j++){
+        if(table6.rows[i].cells[j+1].innerText==""){
+	  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j].innerText;
+        }
+      }
+      bData1[rdata[(page-1)*pageSize+i][7]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function document.onkeydown(){
+   key=event.keyCode;
+   if(key==83 && event.ctrlKey){
+    save();
+    return;
+   }
+   if(key==38)   //向上箭头
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+        var ly=event.srcElement.parentNode.offsetTop;
+	var hy=mdiv.scrollTop;
+	if(ly>hy && (ly-hy<2*ftr.offsetHeight)) mdiv.scrollTop=mdiv.scrollTop-ftr.offsetHeight*2; 
+  	//window.status=event.y+","+mdiv.offsetTop;
+	//form2.elements[0].value=ftr.offsetHeight;
+     }
+     return;
+   }
+   if(key==34)   //page down
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }else{
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }
+     return;
+   }
+   if(key==33)   //page up
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }else{
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }
+   }
+   return;
+}
+function allPlan(element,oldvalue)
+{
+  savepage(pageno);
+  return false;
+}
+
+function init()
+{
+    GetDateString();
+}
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('instoredate').value=Today;
+	document.getElementById('billdate').value=Today;
+    }
+</script>
+
+
+<body  onload="init()">
+<p align="left"><font size="4"><b>新建其他出库单</b></font>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form name="form1" method='post'>  
+<table  border="0" align="center" cellpadding="0" cellspacing="1" class="datatable">
+  <tr bgcolor="#EFEFEF" class="fCopy">
+    <td height="24" nowrap bgcolor="#abcdef"><div align="right">单据日期:</div></td>
+    <td width="294" height="25" nowrap bgcolor="#abcdef"> 
+     <input name="F_dealDate" type="text" class="login" id="instoredate" value="" readonly>
+     <input type="button" value="↓" onClick="ShowDate(F_dealDate);" class="button" name="button23" >*
+     <input type="hidden" name="billno" id="billno" value=""></td>
+     <td height="24" nowrap bgcolor="#abcdef"><div align="right">出库日期:</div></td>
+    <td width="294" height="25" nowrap bgcolor="#abcdef"> 
+     <input name="billdate" type="text" class="login" id="billdate" value="" readonly>
+     <input type="button" value="↓" onClick="ShowDate(billdate);" class="button" name="button23" >*
+  </tr>
+<tr  bgcolor="#EFEFEF" class="fCopy">
+	<td width="140" height="25" nowrap bgcolor="#abcdef"><div align="right">仓库:</div></td>
+        <td width="294" height="25" nowrap bgcolor="#abcdef"> 
+             <select name="stockname" onchange="search111()">
+	     <option value=""></option>
+             #foreach($!m in $stockyearstockquery)
+                <option value="$m.PK_STORDOC">$m.STORNAME</option>
+	     #end
+	     </select>*
+	</td>
+  </tr>
+</table>
+</form>
+</div>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()"> 
+状态：<select  onchange="search()">
+            <option value='all' selected>全部</option>
+	    <option value='N'>未报出库产品</option>
+	    <option value='Y'>已报出库产品</option>
+	    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">   
+	    &nbsp;&nbsp;
+</form>
+</div>
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr1" bgcolor="#EFEFEF" id="ftr">
+      <td height="19" bgcolor="#abcdef" width="5%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td height="19" bgcolor="#abcdef" width="10%" Name="pcode" >产品代码</td>
+      <td height="19" bgcolor="#abcdef" width="20%" Name="pname">产品名称</td>
+      <td height="19" bgcolor="#abcdef" width="10%" Name="pspec">产品规格</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="oldnum">库存量</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="Amount" EditType="TextBox" DataType="IntQuantity1">出库数量</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="Price">仓库</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="Price">批次号</td>
+    </tr>
+</table>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<!--<input type="button" value=" 保  存 " id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;--><input type="button" value=" 提  交 " id="btnSave2">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:window.location='stockyearsaleout.aspx';">
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+/*btnSave.onclick=function()
+{
+   save(0,'N');	
+}*/
+//单击“提交”按钮
+btnSave2.onclick=function()
+{
+   save(0,'Y');	
+}
+
+</script>
+<script>
+	 EditTables(table6);
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="newSalePlanSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

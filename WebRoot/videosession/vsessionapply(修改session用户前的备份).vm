@@ -1,0 +1,382 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>视频会议申请</title>
+<script LANGUAGE="JavaScript">
+	 function checkNum(obj) {
+		 //检查是否是非数字值
+		 if (isNaN(obj.value)) {
+			 obj.value = "";
+		 }
+		 if (obj != null) {
+			 //检查小数点后是否对于两位
+			 if (obj.value.toString().split(".").length > 1 && obj.value.toString().split(".")[1].length > 2) {
+				 alert("小数点后多于两位！");
+				 obj.value = "";
+			 }
+		 }
+	 }; 
+	$(function(){
+		$("#div1").hide();
+		$("#sho").click(function(){
+			$("#div1").show();
+		});
+		$("#hid").click(function(){
+			$("#div1").hide();
+		});
+			var $select = $("input[class='ischange']:checked").val();
+			if($select == "0"){
+				$("#personTable").show();
+				$("#downfile").hide();
+				$("#personsubmit").show();
+				$("#filesubmit").hide();
+			}else{
+				$("#personTable").hide();
+				$("#downfile").show();
+				$("#personsubmit").hide();
+				$("#filesubmit").show();
+			}
+		$(".ischange").change(function() { 
+			var $selectResule = $("input[class='ischange']:checked").val();
+			if($selectResule == "0"){
+				$("#personTable").show();
+				$("#downfile").hide();
+				$("#personsubmit").show();
+				$("#filesubmit").hide();
+			}else{
+				$("#personTable").hide();
+				$("#downfile").show();
+				$("#personsubmit").hide();
+				$("#filesubmit").show();
+			}
+		}); 
+		$maker = "";
+		$session1 = "$!session_USERNAME";
+		$session2 = "$!form_OAusername";
+		if($session1!=""){
+			$maker = $session1;
+		}else{
+			if($session2!=""){
+				$maker = $session2;
+			}
+		}
+		
+		if($maker!=""){
+			thisform.vmaker.value=$maker;
+		}else{
+			$maker = "$!form_vmaker";
+		}
+		$("#svmaker").html($maker);
+		thatform.vmaker.value=$maker;
+		
+		$(".addPerson").click( function() {
+			var personTrHtml = '<tr><td>姓名：<input type="text" name="username" value=""/></td><td>手机号码：<input type="text" name="userphone" value=""/></td><td><input class="deletePerson bt1" type="button" value="删 除"/></td></tr>';
+			$("#personTable").append(personTrHtml);
+		});
+		// 删除
+		$("#personTable .deletePerson").live("click", function() {
+			var $this = $(this);
+			$this.parent().parent().remove();
+		});
+	});
+
+	function subq(){  
+		thisform.page.value=1;
+		$maker = "";
+		$session1 = "$!session_USERNAME";
+		$session2 = "$!form_OAusername";
+		if($session1!=""){
+			$maker = $session1;
+		}else{
+			if($session2!=""){
+				$maker = $session2;
+			}
+		}
+		if($maker!=""){
+			thisform.vmaker.value=$maker;
+		}else{
+			$maker = "$!form_vmaker";
+		}
+		thisform.vmaker.value=$maker;
+		thisform.submit();
+		}
+	function addfile(){
+		$vname = $("#vname").val();
+		$vremark = $("#vremark").val();
+		$vdate = $("#vdate").val();
+		$vdatescope = $("#vdatescope").val();
+		$vaddress = $("#vaddress").val();
+		$vdeptid = $("#vdeptid").val();
+		$vdeptname = $("#vdeptid option:selected").text();
+		$vmaker = $("#vmaker").val();
+		if($vname==""){
+			alert("会议主题为必填项");
+			return false;
+		}
+		if($vremark==""){
+			alert("会议概要为必填项");
+			return false;
+		}
+		if($vdate==""){
+			alert("会议开始时间为必填项");
+			return false;
+		}
+		if($vdatescope==""){
+			alert("会议时长为必填项");
+			return false;
+		}
+		if($vaddress==""){
+			alert("会议室名称为必填项");
+			return false;
+		}
+		if($vdeptid==""){
+			alert("会议所属部门为必填项");
+			return false;
+		}
+		if($vmaker==""){
+			alert("申请人不能为空");
+			return false;
+		}
+	window.open('personlistfile.jsp?vname='+$vname+'&vremark='+$vremark+'&vdate='+$vdate+'&vdatescope='+$vdatescope+'&vaddress='+$vaddress+'&vdeptid='+$vdeptid+'&vdeptname='+$vdeptname+'&vmaker='+$vmaker+'');
+
+	}
+	function submitvsession(){
+		$vname = $("#vname").val();
+		$vremark = $("#vremark").val();
+		$vdate = $("#vdate").val();
+		$vdatescope = $("#vdatescope").val();
+		$vaddress = $("#vaddress").val();
+		$vdeptid = $("#vdeptid").val();
+		$vmaker = $("#vmaker").val();
+		if($vname==""){
+			alert("会议主题为必填项");
+			return false;
+		}
+		if($vremark==""){
+			alert("会议概要为必填项");
+			return false;
+		}
+		if($vdate==""){
+			alert("会议开始时间为必填项");
+			return false;
+		}
+		if($vdatescope==""){
+			alert("会议时长为必填项");
+			return false;
+		}
+		if($vaddress==""){
+			alert("会议室名称为必填项");
+			return false;
+		}
+		if($vdeptid==""){
+			alert("会议所属部门为必填项");
+			return false;
+		}
+		if($vmaker==""){
+			alert("申请人不能为空");
+			return false;
+		}
+		var resname = true;
+		$(".yanzhengname").each(function(){
+			if($(this).val()==""){
+				resname = false;
+			}	
+		});
+		if(!resname){
+			alert("姓名栏有空值，请检查");
+			return false;
+		}
+		var resphone = true;
+		$(".yanzhengname").each(function(){
+			if($(this).val()==""){
+				resphone = false;
+			}	
+		});
+		if(!resphone){
+			alert("手机号码栏有空值，请检查");
+			return false;
+		}
+		thatform.submit();
+		
+	}
+
+
+</script>
+</head>
+<body>
+视频会议申请历史记录：<input type="button" name="bt1" class="bt1" value="添加申请" id="sho">
+	<div id="div1">
+	<form name="thatform" method="post" action="savevsession.aspx" target="saveframe" >
+		<table class="datatable" id="ccc">
+			<tr class="trcolor">
+				<td align="right">会议主题</td>
+				<td align="left"><input type="text" name="vname" id="vname"/></td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议概要</td>
+				<td align="left"><textarea type="text" name="vremark" id="vremark" cols="60" rows="10"></textarea></td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议开始时间</td>
+				<td align="left">
+					<input type="text" size="23" id="vdate" name="vdate" 
+							#foreach($m in $getSysDateForVsesssion)
+								value="$!m.SYSDATES" 
+							#end
+					onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm',readOnly:true})" class="Wdate"/>
+				</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议时长</td>
+				<td align="left"><input type="text" id="vdatescope" name="vdatescope" onkeyup="checkNum(this)" > 以小时为单位，如："2小时"，填写"2"即可</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议室名称</td>
+				<td align="left"><input type="text" id="vaddress" name="vaddress"></td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">会议所属部门</td>
+				<td align="left">
+					<select id="vdeptid" name="vdeptid">							
+						<option value="">-----请选择部门----</option>	
+						#foreach($m in $getalldeptforvsession)
+							<option value="${m.DEPTID}">${m.DEPTNAME}</option>
+						#end																										
+					</select>
+				</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">申请人</td>
+				<td align="left">
+					<span id="svmaker" name="svmaker"></span> &nbsp;&nbsp;
+					<input type="hidden" id="vmaker" name="vmaker" value="">
+				</td>
+			</tr>	
+			<tr class="trcolor" >
+				<td align="right">参会人员</td>
+				<td align="left">
+					
+					<input type="radio" class="ischange" value="0" name="bt1" checked="checked">直接添加
+					<input type="radio" class="ischange" value="1" name="bt1" >填写excel模板方式 
+					<br/>
+					<table class="datatable" id="personTable">
+						<tr><td>姓名：<input type="text" class="yanzhengname" name="username" value=""/></td><td>手机号码：<input type="text" name="userphone" value=""/></td><td><input class="addPerson bt1" type="button" value="添 加"/></td></tr>
+					</table>
+					<table class="datatable" id="downfile">
+						<tr>
+							<td>
+								<a href="/videosession/personlist.xls">下载并填写参会人员名单EXCEL</a>
+							</td>
+						</tr>
+						
+					</table>
+					<br/>
+				</td>
+				
+			</tr>
+			<tr id="personsubmit">
+				<td align="left">&nbsp;
+				</td>
+				<td align="left">
+					<input type="button" name="b2" value="申请会议" class="bt1" onClick="submitvsession()" />	&nbsp;&nbsp;  		
+					<input type="button" class="bt1" value=" 取  消 " name="B222" id="hid">
+				</td>
+			</tr>
+			<tr id="filesubmit">
+				<td align="left">&nbsp;
+				</td>
+				<td align="left">
+					<input type="button" name="b2" value="确认并上传人员名单" class="bt1" onClick="addfile()" />&nbsp;&nbsp;
+					<input type="button" class="bt1" value=" 取  消 " name="B222" id="hid">&nbsp;&nbsp;
+				</td>
+			</tr>
+		</table>
+	</form>
+	</div>
+	
+	<form name="thisform" method="post" action="vsessionapply.aspx">	
+		<input type="hidden" name="pageSize" value="$!form_pageSize">
+		<input type="hidden" name="page" value="">
+		<input type="hidden"  name="vmaker" value="">
+		<table class="datatable" id="aaa">
+		  <tr class="trcolor">
+			<td>查询条件：</td>
+			<td align="center">会议主题：<input type="text" name="vname" value="$!form_vname"/></td>
+			<td align="center">会议概要：<input type="text" name="vremark" value="$!form_vremark"/></td>
+			<td align="center">审核状态：
+				<select name="vstate">
+					<option value="">全部</option>
+					<option value="申请">新申请</option>
+					<option value="审核">已审核</option>
+					<option value="结束">已结束</option>
+					<option value="取消">已取消</option>
+				</select>
+			</td>
+			<td align="center" ><input type="button" name="b2" value="查询" 
+				class="bt1" onclick="subq()" /></td>
+			<td align="center" colspan="6">&nbsp;</td>
+			</tr>
+			<tr class="trcolor">
+				<td>序号</td>
+				<td>会议主题</td>
+				<td>会议概要</td>
+				<td>会议开始时间</td>
+				<td>会议时长</td>
+				<td>所属部门</td>
+				<td>状态</td>
+				<td colspan="3">操作</td>
+			</tr>
+			#set($i=1)
+			#foreach($!m in $queryVsessionByMaker)
+				<tr class="trcolor">
+					<td>$i</td>
+					<td>$!m.VNAME</td>
+					<td>$!m.VREMARK</td>
+					<td>$!m.VDATE</td>
+					<td>$!m.VDATESCOPE 小时</td>
+					<td>$!m.DEPTNAME</td>
+					<td>
+						#if ( $!m.VSTATE == '申请' )
+							新$!m.VSTATE
+						#else
+							已$!m.VSTATE
+						#end
+					</td>
+					<td>
+					#if ( $!m.VSTATE == '审核' )
+						<a href="personagreement.aspx?pk_vid=$!m.PK_VID&text=结束&vmaker=$!m.VMAKER" 					onclick="return window.confirm('确认结束？')" >结束</a>
+					#else
+						&nbsp;
+					#end
+					</td>
+					<td>
+					#if ( $!m.VSTATE == '申请' )
+						<a href="personagreement.aspx?pk_vid=$!m.PK_VID&text=取消&vmaker=$!m.VMAKER" 					onclick="return window.confirm('确认取消？')" >取消</a>
+					#else
+						&nbsp;
+					#end
+					</td>
+					<td>
+						#if ( $!m.VSTATE == '审核' )
+							<a href="vsessionexport.aspx?pk_vid=$!m.PK_VID&text=取消&vmaker=$!m.VMAKER" 					>导出会议内容</a>
+						#else
+							&nbsp;
+						#end
+					</td>
+				</tr>
+			#set($i=$i+1)
+			#end
+			<tr>
+			<td colspan=13 align="right">$pagecode</td>
+			</tr>
+		</table>
+	</form>
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

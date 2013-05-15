@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=======</title>
+<script language="javascript">
+function ButtonSelectOk(){
+    window.close();
+}
+</script>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>到货单号</td>
+    <td>到货日期</td>
+    <td>备注</td>
+  </tr>
+#set($i=0)
+#foreach($!m in $selDaoHuoDan2)
+  <tr class="trcolor">
+        <td>$!m.VARRORDERCODE</td>
+        <td>$!m.TS</td>
+        <td>$!m.P_VMEMO</td>
+  </tr>
+ #set($i=$i+1)
+ #end
+  <tr>
+    <td colspan="3"><input type="submit" name="Submit" class="bt1" value="关&nbsp;&nbsp;闭" onclick="ButtonSelectOk()"/></td>
+  </tr>
+</table>
+</body>
+</html>

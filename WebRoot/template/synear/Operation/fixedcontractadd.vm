@@ -1,0 +1,342 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>配送单添加</title>
+<script src="../../../js/sunnyfunc.js"></script>
+<script Language="javascript" src="/include/js/jquery-1.7.2.js"></script>
+<script>
+   var num1 = 0;
+   var num2 = 0;
+   var num3 = 0;
+   var num4 = 0;
+   var num5 = 0;
+   var num6 = 0;
+   
+var submitok=false;
+var ChosedList=new Array();
+var header=10;		//定单头的个数
+var thisCol=12;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=1;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+   var datatb;
+var data=new Array();//单个记录元素数据数组
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+
+
+function addRow() 
+{  
+     var tempR=document.all.tb.insertRow();
+	 tempR.bgcolor="#FFFFFF";
+	 var temp1=tempR.insertCell();	
+	 var temp2=tempR.insertCell();
+	 var temp3=tempR.insertCell();	
+	 var temp5=tempR.insertCell();
+	 var temp6=tempR.insertCell();
+	 var temp7=tempR.insertCell();
+	 var temp8=tempR.insertCell();
+	 var temp9=tempR.insertCell();
+	 var temp10=tempR.insertCell();
+	 var temp11=tempR.insertCell();
+	 var temp12=tempR.insertCell();
+
+
+         temp1.innerHTML="<div align='center'><input name=\"qbh\" id='qbh"+row+"' style=\"width:80\" ></div>";
+	 temp2.innerHTML="<div align='center'><input name=\"lsh\" id='lsh"+row+"' type=\"text\" style=\"width:80\"></div>";
+	 temp3.innerHTML="<div align='center'><input name=\"htbh\" id='htbh"+row+"' type=\"text\" style=\"width:80\"></div>";
+         temp5.innerHTML="<input name=\"invname\"  id='invname"+row+"'  type=\"text\" class=\"login3\" style=\"width:200\" >";
+         temp6.innerHTML="<input name=\"invspec\" id='invspec"+row+"' type=\"text\" class=\"login3\" style=\"width:80\"  >";
+	 temp7.innerHTML="<input name=\"sl\" id='sl"+row+"' type=\"text\" style=\"width:80\" onblur=\"checksl('"+row+"')\">";
+	 temp8.innerHTML="<input name=\"dj\" id='dj"+row+"' type=\"text\" style=\"width:80\" onblur=\"checkdj('"+row+"')\">";
+	 temp9.innerHTML="<input name=\"je\" id='je"+row+"' type=\"text\" style=\"width:80\" readonly>";
+	 temp10.innerHTML="<input name=\"deptname\" id='deptname"+row+"' type=\"text\" style=\"width:80\" ><input name=\"deptid\" id='deptid"+row+"' type=\"hidden\" style=\"width:80\" >";
+	 temp11.innerHTML="<input name=\"vnote\" id='vnote"+row+"' type=\"text\" style=\"width:80\" >";
+	 temp12.innerHTML="<input name=\"fktk\" id='fktk"+row+"' type=\"text\" style=\"width:80\" >";
+         document.form1.elements[row*thisCol+header].focus();
+	 row=row+1;
+     tempR=document.all.tb.insertRow();
+     temp1=tempR.insertCell(); 
+     temp1.innerHTML="<table id=\"dtb\"></table>";
+     temp1.colSpan=10; 
+}
+function spellStr(step,fstatus) 
+{
+    if(this.form1.pkcubasdoc.value != "" && this.form1.custname.value != ""){
+        
+    }else{
+         alert("供应商不能为空");
+	 return false;
+    }
+    
+   var str="";
+   var spell_sql="";
+
+   var b_sql="";
+   var allmoney = 0;
+   for(i=0;i<row;i++){
+	if(document.getElementById("invname"+i).value!="" && document.getElementById("qbh"+i).value!="" && document.getElementById("deptname"+i).value!=""){
+             b_sql="have";
+	}
+    }
+    if(b_sql==""){
+	  alert("您没有录入合同明细，请录入！！！");
+          return false;
+   } 
+  document.form1.fstatus.value = step;
+  document.form1.ftype.value = '2';
+  document.form1.csaleid.value = getTimeStr();
+  if(fstatus == 'N'){
+     document.getElementById('B2').disabled = true;
+     document.getElementById('B22').disabled = true;
+  }else if(fstatus == 'Y'){
+     document.getElementById('B2').disabled = true;
+     document.getElementById('B22').disabled = true;
+  }
+  this.form1.target='dataframe';
+  //form1.action="testdispatchcode.aspx";
+  form1.action="fixedcontractsaveadd.aspx";
+  form1.submit();
+}
+
+function testok()
+{  
+   form1.action="dispatchsaveadd.aspx";
+   form1.submit();
+}
+
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   if(date.getHours()<10){
+	   str = str+"0"+date.getHours();
+   }else{
+	   str = str+date.getHours();
+   }
+   if(date.getMinutes()<10){
+	   str = str+"0"+date.getMinutes();
+   }else{
+	   str = str+date.getMinutes();
+   }
+   if(date.getSeconds()<10){
+	   str = str+"0"+date.getSeconds();
+   }else{
+	   str = str+date.getSeconds();
+   }
+   var bb  = parseInt(Math.random()*1000);
+   if(bb < 1000 && bb >= 100){
+       str = str+"0"+bb;
+   }else if(bb < 100 && bb >= 10){
+       str = str+"00"+bb;
+   }else if(bb < 10 && bb >= 0){
+       str = str+"000"+bb;
+   }else{
+       str = str+bb;
+   }
+   str = str.substring(2,18);
+   return str;  
+}
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ }
+ function osetVals(dm,mc,code) {
+      form1.osalezuzhicode.value=dm;
+      form1.osalezuzhi.value=mc;
+ }
+ function setVals(dm,mc,code) {
+      form1.salezuzhicode.value=dm;
+      form1.salezuzhi.value=mc;
+ }
+ function osetdept(dm,mc,code) {
+      form1.odeptid.value=dm;
+      form1.odeptname.value=mc;
+ }
+ function setdept(dm,mc,code,row) {
+      document.getElementById('deptid'+row).value=dm;
+      document.getElementById('deptname'+row).value=mc;
+ }
+  function togetoldcust(url){
+        key=event.keyCode;
+        if(document.form1.custname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+ }
+ function togetmont(url,bb,cc){
+    if(bb == ""){
+       alert("原客户不能为空");
+       return false;
+    }
+    if(cc == ""){
+       alert("目的客户不能为空");
+       return false;
+    }
+    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+ }
+ 
+ function togetinv(i,dd){
+    key=event.keyCode;
+    if(dd.value != ""){
+       if(key == 13){
+	   window.open('/synear/public/nccpquery.aspx?xtype=1&row='+i+'&zjmcode='+dd.value,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+       }
+    }
+ }
+ 
+ function checksl(i){
+    if(document.getElementById('sl'+i).value !=""){
+       if(isNaN(document.getElementById("sl"+i).value))
+       { 
+	 alert("数量必须为数字");
+	 document.getElementById("sl"+i).select();
+	 return false;
+      }else{
+         if(document.getElementById('dj'+i).value !=""){
+         document.getElementById("je"+i).value = (parseFloat(document.getElementById("sl"+i).value)*parseFloat(document.getElementById("dj"+i).value)).toFixed(2); 
+	 }
+      }
+    }
+ }
+ function checkdj(i){
+    if(document.getElementById('dj'+i).value !=""){
+       if(isNaN(document.getElementById("dj"+i).value))
+       { 
+	 alert("单价必须为数字");
+	 document.getElementById("dj"+i).select();
+	 return false;
+      }else{
+         if(document.getElementById('sl'+i).value !=""){
+         document.getElementById("je"+i).value = (parseFloat(document.getElementById("sl"+i).value)*parseFloat(document.getElementById("dj"+i).value)).toFixed(2); 
+	 }
+      }
+    }
+ }
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<form name="form1" method='post' action="">
+<input type="hidden" name="ftype">
+<input type="hidden" name="fstatus">
+<input type="hidden" name="csaleid">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right"><font color="blue">供应商名称</font></td>
+        <td><input type="text" name="custname" id="custname" onkeydown="togetoldcust('/synear/public/custvendorquery.aspx?invname='+document.form1.custname.value)"><input type="hidden" name="pkcubasdoc" id="pkcubasdoc"><input type="hidden" name="pkcumandoc" id="pkcumandoc"><input type="button" value="..." onclick="togetmont('/synear/public/cvquery.aspx')"></td>
+	<input type="hidden" name="grade">
+     </tr>
+     <tr bgcolor="#E3E3E3" class="fCopy">
+        <td height="24" nowrap align="right">附件</td>
+	<td colspan="3"><input name="paper" type="text" size="80" value="" contenteditable="false"/><input type="button" name="Submit22" class="bt1" value="文件上传" onClick="window.open('/synear/clf/pfile.jsp?formname=form1&picurl=paper&type=contractfile','','status=no,scrollbars=no,top=160,left=150,width=450,height=365')"></td>
+     </tr>
+</table>
+<br>
+
+<table id="tb" width="100%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td width="12%" height="25" nowrap class="fCopy">签报号</td>
+    <td width="12%" height="25" nowrap class="fCopy">招标流水号</td>
+    <td width="10%" height="25" nowrap class="fCopy">合同编号</td>
+    <td width="12%" height="25" nowrap class="fCopy">资产名称</td>
+    <td width="12%" height="25" nowrap class="fCopy">规格型号</td>
+    <td width="20%" height="25" nowrap class="fCopy">数量</td>
+    <td width="20%" height="25" nowrap class="fCopy">单价</td>
+    <td width="20%" height="25" nowrap class="fCopy">金额</td>
+    <td width="20%" height="25" nowrap class="fCopy">使用部门</td>
+    <td width="20%" height="25" nowrap class="fCopy">清单明细</td>
+    <td width="20%" height="25" nowrap class="fCopy">付款条款</td>
+  </tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap>
+        <input type="text" name="qbh" id="qbh0" value="" style="width:80">
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="lsh" id="lsh0" value="" style="width:80">
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="htbh" id="htbh0" value="" style="width:80">
+     </td>
+     <td align="center" nowrap><input name="invname"  id="invname0"  type="text" class="login3" style="width:200" ></td>
+     <td align="center" nowrap>
+	<input name="invspec" id="invspec0" type="text" class="login3" style="width:80" >
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="sl" id="sl0" value="" style="width:80" onblur="checksl(0)">
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="dj" id="dj0" value="" style="width:80" onblur="checkdj(0)">
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="je" id="je0" value="" style="width:80" readonly>
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="deptname" id="deptname0" value="" style="width:80"><input type="hidden" name="deptid" id="deptid0" value=""><!--<input type="button" class="bt1" value="..." onclick="togetmont('/synear/public/deptquerynew.aspx?deptname=deptname&row=0')">-->
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="vnote" id="vnote0" value="" style="width:80">
+     </td>
+     <td align="center" nowrap>
+        <input type="text" name="fktk" id="fktk0" value="" style="width:80">
+     </td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  
+    
+  </table>
+   <div align="center">
+  <input type="button" class="login2" value=" 保  存 " id="B2" name="B2" onClick="spellStr(1,'N');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 提  交 " id="B22" name="B22" onClick="spellStr(2,'F');">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 返  回 " id="B2222" name="B2222" onClick="javascript:history.back(-1)">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 添加行 " id="B2222" name="B2222" onClick="addRow();">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

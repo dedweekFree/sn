@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title></title>
+</head>
+<body>
+<div id="tabid" align="center">
+   <table cellpadding=0 celspacing=0 border=0><form name="form1" method="post">
+        <tr align="center">
+	        <td><input type="checkbox" name="checkboxall" onclick="tocheckboxall()" value='N'></td>
+	        <td nowrap align="center">到货目的地</td>
+		<td width="10%">招标价格</td>
+		<td width="10%">招标数量</td>
+	</tr>
+        #set($i=0)
+        #foreach($m in $selecttendarea)
+        <tr>
+	        <td><input type="checkbox" name="checkbox"></td>
+	        <td width="10%" nowrap><input type="text" name="areaname" value="$!m.AREANAME"></td>
+		<td width="10%"><input type="text" name="price"></td>
+		<td width="10%"><input type="text" name="tendquantity"></td>
+	</tr>
+	#set($i=$i+1)
+        #end
+	<tr>
+                <td colspan="4" align="center"><input type="button" value="确定" onclick="toqueding()">&nbsp;&nbsp;<input type="button" value="关闭" onclick="window.close();"></td>
+	</tr>
+   </form></table>
+</div>
+</body>
+</html>
+<script language="javascript">
+	function tocheckboxall(){
+	    if(document.form1.checkboxall.checked){
+		for(var i = 0 ;i  < document.form1.checkbox.length; i ++){
+		    document.form1.checkbox[i].checked=true;
+		}
+	    }else{
+	        for(var i = 0 ;i  < document.form1.checkbox.length; i ++){
+		    document.form1.checkbox[i].checked=false;
+		}
+	    }
+	}
+	function toqueding(){
+	    var j  = 0 ;
+	    for(var i = 0 ;i  < document.form1.checkbox.length;i++){
+		if(document.form1.checkbox[i].checked){
+		        j++;
+			
+		}
+	    }
+	    if(j == 0){
+	       alert("至少选择一条记录！！！");
+	    } 
+	}
+</script>

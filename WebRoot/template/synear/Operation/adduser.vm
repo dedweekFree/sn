@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=======</title>
+</head>
+
+<body>
+<form name='thisform' action='addcustusersub.aspx' method='post' target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>供应商其他用户信息添加</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td>用户名(拼音):</td>
+    <td><input type="text" name="username" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>用户姓名:</td>
+    <td><input type="text" name="uname" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>到货地点:</td>
+    <td><select name="vdef4">
+	<option value=''>无</option>
+	#set($i=0)
+	#foreach($!m in $selOEM)
+	<option value='$!m.PK_DEFDOC'>$!m.DOCNAME</option>
+	#set($i=$i+1)
+	#end
+      </select></td>
+  </tr>
+  <tr class="trcolor">
+    <td>角色:</td>
+    <td><input type="radio" name="radiobutton" value="OEM厂质检" />:OEM厂质检
+        <input type="radio" name="radiobutton" value="OEM厂库管" />:OEM厂库管
+	</td>
+  </tr>
+  <tr class="trcolor">
+    <td><input class="bt1" type="submit" name="Submit" value="确认提交" /></td>
+    <td><input class="bt1" type="reset" name="reset" value="取&nbsp;&nbsp;消" /></td>
+  </tr>
+</table>
+</form>
+    </div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

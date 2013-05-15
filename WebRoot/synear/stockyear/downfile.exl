@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>stockyearjiecunbatchcodequeryall</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产品大类##产品名称##产品编码##批次号##仓库##上期结存##入库数量##移入数量##调入数量##其他入库数量##出库数量##移出数量##调出数量##其他出库数量本期结存</web:col>
+  <web:key>INVCLASSNAME##INVNAME##INVCODE##BATCHCODE##STORNAME##SQJCNNUMBER##INNUMBER##YRNNUMBER##DRNNUMBER##QRNNUMBER##OUTNNUMBER##YCNNUMBER##DCNNUMBER##QCNNUMBER##BQJCNNUMBER</web:key>
+  <web:name>产品计划完成情况</web:name>
+</web:page>
+
+
+

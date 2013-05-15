@@ -1,0 +1,85 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>项目信息管理</title>
+</head>
+<body>
+<form name="thisform" method="post">
+<table class="datatable">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+  <tr class="trcolor">
+    <td colspan="7" align="left">项目信息管理</td>
+  </tr>
+  <tr class="trcolor">
+    <td nowrap>项目ID</td>
+    <td nowrap>项目名称</td>
+    <td nowrap>开始时间</td>
+    <td nowrap>开标时间</td>
+     <td nowrap>结束时间</td>
+    <td nowrap>项目状态</td>
+    <td nowrap>操作</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $selcountnum)
+  <tr>
+    <td nowrap>
+	$!m.PROID
+    </td>
+    <td nowrap>#if($!m.ISAREA == 'Y')<a href="zbinfodetailarea.aspx?proid=$!m.PROID">$!m.PRONAME</a>#else<a href="zbinfodetail.aspx?proid=$!m.PROID">$!m.PRONAME</a>#end &nbsp;[目前投标人数:($!m.USID)人。第($!m.ZNUM)轮]</td>
+    <td nowrap>
+	$!m.ATIME
+    </td>
+    <td nowrap>
+	$!m.KTINE
+    </td>
+    <td nowrap>
+	$!m.ZTIME
+    </td>
+    <td align="center" nowrap>
+	#if($!m.PROSTATUS=='A') 正常 
+    #end
+    	#if($!m.PROSTATUS=='Z') 停止
+    #end
+	#if($!m.PROSTATUS=='S') 暂停
+    #end
+	#if($!m.PROSTATUS=='K') 开标
+    #end
+        #if($!m.PROSTATUS=='T') 进入谈判合同
+    #end
+    </td>
+    <td align="center" nowrap>
+    #if($!m.PROSTATUS=='K')
+	<a href="TendInfoDetail.aspx?proid=$!m.PROID&znum=$!m.ZNUM">查看中标明细</a>
+    #else
+       #if($!m.ISAREA == 'Y')
+           #if($!m.PROSTATUS=='A' || $!m.PROSTATUS=='T')<a href="Tenderdetailareaprice.aspx?proid=$!m.PROID&znum=$!m.ZNUM">查看投标明细</a>
+	       #end
+       #else
+	   #if($!m.PROSTATUS=='A' || $!m.PROSTATUS=='T')<a href="Tenderdetail.aspx?proid=$!m.PROID&znum=$!m.ZNUM">查看投标明细</a>
+	       #end
+       #end
+	    <a href="tendinfoedit.aspx?proid=$!m.PROID&prostatus=S">暂停</a>&nbsp;<a href="tendinfoedit.aspx?proid=$!m.PROID&prostatus=Z">停止</a>&nbsp;#if($!m.PROSTATUS=='S' || $!m.PROSTATUS=='Z')<a href='tenderstatusub.aspx?proid=$!m.PROID&prostatus=A' target="dataframe">恢复</a>
+	    #end<a href='tenderdetailtime.aspx?proid=$!m.PROID&znum=$!m.ZNUM'>延长开标/结束时间</a>
+     </td>
+    #end
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr><td colspan="7">
+		<table width="100%">
+   <tr >
+        <td class="tdlabel">$pagecode</td>
+   </tr>
+</table>
+</td></tr>
+</table>
+</form>
+
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>saleorderheadqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>订单号##到货地##数量##车型##运输公司##开票时间##是否发车##创建人</web:col>
+  <web:key>SALEORDER##RECEIPTADDRESS##NNUMBER##DRIVERTYPE##SENDCORPNAME##TAUDITTIME##FLAG##MAKER</web:key>
+  <web:name>订单明细</web:name>
+</web:page>
+
+
+

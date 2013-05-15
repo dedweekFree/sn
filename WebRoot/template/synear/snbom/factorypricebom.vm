@@ -1,0 +1,134 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<script language="javascript">
+  function sub(){
+     document.thisform.page.value =1;
+     document.thisform.submit();
+  }
+  function add(){
+     document.form2.action="factorypricebaobomset.aspx";
+     form2.submit();
+  }
+  function openewin(url){
+     window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+  }
+  function todel(url){
+     if(confirm("确认要删除吗？")){
+        document.thisform.target="dataframe";
+        document.thisform.action = url;
+        document.thisform.submit();
+     }
+  }
+  function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      document.thisform.ptype.value=code;
+      document.thisform.ptypename.value=mc;
+ }
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" action="factorypricebom.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>分厂编码</td>
+   <td align="left"><input type="text" name="deptcode" value="$!form_deptcode" >
+    </td>
+    <td>分厂名称</td>
+    <td align="left"><input type="text" name="deptname" value="$!form_deptname" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>产品分类</td>
+   <td align="left"><input type="text" name="ptypename" value="$!form_ptypename"  readonly>
+	<input type="hidden" name="ptype" value="#if($!form_ptype!='')$!form_ptype#end">
+	<input type='button' name=bt class='bt1' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+	<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+	<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+		<IFRAME style="width:100%;height:100%" id='stree' name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+			width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+	</td></tr></table>
+	</div>
+	<script>
+	   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+	</script>
+    </td>
+    <td>产品名称</td>
+    <td align="left"><input type="text" name="prodname" value="$!form_prodname" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input type="button" name="b1" class="bt1" value="查  询" onclick="sub()"/>&nbsp;<input type="button" name="b1" class="bt1" value="新  建" onclick="add()"/>&nbsp;<!--<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');">--></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>分厂编码</td>
+    <td>分厂名称</td>
+    <td>产品编码</td>
+    <td>产品名称</td>
+    <td>产品规格</td>
+    <td>包装版本号</td>
+    <td>生效日期</td>
+    <td>失效日期</td>
+    <td>操作</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $querysnbomprice)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.DEPTCODE</td>
+    <td><a href="#" onclick="openewin('factorybaobomdetail.aspx?pk_deptdoc=$m.PK_DEPTDOC')">$!m.DEPTNAME</a></td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.INVSPEC</td>
+    <td><a href="#" onclick="openewin('factorybomwdetail.aspx?bomid=$m.BOMID&type=B')">$!m.VERSION</a></td>
+    <td>$!m.STARTDATE</td>
+    <td>#if($!m.ENDDATE!="")$!m.ENDDATE#else&nbsp;#end</td>
+    <td>#if($m.FSTATUS == 'N')<a href="factorybaobomsetedit.aspx?pk_deptdoc=$m.PK_DEPTDOC&startdate=$m.STARTDATE&enddate=$m.ENDDATE">修改</a>&nbsp;&nbsp;<a href="#"  onclick="todel('factorybaobomsetdel.aspx?fid=$m.FID')">删除</a>#end&nbsp;</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr>
+        <td class="tdlabel" colspan="10">$pagecode</td>
+   </tr>
+</table>
+<form method="post" name="form2">
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

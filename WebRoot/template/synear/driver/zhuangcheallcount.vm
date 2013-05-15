@@ -1,0 +1,178 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<script language="javascript">
+        var num1=0;
+	var num2=0;
+	var num3=0;
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+	 function toadd(url){
+	    document.form2.action=url;
+	    document.form2.submit();
+	 }
+	 function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+		   ;
+		 else
+		   idText.value=reValue;
+	    }
+
+	    function todel(url){
+	       if(confirm("确认要删除吗？")){
+		      document.form2.target="saveframe";
+		      document.form2.action=url;
+		      document.form2.submit();
+	      }
+	    }
+	    function toprint(url){
+	       window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	    function sub(){
+		history.back(-1);
+	   }
+	    function openwin(url){
+		    window.open(url,'','top=0,left=0,Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width="+screen.width+",height="+screen.height+"');
+		}
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" >
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td  align="center"><input type="button" name="b1" class="bt1" value="返  回" onclick="sub()"/>&nbsp;<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');"></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td nowrap>序号</td>
+    <td nowrap>派车单号</td>
+    <td nowrap>客户</td>
+    <td nowrap>到货地</td>
+    <td nowrap>应发数量</td>
+    <td nowrap>实发数量</td>
+    <td nowrap>物流方</td>
+    <td nowrap>车牌号</td>
+    <td nowrap>联系电话</td>
+    <td nowrap>单据日期</td>
+    <td nowrap>到车时间</td>
+    <td nowrap>第一装车地</td>
+    <td nowrap>装车状态</td>
+    <td nowrap>第二装车地</td>
+    <td nowrap>装车状态</td>
+    <td nowrap>是否发车</td>
+    <td nowrap>操作</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $zhuangcheallcount)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td nowrap><a href="#" onclick="openwin('stockdetail.aspx?sendid=$!m.SENDID&billdate=$m.CREATEDATE&billdate1=$m.CREATEDATE')">$!m.SENDID</a></td>
+    <td nowrap>$!m.CUSTNAME</td>
+    <td nowrap>$!m.RECEIPTADDRESS</td>
+    <td nowrap>$!m.NSHOULDOUTNUM</td>
+    <td nowrap>$!m.NOUTNUM1</td>
+    <td nowrap>$!m.SENDCORPNAME</td>
+    <td nowrap>$!m.DRIVERNUMBER</td>
+    <td nowrap>$!m.PHONE</td>
+    <td nowrap>$!m.CREATEDATE</td>
+    <td nowrap>#if($m.DCTIME != "")$m.DCTIME#else&nbsp;#end</td>
+    <td nowrap>#if($!m.ADDRESS=="chenzhai")陈砦#elseif($!m.ADDRESS=="sinian")思念#end</td>
+    <td nowrap>
+        #if($!m.ENDTIME1 != "")
+	     <font color="green">完毕</font>
+	#else
+	    #if($!m.BEGINTIME1 != "")
+                <font color="blue">装车中</font>
+	    #else 
+	        #if($!m.WAITTIME1 != "")
+                    <font color="orange">等待</font>
+		#else
+		    <font color="red">未到达</font>
+		#end
+	    #end
+	#end
+    </td>
+    <td nowrap>#if($!m.ADDRESS1=="chenzhai")陈砦#elseif($!m.ADDRESS1=="sinian")思念#else&nbsp;#end</td>
+    <td nowrap>
+        #if($!m.ADDRESS1!="")
+        #if($!m.ENDTIME2 != "")
+	     <font color="green">完毕</font>
+	#else
+	    #if($!m.BEGINTIME2 != "")
+                <font color="blue">装车中</font>
+	    #else
+	        #if($!m.WAITTIME2 != "")
+                    <font color="orange">等待</font>
+		#else
+		    <font color="red">未到达</font>
+		#end
+	    #end
+	#end
+      #else
+	&nbsp;
+      #end
+    </td>
+    <td nowrap>#if($!m.SENDTIME!="")是#else<font color="red">否</font>#end</td>
+    <td nowrap>
+    <a href="snsendmanagerd.aspx?ordercode=$m.SENDID">明细</a>
+    </td>
+  </tr>
+  #set($i=$i+1)
+  <script >
+  num1 += $m.NSHOULDOUTNUM;
+  num2 += $m.NOUTNUM1;
+  </script>
+  #end
+  <tr class="trcolor">
+      <td colspan="4">合计</td>
+      <td><script >document.write(num1);</script></td>
+      <td><script >document.write(num2);</script></td>
+      <td colspan="12">&nbsp;</td>
+  </tr>
+</table>
+<form method="post" name="form2">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script>
+var undefined;
+
+function showtr(k,obj) { //v6.0
+  if(obj.innerText=="查看"){
+    obj.innerText="隐藏"
+    tb.rows[k*2+2].style.display="";
+  }else{
+    obj.innerText="查看"
+    tb.rows[k*2+2].style.display="none";
+  }
+}
+
+function init(){
+     if(dtb.length==undefined){
+       tb.rows[2].style.display="none";
+     }else{
+       for(i=0;i<dtb.length;i++)
+         tb.rows[i*2+2].style.display="none";
+     }
+}
+
+</script>
+
+</head>
+<body onload="init()">
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">客户费用申请表</div></td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td height="30" class="fCopy" id="help"></td></tr>
+</table>
+
+<table id="tb" width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="trtitle" bgcolor="abcdef">
+    <th width="8%" height="25" nowrap>预算时间</th>
+    <th width="18%" height="25" nowrap>客户名称</th>
+    <th width="8%" height="25" nowrap>目前状态</th>
+    <th width="8%" height="25" nowrap>终端费用预算</th>
+    <th width="8%" height="25" nowrap>返利预算</th>
+    <th width="8%" height="25" nowrap>产品费用预算</th>
+    <th width="8%" height="25" nowrap>费用预算合计</th>
+    <th width="8%" height="25" nowrap>备注</th>
+    <th width="8%" height="25" nowrap>操作</th>
+  </tr>
+ #set($i=0)
+ #foreach($m in $getEditAreaFeeApply2)
+  <tr class="trcolor4">
+     <td align="center" nowrap>$!m.APPLYMONTH</td>
+      <td align="center" nowrap>$!m.CUSTNAME</td>
+      <td align="center" nowrap><script>'$!m.STATUS'.toRealText('F','待报','被退回').write()</script></td>
+        <td align="center" nowrap>$!m.PRE_ENDFEE</td>
+      <td align="center" nowrap>$!m.PRE_RETURN</td>
+      <td align="center" nowrap>$!m.PRE_PRODFEE</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE</td>
+	<td align="center" nowrap><a style="cursor:hand" onclick="showtr($i,this)">查看</a></td>
+	<td align="center" nowrap><a href="listareafeeapplycustdetail.aspx?applymonth=$!m.APPLYMONTH&custpk=$!m.NC_CUST_PK">明细</a></td>
+  </tr>
+  <tr class="trcolor4"><td colspan=9 style="padding:0px" id="dtb">$!m.REMARK &nbsp;</td></tr>
+  #set($i=$i+1)
+ #end
+  </table>
+  <form name="form1" method='post' action="areafeeapplyoksubmit.aspx" target="dataframe">  
+<input name="applymonth" type="hidden" value="$!form_applymonth">
+<input name="username" type="hidden" value="$!form_username">
+</form>
+     <div align="center">
+  <input type="button" class="login2" value=" 返  回 " name="B222" onClick="javascript:window.location='listareafeeapplycust.aspx'">
+  </div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

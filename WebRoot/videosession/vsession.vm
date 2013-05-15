@@ -1,0 +1,110 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<title>视频会议管理</title>
+<script>
+	function subq(){  
+		thisform.page.value=1;
+		thisform.submit();
+		}	
+</script>
+</head>
+<body>
+	目前账号状态：空闲账号数量：#foreach($!m in $queryFreeAccount)$!m.FREECOUNT 个；#end
+		使用中账号数量：#foreach($!m in $queryBusyAccount)$!m.BUSYCOUNT 个；#end
+	<form name="thisform" method="post" action="vsession.aspx">	
+		<input type="hidden" name="pageSize" value="$!form_pageSize">
+		<input type="hidden" name="page" value="">
+		<table class="datatable">
+		  <tr class="trcolor">
+			<td>查询条件：</td>
+			<td align="center">主题：<input type="text" name="vname" value="$!form_vname"/></td>
+			<td align="center">概要：<input type="text" name="vremark" value="$!form_vremark"/></td>
+			<td align="center">审核状态：
+				<select name="vstate">
+					<option value="">全部</option>
+					<option value="申请">新申请</option>
+					<option value="审核">已审核</option>
+					<option value="结束">已结束</option>
+					<option value="取消">已取消</option>
+				</select>
+			</td>
+			<td align="center" ><input type="button" name="b2" value="查询" 
+				class="bt1" onclick="subq()" /></td>
+			<td align="center" ><input type="button" class="bt1" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"></td>
+			<td align="center" colspan="8">&nbsp;</td>
+		  </tr>
+		  <tr class="trcolor">
+			<td>序号</td>
+			<td>会议主题</td>
+			<td>会议概要</td>
+			<td>会议开始时间</td>
+			<td>会议时长</td>
+			<td>会议室名称</td>
+			<td>申请人</td>
+			<td>所属部门</td>
+			<td>申请时间</td>
+			<td>状态</td>
+			<td colspan="4">操作</td>
+		  </tr>
+		  #set($i=1)
+		  #foreach($!m in $queryVsession)
+			<tr class="trcolor">
+				<td>$i</td>
+				<td>$!m.VNAME</td>
+				<td>$!m.VREMARK</td>
+				<td>$!m.VDATE</td>
+				<td>$!m.VDATESCOPE 小时</td>
+				<td>$!m.VADDRESS</td>
+				<td>$!m.VMAKER</td>
+				<td>$!m.DEPTNAME</td>
+				<td>$!m.CREATEDATE</td>
+				<td>
+					#if ( $!m.VSTATE == '申请' )
+						新$!m.VSTATE
+					#else
+						已$!m.VSTATE
+					#end
+				</td>
+				<td>
+				#if ( $!m.VSTATE == '申请' )
+					<a href="agreement.aspx?pk_vid=$!m.PK_VID&text=审核" onclick="return window.confirm('确认审核？')" >审核</a>
+				#else
+					&nbsp;
+				#end
+				</td>
+				<td>
+				#if ( $!m.VSTATE == '申请' )
+					<a href="agreement.aspx?pk_vid=$!m.PK_VID&text=取消" onclick="return window.confirm('确认取消？')" >取消</a>
+				#else
+					&nbsp;
+				#end
+				</td>
+				<td>
+				#if ( $!m.VSTATE == '审核' )
+					<a href="agreement.aspx?pk_vid=$!m.PK_VID&text=结束" onclick="return window.confirm('确认结束？')" >结束</a>
+				#else
+					&nbsp;
+				#end
+				</td>
+				<td>
+					#if ( $!m.VSTATE == '审核' )
+						<a href="vsessionexport.aspx?pk_vid=$!m.PK_VID&text=取消&vmaker=$!m.VMAKER" 					>导出会议内容</a>
+					#else
+						&nbsp;
+					#end
+				</td>
+			</tr>
+		  #set($i=$i+1)
+		  #end
+		 <tr>
+		<td colspan=15 align="right">$pagecode</td>
+     </tr>
+</table>
+</form>
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

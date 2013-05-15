@@ -1,0 +1,9 @@
+<web:page>
+  <web:sql>saveInvbasCategory</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>新分类保存成功！</web:successMsg>
+  <web:failMsg>新分类保存失败！</web:failMsg>
+  <web:url>setChanLiangItem.aspx</web:url>
+  <web:template>template/synear/common/messagezzfy.vm</web:template>
+</web:page>

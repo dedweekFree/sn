@@ -1,0 +1,342 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312"<link rel="stylesheet" type="text/css" href="../../js/style.css">
+	<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+	<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+	<meta name="ProgId" content="FrontPage.Editor.Document">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+	<script language="javaScript" src="../../../js/common.js"></script>
+	<script language="javaScript" src="../../../js/funbase.js"></script>
+	<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+	<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+	<script language="JavaScript" src="../../../js/browers.js"></script>
+	<script language="JavaScript" src="../../../js/formCheck.js"></script>
+	<title>===费用预算===</title>
+	<script language="javascript" src="../../../js/FeeGridEdit.js"></script>
+	<style type="text/css">
+		body,div,p,ul,li,font,span,td,th{
+		font-size:10pt;
+		line-height:155%;
+		}
+		table{
+		border-top-width: 1px;
+		border-right-width: 1px;
+		border-bottom-width: 0px;
+		border-left-width: 1px;
+		border-top-style: solid;
+		border-right-style: solid;
+		border-bottom-style: none;
+		border-left-style: solid;
+		border-top-color: #CCCCCC;
+		border-right-color: #CCCCCC;
+		border-bottom-color: #CCCCCC;
+		border-left-color: #CCCCCC;
+		}
+		td{
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #CCCCCC;
+		}
+		.EditCell_TextBox {
+		width: 90%;
+		border:1px solid #0099CC;
+		}
+		.EditCell_DropDownList {
+		width: 90%;
+		}
+		.dirty-cell {
+			background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+		}
+		.fixedHeaderTr    
+		{    
+		position:relative;    
+		top:expression(this.offsetParent.scrollTop-3);    
+		};    
+		   
+		.mainDiv    
+		{    
+		overflow:auto;    
+		scrollbar-face-color:9999ff; 
+		width:expression((document.body.clientWidth-this.offsetLeft));   
+		}
+	</style>
+	<script> 
+		var cpmlData=new Array(); 
+		cpmlData=[
+			  ['年度预算中对应的产品规格','产品名称','产品规格','公司统一出厂价（含税）','标准成本（未税）','分支经销商执行价格（含税）','卖场平均供价（含税）','经销商数量','卖场数量','主键','状态','0']
+		 #set($i=1)
+		 #foreach($m in $getBudgetD2)
+			  ,['$m.DEFINCLASSNAME','$m.INVNAME','$m.INVSPEC','$m.NBZYJ','$m.CKCB','$m.JXSZXJ','$m.MCPJGJ','$m.JXS','$m.ZYMC','$m.PK_INVBASDOC','N','$i']
+		   #set($i=$i+1)
+		 #end
+		]
+		var FyData=new Array(); 
+		FyData=[
+			  [,'二级科目名称','三级科目名称','直营卖场数量','经销商数量','合计数量','主键','状态','0']
+		 #set($i=1)
+		 #foreach($m in $getBudgetD1)
+			  ,['$m.NAME1','$m.NAME2','$m.ZYMC','$m.JXS','$m.HJ','$m.PK_ACCSUBJ','N','$i']
+		   #set($i=$i+1)  
+		 #end
+		]
+		
+		var pageSize=50;
+		var pageno=0;
+		
+		function toPage2(){
+			var element=document.all.pgs;
+			if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+				alert("页数必须为大于1且小于"+Math.ceil((cpmlData.length-1)/pageSize)+"的整数!");
+				element.focus();
+				return false;
+			}
+			if(element.value<1){
+				alert("页数必须为大于1且小于"+Math.ceil((cpmlData.length-1)/pageSize)+"的整数!");
+				element.focus();
+				return false;
+			}
+			if(element.value>Math.ceil((cpmlData.length-1)/pageSize)){
+				alert("页数必须为大于1且小于"+Math.ceil((cpmlData.length-1)/pageSize)+"的整数!");
+				element.focus();
+				return false;
+			}
+			toPage(element.value) 
+		}
+
+		function toPage(page){
+			try{
+				savepage(pageno);
+				pageno=page;
+				for(var i=cpmltable.rows.length;i>1;i--) cpmltable.deleteRow(i-1);
+				  for(var i=1;i<=pageSize;i++){
+					if(((page-1)*pageSize+i)<cpmlData.length){
+						var row=cpmltable.insertRow()
+						if(cpmlData[(page-1)*pageSize+i][6]=='Y'){
+							row.insertCell().innerHTML="<input type=checkbox name=cpmlcheckbox value='checkbox' checked />";
+						}else{
+							row.insertCell().innerHTML="<input type=checkbox name=cpmlcheckbox value='checkbox' />";
+						}				
+						row.insertCell().innerText=cpmlData[(page-1)*pageSize+i][0]
+						row.insertCell().innerText=cpmlData[(page-1)*pageSize+i][1]
+						row.insertCell().innerText=cpmlData[(page-1)*pageSize+i][2]
+						//row.insertCell().innerText=cpmlData[(page-1)*pageSize+i][3]
+						//row.insertCell().innerText=cpmlData[(page-1)*pageSize+i][4]
+						for(var j=5;j<9;j++){
+							with (row.insertCell()){
+								innerHTML=cpmlData[(page-1)*pageSize+i][j];
+								if(cpmlData[(page-1)*pageSize+i][j]!='0'){
+								//width='10%'
+								//attachEvent("onclick",setEditBox); 
+								//className="dirty-cell";
+								}
+							}
+						}
+						SetRowCanEdit(row);
+					}
+				}
+				var apg=Math.ceil((cpmlData.length-1)/pageSize);
+				var npg=parseInt(page)+1;
+				var ppg=parseInt(page)-1;
+				var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(cpmlData.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+					if(page<apg){
+						pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+					}else{
+						pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+					}	
+					if(page>1){
+						pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+					}	
+					if(page<apg){
+						pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+					}	
+					document.all.pg.innerHTML=pagetext;
+				}catch(e){
+				alert(e.description)
+			}
+		}
+		function toPage3(page){
+			try{
+				savepage2(pageno);
+				pageno=page;
+				for(var i=fytable.rows.length;i>1;i--) fytable.deleteRow(i-1);
+				  for(var i=1;i<=pageSize;i++){
+					if(((page-1)*pageSize+i)<FyData.length){
+						var row=fytable.insertRow()
+						if(FyData[(page-1)*pageSize+i][6]=='Y'){
+							row.insertCell().innerHTML="<input type=checkbox name=fycheckbox value=checkbox checked />";
+						}else{
+							row.insertCell().innerHTML="<input type=checkbox name=fycheckbox value=checkbox />";
+						}				
+						row.insertCell().innerText=FyData[(page-1)*pageSize+i][0]
+						row.insertCell().innerText=FyData[(page-1)*pageSize+i][1]
+						row.insertCell().innerText=FyData[(page-1)*pageSize+i][2]
+						for(var j=3;j<5;j++){
+							with (row.insertCell()){
+								innerHTML=FyData[(page-1)*pageSize+i][j];
+								if(FyData[(page-1)*pageSize+i][j]!='0'){
+								//width='10%'
+								//attachEvent("onclick",setEditBox); 
+								//className="dirty-cell";
+								}
+							}
+						}
+						SetRowCanEdit(row);
+					}
+				}
+				}catch(e){
+					alert("出现错误")
+					alert(e.description)
+			}
+		}
+
+		function savepage(page){
+			if(page>0){
+				for(var i=1;i<cpmltable.rows.length;i++){
+					if(document.all.cpmlcheckbox[i].checked) cpmlData[(page-1)*pageSize+i][10]='Y';
+					else  cpmlData[(page-1)*pageSize+i][10]='N';
+					for(var j=5;j<8;j++){
+						if(cpmltable.rows[i].cells[j+1].innerText==""){
+							cpmlData[(page-1)*pageSize+i][j]=document.all.editbox.value;
+						}else{
+							cpmlData[(page-1)*pageSize+i][j]=cpmltable.rows[i].cells[j+1].innerText;
+						}
+					}
+					cpmlData[cpmlData[(page-1)*pageSize+i][11]]=cpmlData[(page-1)*pageSize+i];
+				}
+			}
+		}
+		function savepage2(page){
+			if(page>0){
+				for(var i=1;i<fytable.rows.length;i++){
+					if(document.all.fycheckbox[i].checked) FyData[(page-1)*pageSize+i][6]='Y';
+					else  FyData[(page-1)*pageSize+i][6]='N';
+					for(var j=2;j<5;j++){
+						if(fytable.rows[i].cells[j+1].innerText==""){
+							FyData[(page-1)*pageSize+i][j]=document.all.editbox.value;
+						}else{
+							FyData[(page-1)*pageSize+i][j]=fytable.rows[i].cells[j+1].innerText;
+						}
+					}
+					FyData[FyData[(page-1)*pageSize+i][7]]=FyData[(page-1)*pageSize+i];
+				}
+			}
+		}
+	</script>
+</head>
+
+<body>
+	
+	#foreach($m in $getBudgetH)
+	<p align="left"><font size="4"><b>预算上报信息：</b></font>
+	<div style="width:100%;txt-align:center;border:0 double gray;">
+		<table  border="0" cellpadding="0" cellspacing="2" width="100%">
+			<tr>
+				<td height="19" width="7%">销售部名称：</td> 
+				<td height="19" width="15%">
+						$!m.DEPTNAME
+				</td>
+				<td height="19" width="7%">预算期间：</td> 
+				<td height="19" width="15%">$!m.BILLDATE</td>
+			</tr>
+			<tr>
+				<td >上报人：</td> 
+				<td height="19" >$!m.MAKER</td>
+				<td >附件</td> 
+				<td height="19" >
+				<a href="/DownFileServlet?filepath=$!m.ATTACHMENT">$!m.ATTACHMENT</a>
+				</td>
+			</tr>
+			<tr>
+				<td >备注</td> 
+				<td height="19" colspan="3">$!m.BILLDESC &nbsp;</textarea></td>
+			</tr>
+		</table>      
+	</div>
+#end
+	<br>
+	<p align="left"><font size="4"><b>费用上报明细：</b></font>
+	<div class="mainDiv" id="mdiv"> 
+		<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="fytable">
+			<tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+			  <td height="19" bgcolor="#EFEFEF"  Name="st"><input type=checkbox name=fycheckbox value='checkbox' onclick="selfydata(this)">状态</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="pname">二级费用名称</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="pspec">三级费用名称</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="oldnum" width="100" >直营卖场</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp"  width="100" >经销商</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp" width="100" >合计</td>
+			</tr>
+		</table>
+	</div>
+	<p align="left"><font size="4"><b>产品毛利上报明细：</b></font>
+	<div class="mainDiv" id="mdiv"> 
+		<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="cpmltable">
+			<tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+			  <td height="19" bgcolor="#EFEFEF"  Name="st"><input type=checkbox name=cpmlcheckbox value='checkbox' onclick="selcpmldata(this)">状态</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="pcode" >产品代码</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="pname">产品名称</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="pspec">产品规格</td>
+			  <!-- <td height="19" bgcolor="#EFEFEF"  Name="oldnum">公司统一出厂价（含税）</td> -->
+			  <!-- <td height="19" bgcolor="#EFEFEF"  Name="costp" >标准成本（未税）</td> -->
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp" >分支经销商执行价格（含税）</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp" >卖场平均供价（含税）</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp" >经销商数量</td>
+			  <td height="19" bgcolor="#EFEFEF"  Name="costp" >卖场数量</td>
+			</tr>
+		</table>
+	</div>
+	<div style="width:100%;txt-align:center;border:0 double gray;">
+		<input type="button" class="login2" value=" 返   回 " name="B222" onClick="javascript:window.location='budgetverify.aspx';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span id="pg"></span>
+	</div>
+		<p align="left"><font size="4"><b>预算上报审批记录</b></font>
+		<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" >
+				<tr >
+					<td>单据号</td>
+					<td>操作人</td>
+					<td>操作状态</td>
+					<td>操作时间</td>
+					<td>申报流程</td>
+					<td>备注</td>
+				</tr>
+			#foreach($m in $getBudgetLogByBillno)
+				<tr >
+					<td height="19" >$m.BILLNO</td>
+					<td height="19" >$m.AUDIUSERNAME</td>
+					<td height="19" 
+						#if($m.AUDISTATUS=="K" || $m.AUDISTATUS=="Y") 
+							style=color:green; 
+						#end
+						#if($m.AUDISTATUS=="S" || $m.AUDISTATUS=="N") 
+							style=color:red; 
+						#end
+					>
+					   #if($m.AUDISTATUS=="Y") 通过/$!m.AUDISTATUS #end
+					   #if($m.AUDISTATUS=="S") 退回/$!m.AUDISTATUS #end
+					   #if($m.AUDISTATUS=="M") 创建/$!m.AUDISTATUS #end
+					   #if($m.AUDISTATUS=="F") 提报/$!m.AUDISTATUS #end
+					   #if($m.AUDISTATUS=="K") 审批完成/$!m.AUDISTATUS #end
+					   #if($m.AUDISTATUS=="U") 修改/$!m.AUDISTATUS #end
+					</td>
+					<td height="19" >$m.AUDIDATE</td>
+					<td height="19" >$m.ROLENAME</td>
+					<td height="19" >$!m.REMARK</td>
+				</tr>
+			#end
+		</table>
+	<script>
+		 EditTables(fytable);
+		 toPage(1);
+		 EditTables(cpmltable);
+		 toPage3(1);
+	</script>
+	<form name="form_submit" method="post"  action="newSalePlanSubmit.aspx" target="saveframe">
+		<span id="subdata"></span>
+	</form>
+	<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

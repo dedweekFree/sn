@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/ZhrCss.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script>
+var undefined;
+
+function showtr(k,obj) { //v6.0
+  if(obj.innerText=="查看"){
+    obj.innerText="隐藏"
+    tb.rows[k*2+2].style.display="";
+  }else{
+    obj.innerText="查看"
+    tb.rows[k*2+2].style.display="none";
+  }
+}
+
+function init(){
+  try{
+     if(dtb.length==undefined){
+       tb.rows[2].style.display="none";
+     }else{
+       for(i=0;i<dtb.length;i++)
+         tb.rows[i*2+2].style.display="none";
+     }
+  }
+  catch(e){}
+}
+function sub(){
+	var a=document.all.applymonth2.value
+	var b = a.substr(0,7)
+	document.all.applymonth.value=b
+	form1.submit();
+}
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+</script>
+
+</head>
+<body onload="init()">
+<div class="Main">
+        <div class="CaptionTxt">区域费用申请表</div>
+<form name="form1" method="post" action="BudgetRequestApplyInfo.aspx">    
+<table class='List' id="tab" width="100%">
+  <tr>
+    <td>费用时间:</td>
+    <td><input name="applymonth2" type="text" class="login" id="applymonth2" value="" readonly>&nbsp<input
+                        type="button" value="↓" onclick="ShowDate(applymonth2);" style="width: 20px; height=18px;">&nbsp&nbsp*</td>
+	<input name="applymonth" type="hidden" value="">
+    </td>
+  </tr>
+  <tr>
+    <td><input type="button" name="check" value="查询" onclick="sub()"/></td>
+    <td><input type="reset" name="Submit2" value="重置" /></td>
+  </tr>
+</table>
+<form>
+<table id="tb" class='List' width="100%">
+  <tr class="trtitle" bgcolor="abcdef">
+    <th width="8%" height="25" nowrap>区域</th>
+    <th width="8%" height="25" nowrap>费用时间</th>
+    <th width="8%" bgcolor="yellow" height="25" nowrap>预算销售</th>
+    <th width="8%" bgcolor="yellow" height="25" nowrap>预算应收</th>
+    <th width="8%" bgcolor="yellow" height="25" nowrap>预算其它</th>
+    
+    <th width="8%" bgcolor="yellow" height="25" nowrap>预算产品费用</th>
+    <th width="8%" bgcolor="yellow" height="25" nowrap>预算费用合计</th>
+    <th width="8%" bgcolor="#FFCC99" height="25" nowrap>申报销售</th>
+    <th width="8%" bgcolor="#FFCC99" height="25" nowrap>申报应收</th>
+    <th width="8%" bgcolor="#FFCC99" height="25" nowrap>申报其它</th>
+    
+    <th width="8%" bgcolor="#FFCC99" height="25" nowrap>申报产品费用</th>
+    <th width="8%" bgcolor="#FFCC99" height="25" nowrap>申报费用合计</th>
+    <th width="8%" bgcolor="#CCFFCC" height="25" nowrap>批准销售</th>
+    <th width="8%" bgcolor="#CCFFCC" height="25" nowrap>批准应收</th>
+    <th width="8%" bgcolor="#CCFFCC" height="25" nowrap>批准其它</th>
+    
+    <th width="8%" bgcolor="#CCFFCC" height="25" nowrap>批准产品费用</th>
+    <th width="8%" bgcolor="#CCFFCC" height="25" nowrap>批准费用合计</th>
+    <th width="8%" height="25" nowrap>操作</th>
+  </tr>
+ #set($i=0)
+ #foreach($m in $BudgetRequestApplyInfo)
+  <tr class="trcolor4">
+     <td align="center" nowrap>$!m.DEPTNAME</td>
+     <td align="center" nowrap>$!m.APPLYMONTH</td>
+        <td align="center" nowrap>$!m.PRE_SALEAIM</td>
+      <td align="center" nowrap>$!m.PRE_RECEVALAIM</td>
+      <td align="center" nowrap>$!m.PRE_ORTHERAIM</td>
+      
+      <td align="center" nowrap>$!m.PRE_PRODFEE</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE</td>
+	   <td align="center" nowrap>$!m.PRE_SALEAIM2</td>
+      <td align="center" nowrap>$!m.PRE_RECEVALAIM2</td>
+      <td align="center" nowrap>$!m.PRE_ORTHERAIM2</td>
+      
+      <td align="center" nowrap>$!m.PRE_PRODFEE2</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE2</td>
+	  <td align="center" nowrap>$!m.PRE_SALEAIM3</td>
+      <td align="center" nowrap>$!m.PRE_RECEVALAIM3</td>
+      <td align="center" nowrap>$!m.PRE_ORTHERAIM3</td>
+      
+      <td align="center" nowrap>$!m.PRE_PRODFEE3</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE3</td>
+	<td align="center" nowrap><a href="BudgetRequestApplyInfoDetial.aspx?applymonth=$!m.APPLYMONTH&areacode=$!m.AREACODE&flow=2">明细</a></td>
+  </tr>
+  <tr class="trcolor4"><td colspan=9 style="padding:0px" id="dtb"></td></tr>
+  #set($i=$i+1)
+ #end
+  #if($i==0)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="18"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+  </table>
+ <div align="Control"> <input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</div>
+</body> 
+</html>      

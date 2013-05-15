@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>		
+<title>预算汇总报表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+	//营销贡献
+	function yxgx(){  
+		$deptcode = $("#deptcode").val();
+		$billdate = $("#billdate").val();
+		if($deptcode == ""){
+			alert("请选择部门");
+			return false;
+		}
+		if($billdate == ""){
+			alert("请选择预算期间");
+			return false;
+		}
+		var $deptname = $("#deptcode option:selected").text();
+		thisform.action="yxgx.aspx?deptname="+$deptname;
+		thisform.submit();
+	}
+	//产品毛利
+	function cpml(){  
+		$deptcode = $("#deptcode").val();
+		$billdate = $("#billdate").val();
+		if($deptcode == ""){
+			alert("请选择部门");
+			return false;
+		}
+		if($billdate == ""){
+			alert("请选择预算期间");
+			return false;
+		}
+		var $deptname = $("#deptcode option:selected").text();
+		thisform.action="cpml.aspx?deptname="+$deptname;
+		thisform.submit();
+	}
+	//固定费用
+	function gdfy(){  
+		$deptcode = $("#deptcode").val();
+		$billdate = $("#billdate").val();
+		if($deptcode == ""){
+			alert("请选择部门");
+			return false;
+		}
+		if($billdate == ""){
+			alert("请选择预算期间");
+			return false;
+		}
+		var $deptname = $("#deptcode option:selected").text();
+		thisform.action="gdfy.aspx?deptname="+$deptname;
+		thisform.submit();
+	}
+	//重点费用
+	function zdfy(){  
+		$deptcode = $("#deptcode").val();
+		$billdate = $("#billdate").val();
+		if($deptcode == ""){
+			alert("请选择部门");
+			return false;
+		}
+		if($billdate == ""){
+			alert("请选择预算期间");
+			return false;
+		}
+		var $deptname = $("#deptcode option:selected").text();
+		thisform.action="zdfy.aspx?deptname="+$deptname;
+		thisform.submit();
+	}
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" target="_self" action="budgetlist.aspx">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+			<td class="tdlabel" width="20%">预算部门</td>
+			<td class="tdinput" width="20%">
+				<select name="deptcode" id="deptcode">
+					<option value="">请选择预算部门</option>
+					#foreach($m in $getCustomerBudgetDept)
+						<option value="$!m.NC_PK"  #if($!form_code==$!m.NC_PK) selected #end>$!m.DEPTNAME</option>
+					#end
+				</select>	   
+			</td>	
+			<td class="tdlabel">预算期间</td>
+			<td class="tdinput">
+				<input type="text" name="billdate" id="billdate" readonly value="$!form_date" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})" class="Wdate" />
+			</td>
+        </tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="left" colspan="3">	
+				<input type="button" value="营销贡献预算表" onclick="yxgx()" class="bt1">&nbsp;&nbsp;
+				<input type="button" value="产品毛利预算表" onclick="cpml()" class="bt1">&nbsp;&nbsp;
+				<input type="button" value="固定费用预算表" onclick="gdfy()" class="bt1">&nbsp;&nbsp;
+				<input type="button" value="重点费用规划表" onclick="zdfy()" class="bt1">&nbsp;&nbsp;
+			</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+</div>
+</form>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

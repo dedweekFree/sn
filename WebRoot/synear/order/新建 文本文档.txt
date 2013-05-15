@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="newplan">
+	<select id="selectUSER_QXXK_SJQXGZ" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" cacheModel="cacheQX_GNMK_QXXK">
+		select * from dual;
+	</select>
+   <!--生产计划查询  -->
+   <select id="productPlan" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    select B.* from (
+        	select A.*,ROWNUM ROWNO,last_value(ROWNUM) over() as total
+        	 from (
+               select Id,
+               prod.invcode ProductCode,
+               prod.invname ProductName,
+			   prod.invspec,
+			   cls.invclassname,
+               DBILLDATE,
+			   mon,
+               preordernum,
+               allpreordernum,
+               ordernum,
+               salenum,
+			   plannum,
+               outnum,
+			   nonhandnum,
+			   nnumfrom,
+			   nnumfrom-preordernum avnum
+	           from (
+               select Id,
+               DBILLDATE,
+			   to_char((to_date(DBILLDATE, 'yyyy-mm-dd') + 0),'yyyymm') mon,
+               sum(preordernum) as preordernum,
+               sum(allpreordernum) as allpreordernum,
+               sum(ordernum) as ordernum,
+               sum(salenum) as salenum,
+               sum(outnum) as outnum
+          from (
+                select T.CINVBASDOCID as Id,
+                       H.DBILLDATE,
+                       case when h.Fstatus!=4 then T.narrnum else 0 end   as preordernum,  
+                       T.narrnum    as allpreordernum, 
+                       0            as ordernum,  
+                       0            as salenum,   
+                       0 as outnum                       
+                  from so_preorder_b t,
+                       so_preorder   H,
+                       ent_item      p,
+                       BD_CUMANDOC   CC
+                 WHERE T.PK_PREORDER = H.PK_PREORDER
+                   AND T.CINVBASDOCID = P.NC_PK
+                   AND H.CCUSTOMERID = CC.PK_CUMANDOC
+                   and h.DR = 0
+                   and t.dr=0
+                   AND h.Fstatus != 1
+                   and h.Fstatus != 5
+                   and INSTR('1001111000000000010R',cc.pk_calbody) &gt; 0 
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=#form_applymonth1#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=#form_applymonth2#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+			</dynamic>
+                
+             union all
+                     select T.cinvbasid as Id,
+                       (select distinct pre.DBILLDATE from so_preorder pre,so_saleorder_b preb,so_sale sl where pre.pk_preorder=preb.csourcebillid
+                         and preb.csaleid=sl.csaleid and t.csourcebillhid=sl.csaleid ) DBILLDATE,
+                       0    as preordernum,  
+                       0    as allpreordernum, 
+                       t.nshouldoutnum  as ordernum, 
+                       nvl(T.NOUTNUM,0) as salenum, 
+                       0 as outnum                         
+                  from ic_general_b t inner join IC_GENERAL_H h on h.cgeneralhid=t.cgeneralhid
+                       inner join ent_item   p on t.cinvbasid = P.nc_pk
+                   where t.csourcebillhid  in
+                      (select distinct a.csaleid
+                          from so_saleorder_b a, so_sale b, so_preorder cs,BD_CUMANDOC cc
+                         where a.csaleid = b.csaleid
+                           and cs.pk_preorder = a.csourcebillid and b.ccustomerid=CC.PK_CUMANDOC
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=#form_applymonth1#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=#form_applymonth2#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+			</dynamic>
+                           and INSTR('1001111000000000010R',b.ccalbodyid) &gt; 0
+                           ) and (h.dr=0) and t.dr=0 and h.fbillflag &gt; 1
+            union all
+            select T.cinvbasid as Id,
+                   h.dbilldate,
+                   0    as preordernum,  
+                   0    as allpreordernum, 
+                   0  as ordernum, 
+                   0 as salenum, 
+                   nvl(T.NOUTNUM,0) as outnum                       
+                   from ic_general_b t, IC_GENERAL_H h, ent_item p
+                   where h.cgeneralhid = t.cgeneralhid
+                   and t.cinvbasid = P.nc_pk
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=#form_applymonth1#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &gt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=#form_applymonth2#
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+					to_char((to_date(H.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm-dd') &lt;=to_char(sysdate,'yyyy-mm-dd')
+				</isEmpty>
+				<isNotEmpty property="form_prodname" prepend="and">
+					p.itemdesc like '%$form_prodname$%'
+				</isNotEmpty>
+		     </dynamic>
+                   and h.fbillflag &gt; 1
+                   and h.cbilltypecode='4Y'
+                   and INSTR('1001111000000000010R',h.coutcalbodyid) &gt; 0
+                   and nvl(T.NOUTNUM,0) != 0
+                           ) group by Id,DBILLDATE
+           )sale,
+           (
+           select pk_invbasdoc,sum(nonhandnum) nonhandnum,sum(nonhandnum + nonreceivenum - nonsonum + ntraninnum - ntranoutnum -
+           nfreezenum) nnumfrom
+  from (
+  SELECT SUM(nvl(nonhandnum, 0)) + SUM(nvl(nnum1, 0)) nonhandnum,
+               0 nmonum,
+               0 nonrequirenum,
+               0 nonponum,
+               0 nonwwnum,
+               0 nonreceivenum,
+               0 nmponum,
+               0 nonsonum,
+               0 nonreceiptnum,
+               0 npickmnum,
+               0 ntraninnum,
+               0 ntranoutnum,
+               0 nontranspraynum,
+               0 nonpreordernum,
+               0 nfreezenum,
+               bd_invbasdoc.pk_invbasdoc
+          FROM ic_onhandnum ic_onhandnum,
+               bd_stordoc,
+               bd_invmandoc,
+               bd_invbasdoc,
+               bd_invcl
+         where ic_onhandnum.cwarehouseid = bd_stordoc.pk_stordoc
+           and ic_onhandnum.cinventoryid = bd_invmandoc.pk_invmandoc
+           and bd_invmandoc.pk_invbasdoc = bd_invbasdoc.pk_invbasdoc
+           and bd_invbasdoc.pk_invcl = bd_invcl.pk_invcl
+           and (0 = 0 and bd_stordoc.isatpaffected = 'Y' and
+               (0 = 0 and (ic_onhandnum.pk_corp = '1001')
+                and INSTR('1001111000000000010R', ccalbodyid) &gt; 0 
+               ))
+               group by  bd_invbasdoc.pk_invbasdoc
+        union all
+        SELECT 0 nonhandnum,
+               0 nmonum,
+               0 nonrequirenum,
+               0 nonponum,
+               0 nonwwnum,
+               0 nonreceivenum,
+               0 nmponum,
+               0 nonsonum,
+               0 nonreceiptnum,
+               0 npickmnum,
+               0 ntraninnum,
+               0 ntranoutnum,
+               0 nontranspraynum,
+               0 nonpreordernum,
+               SUM(nvl(nfreezenum, 0)) nfreezenum,
+               bd_invbasdoc.pk_invbasdoc
+          FROM ic_freeze freeze,
+               bd_stordoc,
+               bd_invmandoc,
+               bd_invbasdoc,
+               bd_invcl
+         where freeze.cwarehouseid = bd_stordoc.pk_stordoc
+           and freeze.cinventoryid = bd_invmandoc.pk_invmandoc
+           and bd_invmandoc.pk_invbasdoc = bd_invbasdoc.pk_invbasdoc
+           and bd_invbasdoc.pk_invcl = bd_invcl.pk_invcl
+           and (bd_stordoc.isatpaffected = 'Y' and
+               (0 = 0 and (freeze.pk_corp = '1001') and
+               INSTR('1001111000000000010R', ccalbodyid) &gt; 0 
+               ) 
+               and
+               (cthawpersonid IS NULL AND ccorrespondbid IS NULL))
+               group by  bd_invbasdoc.pk_invbasdoc
+        union all
+        SELECT 0 nonhandnum,
+               sum(nvl(nmonum, 0)) nmonum,
+               sum(nvl(nonrequirenum, 0)) nonrequirenum,
+               sum(nvl(nonponum, 0)) nonponum,
+               sum(nvl(nonwwnum, 0)) nonwwnum,
+               sum(nvl(nonreceivenum, 0)) nonreceivenum,
+               sum(nvl(nmponum, 0)) nmponum,
+               sum(nvl(nonsonum, 0)) nonsonum,
+               sum(nvl(nonreceiptnum, 0)) nonreceiptnum,
+               sum(nvl(npickmnum, 0)) npickmnum,
+               sum(nvl(nrsvnum1, 0)) ntraninnum,
+               sum(nvl(nrsvnum2, 0)) ntranoutnum,
+               sum(nvl(nontranspraynum, 0)) nontranspraynum,
+               sum(nvl(nonpreordernum, 0)) nonpreordernum,
+               0 nfreezenum,
+               bd_invbasdoc.pk_invbasdoc
+          from ic_atp, bd_stordoc, bd_invmandoc, bd_invbasdoc, bd_invcl
+         where ic_atp.cwarehouseid = bd_stordoc.pk_stordoc(+)
+           and ic_atp.cinventoryid = bd_invmandoc.pk_invmandoc
+           and bd_invmandoc.pk_invbasdoc = bd_invbasdoc.pk_invbasdoc
+           and bd_invbasdoc.pk_invcl = bd_invcl.pk_invcl
+           and (ccalbodyid is not null and
+               (cwarehouseid is null or isatpaffected = 'Y') and
+               (0 = 0 and (ic_atp.pk_corp = '1001') and
+               INSTR('1001111000000000010R', ccalbodyid) &gt; 0
+                ))
+               group by  bd_invbasdoc.pk_invbasdoc
+               ) where nonhandnum!=0 group by  pk_invbasdoc
+               
+           )stock,
+           (
+             select p.nc_pk,t.periodno,sum(b.requireqty) plannum
+                  from sal_forecast_head   t,
+                       sal_forecast_detail b,
+                       ent_item            p,
+                       ENT_ORG             C
+                 where t.billno = b.billno
+                   AND T.ORGID = C.ORGID
+                   and b.itemid = p.itemid
+                   and (t.sourcetype = 'C01' or t.sourcetype = 'A103')
+                   and t.periodtype = 'M'
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+					t.periodno &gt;='M'||(to_char((to_date(#form_applymonth1#, 'yyyy-mm-dd') + 0),'yyyymm'))
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+					t.periodno &gt;='M'||(to_char(sysdate,'yyyymm'))
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+					t.periodno &lt;='M'||(to_char((to_date(#form_applymonth2#, 'yyyy-mm-dd') + 0),'yyyymm'))
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+					t.periodno &lt;='M'||(to_char(sysdate,'yyyymm'))
+				</isEmpty>
+			</dynamic>     
+                           group by p.nc_pk,t.periodno
+           ) mplan,bd_invbasdoc prod,bd_invcl cls where sale.id=stock.pk_invbasdoc and sale.id=mplan.nc_pk 
+		   and prod.pk_invbasdoc=sale.id and prod.pk_invcl=cls.pk_invcl
+		   and mplan.periodno='M'||(to_char((to_date(DBILLDATE, 'yyyy-mm-dd') + 0),'yyyymm'))
+			<dynamic>
+				<isNotEmpty property="form_prodname" prepend="and">
+					prod.invname like '%$form_prodname$%'
+				</isNotEmpty>
+			</dynamic>
+           order by ProductName,DBILLDATE
+           ) A ) B where B.ROWNO between #START# and #END#           
+  </select>
+  <!--累计  -->
+    <select id="monTotalNum" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+      select id,DBILLDATE,sum(salenum) salenum,sum(outnum) outnum from(
+                    select T.cinvbasid as Id,
+                       (select distinct to_char((to_date(pre.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyymm') from so_preorder pre,so_saleorder_b preb,so_sale sl where pre.pk_preorder=preb.csourcebillid
+                         and preb.csaleid=sl.csaleid and t.csourcebillhid=sl.csaleid ) DBILLDATE,
+                       nvl(T.NOUTNUM,0) as salenum,  
+                       0 as outnum                         
+                  from ic_general_b t inner join IC_GENERAL_H h on h.cgeneralhid=t.cgeneralhid
+                   where t.csourcebillhid  in
+                      (select distinct a.csaleid
+                          from so_saleorder_b a, so_sale b, so_preorder cs,BD_CUMANDOC cc
+                         where a.csaleid = b.csaleid
+                           and cs.pk_preorder = a.csourcebillid and b.ccustomerid=CC.PK_CUMANDOC
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+				    to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &gt;=(to_char((to_date(#form_applymonth1#, 'yyyy-mm-dd') + 0),'yyyy-mm'))
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+				    to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &gt;=(to_char(sysdate,'yyyy-mm')) 
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+				    to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &lt;=(to_char((to_date(#form_applymonth2#, 'yyyy-mm-dd') + 0),'yyyy-mm')) 
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+				    to_char((to_date(cs.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &lt;=(to_char(sysdate,'yyyy-mm')) 
+				</isEmpty>
+			</dynamic>
+                           and INSTR('1001111000000000010R',b.ccalbodyid) &gt; 0 
+                           ) and (h.dr=0) and t.dr=0 and h.fbillflag &gt; 1
+                           and nvl(T.NOUTNUM,0) != 0
+            union all
+            select T.cinvbasid as Id,
+                   to_char((to_date(h.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyymm') dbilldate,
+                   0 as salenum,
+                   nvl(T.NOUTNUM,0) as outnum                      
+                   from ic_general_b t, IC_GENERAL_H h
+                   where h.cgeneralhid = t.cgeneralhid
+			<dynamic>
+				<isNotEmpty property="form_applymonth1" prepend="and">
+				    to_char((to_date(h.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &gt;=(to_char((to_date(#form_applymonth1#, 'yyyy-mm-dd') + 0),'yyyy-mm')) 
+				</isNotEmpty>
+				<isEmpty property="form_applymonth1" prepend="and">
+				    to_char((to_date(h.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &gt;=(to_char(sysdate,'yyyy-mm')) 
+				</isEmpty>
+				<isNotEmpty property="form_applymonth2" prepend="and">
+				    to_char((to_date(h.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &lt;=(to_char((to_date(#form_applymonth2#, 'yyyy-mm-dd') + 0),'yyyy-mm')) 
+				</isNotEmpty>
+				<isEmpty property="form_applymonth2" prepend="and">
+				    to_char((to_date(h.DBILLDATE, 'yyyy-mm-dd') + 0),'yyyy-mm') &lt;=(to_char(sysdate,'yyyy-mm')) 
+				</isEmpty>
+			</dynamic>
+                   and h.fbillflag &gt;1
+                   and h.cbilltypecode='4Y'
+                   and INSTR('1001111000000000010R',h.coutcalbodyid) &gt; 0
+                   and nvl(T.NOUTNUM,0) != 0
+        ) group by id,DBILLDATE
+     </select>
+</sqlMap>
+

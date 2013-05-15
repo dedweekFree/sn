@@ -1,0 +1,238 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>阿赖网页表格控件应用示例</title>
+<script language="javascript" src="alai_tc.js"></script>
+<style>
+p{margin:3;body:font-size:10pt;}
+body{font-size:10pt}
+</style></head>
+<script>
+var data=new Array();//单个记录元素数据数组
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+var bData1=new Array(); 
+   data=new data1('1','monitor','广东东莞','2,223','04/17/1997','');
+   bData1[0]=new data2(data);
+      data=new data1('2','printer','美国加州','107,526','11/19/2000','');
+   bData1[1]=new data2(data);
+      data=new data1('3','monitor3','广东东莞3','23,223','03/17/1997','');
+   bData1[2]=new data2(data);
+      data=new data1('4','monitor4','广东东莞4','42,223','04/14/1997','');
+   bData1[3]=new data2(data);
+      data=new data1('5','monitor5','广东东莞5','52,223','04/17/1995','');
+   bData1[4]=new data2(data);
+      data=new data1('6','monitor6','广东东莞6','62,223','04/16/1997','');
+   bData1[5]=new data2(data);
+      data=new data1('7','monitor7','广东东莞7','27,223','07/17/1997','');
+   bData1[6]=new data2(data);
+      data=new data1('8','monito8r','广东东莞8','82,223','04/17/1987','');
+   bData1[7]=new data2(data);
+      data=new data1('9','monitor9','广东东莞9','29,223','04/17/1999','');
+   bData1[8]=new data2(data);
+      data=new data1('10','monitor0','广东东莞','20,223','04/17/1990','');
+   bData1[9]=new data2(data);
+
+var linenum=5;
+var pageno=1;
+var rdata=new Array();
+rdata=bData1;
+function toPage(page)
+{
+  pageno=page;
+  for(var i=tc6.tbl.rows.length;i>0;i--) tc6.tbl.deleteRow(i-1);
+  for(var i=0;i<linenum;i++){
+    if(((page-1)*linenum+i)<rdata.length){
+  	  var row=tc6.tbl.insertRow()
+	  row.insertCell().innerText=rdata[(page-1)*linenum+i].data[0]
+	  for(var j=1;j<6;j++)row.insertCell().innerHTML=rdata[(page-1)*linenum+i].data[j];
+	  tc6.setColStyle()
+	  tc6.setRowStyle()
+	  tc6.doResize()
+	}
+ }
+ if(pageno*linenum>=rdata.length)
+    btnNext.disabled=true;
+ else
+    btnNext.disabled=false;
+ if(pageno==1)
+    btnPrev.disabled=true;
+ else
+	btnPrev.disabled=false;
+}
+
+function search()
+{
+  var m=0;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  //alert(form2.elements[2].value)
+  for(var i=0;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i].data[1].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i].data[2].indexOf(form2.elements[1].value)>-1);
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i].data[5]==form2.elements[2].value);
+	//alert(bstatus)
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ rdata.length=m;
+ //alert(rdata.length)
+ toPage(1);
+}
+
+</script>
+
+
+<body onload="toPage(1)">
+
+<p align="left"><font size="4"><b>阿赖的网页表格控件应用示例：控件功能扩展及高级应用</b></font>
+<div style="width:555;txt-align:center;border:3 double gray;">
+<form id="form2">
+品名：<input type="text" size="16" > 产地：<input type="text" size="16"> 状态：<select><option value='all' selected>全部</option><option value=''>未修改</option><option value='修改'>修改</option></select>              
+</form>
+</div>
+<table border="1" width="555" cellspacing="2" id="table6">
+  <tbody>
+      <td height="19" width="62">1</td>
+      <td height="19" width="127">
+        <p>monitor</p>
+      </td>
+      <td height="19" width="109">广东东莞</td>
+      <td height="19" width="92">
+        <p>2,223</p>
+      </td>
+      <td height="19" width="131">
+        <p>04/17/1997</p>
+      </td>
+      <td height="19" width="131">
+        <p></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div style="width:555;txt-align:center;border:3 double gray;">
+<br><form id="form1">
+NO：<input type="text" size="16" id="txtNo" readonly>
+品名：<input type="text" size="16" id="txtName">                   
+产地：<input type="text" size="16" id="txtArea"><br>                   
+数量：<input type="text" size="16" id="txtCount">
+日期：<input type="text" size="16" id="txtDate"><input type="hidden" id="txtStatus">                   
+</form>
+<input type="button" value="更新数据" id="btnUpdate"><input type="button" value="保存" id="btnSave"><input type="button" value="取消" id="btnCancel">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="上一页" id="btnPrev"><input type="button" value="下一页" id="btnNext">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" id="btnSearch">
+<!--<input type="button" value="更新数据" id="btnUpdate"><input type="button" value="插入新行" id="btnNew"><input type="button" value="删除" id="btnDel"><input type="button" value="取消" id="btnCancel"><br>-->
+</div>
+<!--<p>本示例主要演示如何自定义数据类型、如何增加和删除上下文菜单项（表格上点鼠标右键出现的菜单），以及结合网页
+<p>表单对数据进行编辑等功能，全部程序代码如下： <br>
+<textarea rows="17" id="txtCode" cols="96"></textarea>
+-->
+<script language="javascript">
+//表格六
+tc6=new alai_tc(table6)
+tc6.setCaption("No|品名|产地|数量|日期|状态")
+tc6.setDataType("num|char|cnbh|comma_num|date|char")
+tc6.setTcStyle("font-size:11pt;color:darkblue;background-color:sandybrown;")
+tc6.setTblStyle("border-collapse:collapse;border:0;font-size:9pt;")
+tc6.setColStyle("color:red;|color:darkblue;|color:green;|color:blue;|color:#800000;")
+tc6.setRowStyle("background-color:lightcyan;|background-color:palegoldenrod;")
+tc6.doResize()
+tc6.selectOne()
+tc6.mouseOver()
+tc6.contextMenu()
+//使用控件数据转换接口，定义一个新的数据类型：comma_num
+tc6.extConvert=function(Data,Type)
+{
+	switch(Type.toLowerCase())
+	{
+		case "comma_num":   //comma_num就是新定义的类据类型了
+			return parseInt(Data.replace(/,/g,""));
+			break;
+		default:
+			return Data
+	}
+}
+//删除控件菜单的"删除当前列"项(第5项)
+tc6.ctrMenu.remove(4)
+
+
+//选择表格样式下拉菜单功能定义
+//sltStyle.onclick=function(){tc6.tblMenu.item[sltStyle.value].click();}
+var editRow
+//双击表格时，提出选定行数据进行编辑
+tc6.tbl.ondblclick=function()
+{
+	for(var i=0;i<6;i++)form1.elements[i].value=tc6.selData[i]
+	editRow=tc6.selRow
+}
+//单击“数据更新”按钮
+btnUpdate.onclick=function()
+{
+	if(editRow==null){alert("请先双击表格选择一行进行编辑");return;}
+	form1.elements[5].value='修改';
+	for(var i=1;i<6;i++)editRow.cells[i].innerText=form1.elements[i].value
+    for(var i=0;i<bData1.length;i++){
+	   if(form1.elements[0].value==bData1[i].data[0]){
+	      for(var j=1;j<6;j++) bData1[i].data[j]=form1.elements[j].value
+	   }
+	}
+}
+//单击“保存”按钮
+btnSave.onclick=function()
+{
+	
+}
+//单击“上一页”按钮
+btnPrev.onclick=function()
+{
+	pageno=pageno-1;
+	toPage(pageno);
+	btnNext.disabled=false;
+}
+//单击“下一页”按钮
+btnNext.onclick=function()
+{
+	btnPrev.disabled=false;
+	pageno=pageno+1;
+	toPage(pageno);
+}
+//单击“重置”按钮
+btnCancel.onclick=function()
+{
+	form1.reset()
+	editRow=null
+}
+
+//单击“搜索”按钮
+btnSearch.onclick=function()
+{
+	search();
+}
+</script>
+<script>
+    //btnPrev.disabled=true;
+    //if((pageno+1)*linenum>rdata.length) btnNext.disabled=true;
+</script>
+</body>
+
+</html>

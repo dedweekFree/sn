@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>项目类型修改</title>
+</head>
+
+<body>
+<form name="form1" action="tendtypenewsaveedit.aspx" method="post" target="dataframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">项目类型修改
+    </td>
+  </tr>
+  <tr class="trcolor">
+  #foreach ($!m in $seltendtypenew)  
+	<td colspan="4">项目名称：<input type="text" name="tendtypename1" value="$m.TENDTYPENAME" readonly></td>
+  #end
+  </tr>
+  <tr class="trcolor">
+	<td colspan="4">
+	    新名称：&nbsp;&nbsp;<input type="text" name="tendtypename"><input type="hidden" name="id" value="$!form_tendtypeid">
+	</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4">
+      <input type="submit" class="bt1" value="保存"/>&nbsp;&nbsp;
+      <input type="button" name="b3" class="bt1" value="返回" onclick="javascript:location.href='TenderTypeNew.aspx'"/></td>
+  </tr>
+</table>
+</form>
+      <div>
+        <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

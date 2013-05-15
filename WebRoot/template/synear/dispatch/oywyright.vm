@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+</head>
+
+<body>
+<form name="form1" method="post" action="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td align="left">产品名称<input type="text" style="width:100" name="invname">&nbsp;<input type="button" value="查询" onclick="tosearch()"></td>
+    <input type="hidden" name="xtype" value="1">
+  </tr>
+</table>
+</form>
+<table class="datatable" id="TableList">
+   <tr class="trcolor">
+    <td>选择</td>
+    <td>人员编码</td>
+    <td>姓名</td>
+    <td>人员分类名称</td>
+    <td>部门名称</td>
+    <td>归属范围</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $snemployeequery)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="ButtonSelectOk($i)"/></td>
+    <td>$!m.PSNCODE</td>
+    <td>$!m.PSNNAME
+    <input type="hidden" name="salerid" id='salerid$i' value="$!m.PK_PSNBASDOC" >
+    <input type="hidden" name="saler" id='saler$i' value="$!m.PSNNAME" >
+    <td>$m.PSNCLASSNAME</td>
+    <td>$m.DEPTNAME</td>
+    <td>#if($m.PSNCLSCOPE=='0')在职员工#elseif($m.PSNCLSCOPE=='3')离退员工#elseif($m.PSNCLSCOPE=='3')其他员工#end</td>
+  </tr>
+#set($i=$i+1)
+#end
+</table>
+</body>
+</html>
+<script language="javascript">
+function ButtonSelectOk(i){
+    var htmlcode = "";
+    var htmlname = "";
+    var htmlspec = "";
+    var htmlpk = "";
+    if(document.getElementById('Checkbox'+i).checked == true){ 
+       htmlcode=document.getElementById('salerid'+i).value;
+       htmlname =document.getElementById('saler'+i).value;
+    }
+    window.top.opener.document.getElementById("osaler").value= htmlname;
+    window.top.opener.document.getElementById("osalerid").value= htmlcode;
+    window.top.close();
+}
+function tosearch(){
+   document.form1.action="oywyquery.aspx";
+   document.form1.submit();
+}
+</script>

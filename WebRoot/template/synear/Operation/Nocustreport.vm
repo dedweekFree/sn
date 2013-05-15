@@ -1,0 +1,93 @@
+<html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+</script>
+<title>季度供方评价表</title>
+</head>
+
+<body>
+<form name="thisform" action="Nocustreport.aspx" method="post">
+  <table class="datatable">
+     <tr class="trcolor">
+	<td>月份:</td>
+	<td align="left"><input type="text" name="monthdate" id="monthdate" value="$!form_monthdate" onclick="ShowDate(this)"></td>
+	<td>供应商:</td>
+	<td align="left"><input type="text" name="custname" value="$!form_custname"></td>
+     </tr>
+	<tr class="trcolor">
+	<td>供货产品:</td>
+	<td align="left"><input type="text" name="invname" value="$!form_invname"></td>
+	<td colspan="2"><input type="submit" name="btn" class="bt1" value="查&nbsp;&nbsp;询"></td>
+    </tr>
+</table>
+</form>
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>供货产品</td>
+    <td>型号</td>
+    <td>产品品牌</td>
+    <td>月订单下达量</td>
+    <td>实际月供货量</td>
+    <td>同物料实际供货占比</td>
+    <td>批次到货不合格次数</td>
+    <td>初验不合格量</td>
+    <td>使用不合格量</td>
+    <td>初验不合格量供货占比</td>
+    <td>使用不合格量供货占比</td>
+    <td>到货不及时率</td>
+    <td>批次到货不及时次数</td>
+    <td>累计到货不合格量<br/>
+      （含生产使用不合格）</td>
+    <td>累计不合格量供货占比</td>
+    <td>评价结论</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selcustdate)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.INVSPEC</td>
+    <td>$!m.INVPINPAI</td>
+    <td>$!m.MSORDER</td>
+    <td>$!m.MSARRIVEORDER</td>
+    <td id="A$i"><script language="javascript">
+    var a =(parseFloat($!m.MSARRIVEORDER)/parseFloat($!m.TSARRIVEORDER))*100; 
+    document.getElementById('A$i').innerHTML=(a.toFixed(2)+"%")</script>
+    </td>
+    <td>$!m.COUNTINTYPE</td>
+    <td>$!m.VDEF3</td>
+    <td>$!m.NINNUM</td>
+    <td id="B$i"><script language="javascript">
+    var b = (parseFloat($!m.VDEF3)/parseFloat($!m.MSARRIVEORDER))*100;
+    document.getElementById('B$i').innerHTML=(b.toFixed(2)+"%");</script>
+    </td>
+    <td id="C$i"><script language="javascript">
+    var c = (parseFloat($!m.NINNUM)/parseFloat($!m.MSARRIVEORDER))*100;
+    document.getElementById('C$i').innerHTML=(c.toFixed(2)+"%");</script></td>
+    <td id="D$i"><script language="javascript">
+    var d = (parseFloat($!m.COUNTORDARR)/parseFloat($!m.COUNTALLPO))*100;
+    document.getElementById('D$i').innerHTML=(d.toFixed(2)+"%");</script></td>
+    <td>$!m.COUNTORDARR</td>
+    <td id="E$i"><script language="javascript">document.getElementById('E$i').innerHTML=parseFloat($!m.VDEF3) + parseFloat($!m.NINNUM);</script></td>
+    <td id="F$i"><script language="javascript">
+    var f = (((parseFloat($!m.VDEF3)+parseFloat($!m.NINNUM))/parseFloat($!m.MSARRIVEORDER)))*100;
+    document.getElementById('F$i').innerHTML=(f.toFixed(2)+"%");</script></td>
+    <td>&nbsp;</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<script language="javascript">
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+	 function toadd(url){
+	    document.form2.action=url;
+	    document.form2.submit();
+	 }
+	 function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+		   ;
+		 else
+		   idText.value=reValue;
+	    }
+	    function tosb(){
+	       document.form2.yuetai.value = document.form1.yuetai.value;
+	       document.form2.ordercode.value = document.form1.ordercode.value;
+	       document.form2.dhdremark.value = document.form1.dhdremark.value;
+	       document.form2.phone.value = document.form1.phone.value;
+	       document.form2.action="sbsave.aspx";
+	       document.form2.submit();
+	    }
+	    function tochagestatus(){
+	       if(document.form1.driverstatus.value=='1'){
+	          document.all.sbid.style.display = "block";
+	       }else{
+	          document.all.sbid.style.display = "none";
+		  document.form1.yuetai.value = "";
+	       }
+	    }
+</script>
+</head>
+
+<body>
+<form name="form1" method="post">
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td nowrap>调度单号</td>
+    <td nowrap>车牌号</td>
+    <td nowrap>联系电话</td>
+    <td nowrap>单据日期</td>
+    <td nowrap>装车地点</td>
+    <td nowrap>派车单时间</td>
+    <td nowrap>温控仪时间</td>
+    <td nowrap>到车时间</td>
+    <td nowrap>装车状态</td>
+    <td nowrap>月台</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $snstocksendmanagerquerysb)
+  <tr class="trcolor">
+    <td>$!m.SENDID</td>
+    <td>$!m.DRIVERNUMBER</td>
+    <td><input type="text" name="phone" value="$!m.PHONE" style="width:100"></td>
+    <td>$!m.CREATEDATE</td>
+    <td>#if($!m.ADDRESSNAME=='chenzhai')陈寨#elseif($!m.ADDRESSNAME=='sinian')思念#end</td>
+    <td>#if($!m.OUTTIME!="")$!m.OUTTIME#else&nbsp;#end</td>
+    <td>#if($!m.WENTIME!="")$!m.WENTIME#else&nbsp;#end</td>
+    <td>#if($!m.WAITTIME!="")$!m.WAITTIME#else&nbsp;#end</td>
+   <!-- <td>#if($!m.ADDRESS == $m.ADDRESSCODE)$!m.ORDERDATE&nbsp;$!m.ORDERTIME#else&nbsp;#end</td>
+    <td>#if($!m.BEGINTIME!="")$!m.BEGINTIME#else&nbsp;#end</td>
+    <td>#if($!m.ENDTIME!="")$!m.ENDTIME#else&nbsp;#end</td>
+    <td>#if($!m.SENDIME!="")$!m.SENDIME#else&nbsp;#end</td>
+    <td>#if($!m.SENDIME != '')装车完毕#else<font color="red">未装完</a>#end</td>-->
+    <td>
+       <select name="driverstatus" onchange="tochagestatus()">
+           <option value=""></option>
+	   <option value="1">优先装车</option>
+	   <option value="2">继续等待</option>
+       </select>
+    </td>
+    <td>
+       <span id="sbid" style="display:none"><input type="text" name="yuetai" value = "" style="width:50"></span><input type="hidden" name="ordercode" value = "$form_ordercode">
+    </td>
+        <input type="hidden" name="dhdremark"  style="width:80" value="$!m.DHDREMARK">
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</form>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" name="sb" class="bt1" value="提交" onclick="tosb()">&nbsp;<input type="button" name="sb" class="bt1" value="返回" onclick="javascript:history.back(-1)">
+</div>
+<form method="post" name="form2" target="saveframe">
+<input type="hidden" name="yuetai" value = ""><input type="hidden" name="ordercode" value = "">
+<input type="hidden" name="dhdremark" value = ""><input type="hidden" name="phone" value = "">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

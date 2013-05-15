@@ -1,0 +1,328 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>供应商授权</title>
+<script language="javascript">
+	function s(){
+		var b= new Date();
+		document.all.tendtypeid.value=b.getTime();
+		form1.submit();
+	}
+	function toacc(){
+	     var aa = document.form1.ObjSelect;
+	     var datahtml="";
+	     var datahtml1="";
+	     var i;
+	     if(aa.length == 0){
+		alert("请选择要授权的用户");
+		return false;
+	     }
+	     for(i = 0 ; i < aa.length; i ++){
+		datahtml+="<input type=hidden name=users1 value='"+aa[i].value+"'>";
+	     }
+	     subdata.innerHTML=datahtml;
+	     if(document.form2.ckbox.checked){
+	       if(document.form1.area.disabled == false){
+                  alert("请先按地区报价");
+		  return false;
+	       }else{
+	         document.form1.price.value = '0';
+		 document.form1.tendquantity.value = '0';
+		 document.form1.isarea.value='Y';
+		}
+	     }
+	     document.form1.action="tendacc.aspx";
+	     form1.submit();
+	}
+	  function tocheckboxall(){
+	    if(document.form2.checkboxall.checked){
+		for(var i = 0 ;i  < document.form2.checkbox.length; i ++){
+		    document.form2.checkbox[i].checked=true;
+		}
+	    }else{
+	        for(var i = 0 ;i  < document.form2.checkbox.length; i ++){
+		    document.form2.checkbox[i].checked=false;
+		}
+	    }
+	}
+	function toreturn(){
+	    document.location.href="tender.aspx";
+	}
+</script>
+</head>
+
+<body>
+<form   name="form1" method="post" target="dataframe">
+<table border='1'> 
+<tr class="trcolor">
+   <td colspan="4" align="center">
+       项目名称:<input type="text" name="proname"  value="$form_proname" readonly>
+       <input type="hidden" name="proid"  value="$form_proid">
+       <input type="hidden" name="typeunitid"  value="$form_typeunitid">
+       <input type="hidden" name="status"  value="$form_status">
+       <input type="hidden" name="pic1"  value="$form_pic1">
+       <input type="hidden" name="price"  value="$form_price">
+       <input type="hidden" name="atime"  value="$form_atime">
+       <input type="hidden" name="ztime"  value="$form_ztime">
+       <input type="hidden" name="ktime"  value="$form_ktime">
+       <input type="hidden" name="prodesc"  value="$form_prodesc">
+       <input type="hidden" name="paper"  value="$form_paper">
+       <input type="hidden" name="tendtypeid"  value="$form_ptype">
+       <input type="hidden" name="departid"  value="$form_ptype1">
+       <input type="hidden" name="prostatus"  value="$form_prostatus">
+       <input type="hidden" name="tendquantity"  value="$form_tendquantity">
+       <input type="hidden" name="areaname"  value="">
+       <input type="hidden" name="isarea"  value="N">
+       <input type="hidden" name="islimitprice"  value="$form_islimitprice">
+       #if($form_isacc == 'Y')
+       <input type="hidden" name="isacc"  value="$form_isacc">
+       #else 
+       <input type="hidden" name="isacc"  value="N">
+       #end
+       <input type="hidden" name="users">
+   </td>
+</tr>
+<tr class="trcolor">
+	<td colspan="4" align="center">
+	#foreach($!n in $seltendtypenew)
+		项目类型:<input type="text" name="tendtypename" value="$!n.TENDTYPENAME">
+	#end
+	</td>
+</tr>
+<tr class="trcolor">
+	<td colspan="4" align="center">
+		<input type="button" name="acc" value="授权" onclick="toacc()" class="bt1">
+		<input type="button" name="area" value="按地区报价" onclick="toarea()" class="bt1">
+		<input type="button" name="acc" value="返回" onclick="toreturn()" class="bt1">
+	</td>
+</tr>       
+<tr> 
+<td>   
+<select   name=SrcSelect   size=6   style= "font-size:11pt;width:200px;height:160px "   multiple   ondblclick= "moveLeftOrRight(document.form1.SrcSelect,document.form1.ObjSelect) ">   
+ #foreach($!m in $selvendor)
+   <option value= "$!m.USERNAME">$!m.COMPANY</option>
+  #set($i=$i+1)
+  #end  
+</select> 
+</td>   
+<td   width= "30px ">         
+<input   align= "left "   type=button class="bt1"  value= " > "     onclick= "moveLeftOrRight(document.form1.SrcSelect,document.form1.ObjSelect) "     > <br> <br> 
+<input   align= "left "   type=button class="bt1"  value= " < "     onclick= "moveLeftOrRight(document.form1.ObjSelect,document.form1.SrcSelect) "     > 
+</td> 
+<td>   
+<select   name=ObjSelect id="ObjSelect"   size=6   style= "font-size:11pt;width:200px;height:160px "   multiple   ondblclick= "moveLeftOrRight(document.form1.ObjSelect,document.form1.SrcSelect) ">   
+</select> 
+</td>   
+<td   width= "30px "> 
+<input   type=button class="bt1"  value= " A "     onclick= "moveUp() "   >   <br> <br>   
+<input   type=button  class="bt1"  value= " V "     onclick= "moveDown() "   > 
+</td> 
+</tr>  
+<span id="subdata"></span>
+</table> 
+</form>
+<form   name="form2" method="post" target="dataframe">
+<table border='1'  width="61%"> 
+<tr>
+	<td nowrap align="left"><input type="checkbox" name="ckbox" value="N">是否按到岸地</td>
+	<td colspan="3"><table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+	 <td align="left"><input type="checkbox" name="checkboxall" onclick="tocheckboxall()"></td>
+	 <td nowrap class="datatable" align="center">到岸地</td>
+	 <td nowrap class="datatable" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;招标价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	 <td nowrap class="datatable" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;招标量&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+     </tr>
+     <tr>
+	<td nowrap align="left">&nbsp;</td>
+	 <td nowrap class="datatable">&nbsp;</td>
+	 <td nowrap><input type="text" class="datatable" name="getprice" onpropertychange="getPrice()" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+	 <td nowrap><input type="text" class="datatable" name="getquantity" onpropertychange="getQuantity()" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     </tr>
+     #set($i=1)
+     #foreach ($!m in $selecttendarea) 
+     <tr>
+	<td>
+	     <input type="checkbox" name="checkbox">
+	</td>
+	<td width="33%">
+	   <input type="text" name="toubiaodiqu$i" id="toubiaodiqu$i" class="datatable" value="$!m.AREANAME" readonly><input type="hidden" name="toubiaoareaname$i" id="toubiaoareaname$i" value="$!m.AREAID">
+	</td>
+	<td width="33%">
+	   <input type="text" name="toubiaoprice$i" id="toubiaoprice$i" class="datatable" value="" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+	</td>
+	<td width="33%">
+	   <input type="text" name="toubiaoquantity$i" id="toubiaoquantity$i" class="datatable" value="" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+	</td>
+     </tr>
+     #set($i=$i+1) 
+     #end</table></td>
+ </tr>
+</table> 
+<span id="subdata1"></span><input type="hidden" name="proid">
+</form> 
+<div>
+        <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>     
+    
+<script   language=javascript>     
+function   moveUp()     
+{   
+var   theObjOptions=document.form1.ObjSelect.options; 
+for(var   i=1;i <theObjOptions.length;i++) 
+{ 
+if(   theObjOptions[i].selected   &&   !theObjOptions[i-1].selected   ) 
+{ 
+swapOptionProperties(theObjOptions[i],theObjOptions[i-1]); 
+} 
+} 
+}     
+    
+function   moveDown()     
+{   
+var   theObjOptions=document.form1.ObjSelect.options; 
+for(var   i=theObjOptions.length-2;i> -1;i--) 
+{ 
+if(   theObjOptions[i].selected   &&   !theObjOptions[i+1].selected   ) 
+{ 
+swapOptionProperties(theObjOptions[i],theObjOptions[i+1]); 
+} 
+} 
+}     
+
+function   swapOptionProperties(option1,option2){ 
+var   tempStr=option1.value; 
+option1.value=option2.value; 
+option1.value=tempStr; 
+tempStr=option1.text; 
+option1.text=option2.text; 
+option2.text=tempStr; 
+tempStr=option1.selected; 
+option1.selected=option2.selected; 
+option2.selected=tempStr; 
+}     
+    
+function   moveLeftOrRight(fromObj,toObj)     
+{   
+for(var   i=0;i <fromObj.length;i++) 
+{ 
+var   srcOption=fromObj.options[i]; 
+if(srcOption.selected) 
+{ 
+toObj.appendChild(srcOption);
+i--;  
+} 
+} 
+} 
+function toarea(){
+    var ii = 0;
+    var datahtml1 = "";
+     if(document.form2.ckbox.checked){
+	  for(var i = 1 ;i  < document.form2.checkbox.length+1;i++){
+		   if(document.form2.checkbox[i-1].checked){
+			ii ++; 
+			datahtml1+="<input type='hidden' name='toubiaoareaname' value='"+document.getElementById('toubiaoareaname'+i).value+"'><input type='hidden' name='toubiaoprice' value='"+document.getElementById('toubiaoprice'+i).value+"'><input type='hidden' name='toubiaoquantity' value='"+document.getElementById('toubiaoquantity'+i).value+"'>" ;
+			if(document.getElementById('toubiaoprice'+i).value == ""){
+			   alert("招标价不能为空");
+			   document.getElementById('toubiaoprice'+i).focus();
+			   return false;
+			}else{
+				 var re = /^[0-9]+.?[0-9]*$/;
+				 if (!re.test(document.getElementById('toubiaoprice'+i).value))
+				 {
+				  alert("招标价不是数字");
+				  document.getElementById('toubiaoprice'+i).select();
+				  return false;
+				 }
+		         }
+			 if(document.getElementById('toubiaoquantity'+i).value == ""){
+			   alert("招标量不能为空");
+			   document.getElementById('toubiaoquantity'+i).focus();
+			   return false;
+			}else{
+			         var re = /^[0-9]*$/;
+				 if (!re.test(document.getElementById('toubiaoquantity'+i).value))
+				 {
+				  alert("招标量不是整数");
+				  document.getElementById('toubiaoquantity'+i).select();
+				  return false;
+				 }
+		         }
+		      }
+	   }
+	   if(ii==0){
+	       alert("没有选择到货目的地");
+	       return false;
+	   }
+	   subdata1.innerHTML=datahtml1;
+	   document.form2.proid.value=document.form1.proid.value;
+	   document.form2.action="insertdetailpricearea.aspx";
+           document.form2.submit();
+	   document.form1.area.disabled = true;
+	   //sendRequest('insertdetailpricearea.aspx');
+	   //sendRequest('/template/synear/tender/findmobile.jsp');
+      }else{
+	 alert("没有选择到货目的地");
+	 return false;
+      }
+}
+    var XMLHttpReq = false;
+ 	//创建XMLHttpRequest对象       
+    function createXMLHttpRequest() {
+	if(window.XMLHttpRequest) { //Mozilla 浏览器
+		XMLHttpReq = new XMLHttpRequest();
+	}
+	else if (window.ActiveXObject) { // IE浏览器
+		try {
+			XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			out.println(e);	
+			try {
+				XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+				out.println(e);
+			}
+		}
+	}
+   }
+	//发送请求函数
+   function sendRequest(url) {
+	createXMLHttpRequest();
+	XMLHttpReq.open("GET", url, true);
+	XMLHttpReq.onreadystatechange = processResponse;//指定响应函数
+	XMLHttpReq.send(null);  // 发送请求
+   }
+	// 处理返回信息函数
+    function processResponse() {
+      try{
+    	if (XMLHttpReq.readyState == 4) { // 判断对象状态
+        	if (XMLHttpReq.status == 200) { // 信息已经成功返回，开始处理信息
+            	var res=XMLHttpReq.responseText;
+                window.alert(res);    
+		//document.form1.area.disabled = true;
+            } else { //页面不正常
+            	alert(XMLHttpReq.status);
+                window.alert("您所请求的页面有异常。");
+            }
+        }
+      }catch(e){
+        	out.println(e);
+      }
+    }
+    function getPrice(){
+     for(var i = 1 ;i  < document.form2.checkbox.length+1;i++){
+	 if(document.form2.checkbox[i-1].checked){
+             document.getElementById('toubiaoprice'+i).value=document.form2.getprice.value;
+	 }
+     }
+ }
+ function getQuantity(){
+     for(var i = 1 ;i  < document.form2.checkbox.length+1;i++){
+	 if(document.form2.checkbox[i-1].checked){
+             document.getElementById('toubiaoquantity'+i).value=document.form2.getquantity.value;
+	 }
+     }
+ }
+</script>  
+</html>

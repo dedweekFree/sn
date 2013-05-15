@@ -1,0 +1,214 @@
+
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script type="text/javascript" src="../../../inc/js/array2.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>交接班盘点库存明细</title>
+</head>
+<script type="text/javascript">
+
+
+function showTotal()
+{
+   var rowtotal=datatable.rows.length;
+   var coltotal=datatable.rows[3].cells.length;
+   for(var k=3;k<coltotal-2;k++)
+   {
+        var str=0;
+        for(var i=2;i<rowtotal-3;i++)   {   
+
+	     str = str + parseInt(datatable.rows(i).cells(k).innerText)
+	     /***
+	   if(k==6){
+             var xinsheng = datatable.rows(i).cells(6).innerText;
+	     alrt("read"+(i-1));
+             var read = document.getElementById("read1").value;
+             if(read=='' || read=='-') read=0;
+             var diff = parseInt(read)-parseInt(xinsheng);
+             //datatable.rows(i).cells(8).innerText=diff;
+	   
+	     var name = "diffs"+(i-1);
+	     document.getElementById(name).value=diff;
+	     document.getElementById("difftext"+(i-1)).innerText = diff;
+	    
+	
+	   }
+	   **/
+	
+        }
+         
+	datatable.rows(i).cells(k).innerText = str;
+   }
+  
+}
+
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      form1.ptype.value=code;
+      form1.ptypename.value=mc;
+}
+
+
+function   search(){
+   var rowtotal=datatable.rows.length;
+   var coltotal=datatable.rows[3].cells.length;
+
+     for(var i=2;i<rowtotal-3;i++)   {   
+        datatable.rows[i].style.display='block'
+        var str =  datatable.rows[i].id ;
+	 if ( str.substr(0,8) == form1.ptype.value){
+	   continue;
+	 }
+	 if(str.substr(0,4)==form1.ptype.value ){
+              continue;   
+	 }
+	  datatable.rows[i].style.display='none';    
+     } 
+}
+
+function result(){
+   var rowtotal=datatable.rows.length;
+   var coltotal=datatable.rows[3].cells.length;
+     for(var i=2;i<rowtotal-3;i++)   {  
+        if(datatable.rows[i].style.display=='none'){
+            datatable.rows[i].style.display='block'
+	 }
+     }
+}
+</script>
+
+<body onload="showTotal()">
+
+<form name="form1" action="js.jsp" method="post">
+
+<input name="billid" type="hidden" value="$form_searchdate$!form_bz"/>
+<input name="makedate" type="hidden" value="$form_searchdate"/>
+<input name="storid" type="hidden" value="$form_stockId"/>
+<input name="tem" type="hidden" value="$form_bz"/>
+<input name="facname" type="hidden" value="$form_facname"/>
+<input name="stor" type="hidden" value="$form_stor"/>
+
+<div class="qx" style="text-align:left">日期：$form_searchdate &nbsp;&nbsp;&nbsp;&nbsp;
+生产分厂/班组：$!form_facname:$!form_stor / #if($form_bz=='10')A#elseif($form_bz=='20')B#elseif($form_bz=='30')C#elseif($form_bz=='40')D#end
+<table class="datatable" border="0" cellpadding="0" frame=box
+		cellspacing="0">
+<tr >
+  <td class="tdlabel" width="10%">产品分类号</td>
+			<td class="tdinput"  width="20%">
+				<input type="text" name="ptypename" value="">
+				<input type="hidden" name="ptype" value="">
+				<input type='button' name=bt class='btn' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+                                <input type='button' name=bt class='btn' value='查询' onclick="search()">
+				<input type='button' name=bt class='btn' value='还原'  onclick="result()">
+				<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="class_tree.aspx" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>				
+			</td>	
+</tr>
+</table>
+</div>
+<table class="datatable" border="0" cellpadding="0" frame=box id="datatable"
+		cellspacing="0">
+
+        <tr height="50">
+		<td   colspan="9" align="center"><font face="宋体" size="5"><B>交接班盘点库存明细</B></font></td>
+	</tr>
+	<tr class="search">
+		<td >编号</td>
+		<td width="25%">产品名称</td>		
+		<td >单位</td>
+		<td >接上班数量</td>	
+		<td >值班入库</td>
+		<td >值班出库</td>
+		<td >应剩库存</td>
+		<td >实际库存</td>
+		<td >溢缺</td>
+	</tr>
+    #set($i=1)
+    #foreach($k in $selectyjjb)
+      #if($k.FSUM!="0"||$k.INSUM!="0"||$k.OUTNUM!="0"||$k.OUTNUM!="0"||$k.ENUM!="0")
+	<tr class="trcolor NUM" id="$k.NCINVCODE" style="display:block">
+		<td class="NUM">$i</td>
+		<td>$k.INVNAME 
+		</td>
+                <input name="incode" type="hidden" value="$k.INVCODE">
+		<input name="cls" type="hidden" value="$k.CLS">
+		<td>$k.UNIT  </td>
+                <td>$k.FSUM <input name="fsum" type="hidden" value="$k.FSUM"></td>			
+		<td>$k.INSUM <input name="insum" type="hidden" value="$k.INSUM"></td>
+                <td>$k.OUTNUM  <input name="outnum" type="hidden" value="$k.OUTNUM"></td>
+		<td>$k.ENUM <input name="enum" type="hidden" value="$k.ENUM"></td>
+		<td><input id="read$i" name="read" type="text" value="#if($k.ENUM1=='0' && $form_state=='0' )$k.ENUM#else$k.ENUM1#end" size=10 onPropertyChange ="countdiff(this,$i)"></td>
+		<td><input id="diffs$i" name="diffs" type="hidden" value="$k.DIFF"><div id="difftext$i"></div></td>
+		
+	</tr>
+	#end
+     #set($i=$i+1)
+   #end
+    <tr class="trcolor NUM">
+     <td >合计</td>
+		<td >&nbsp;</td>		
+		<td >&nbsp;</td>
+		<td ></td>	
+		<td ></td>
+		<td ></td>
+		<td ></td>
+		<td >&nbsp;</td>
+		<td >&nbsp;</td>
+   </tr>
+    <tr c>
+      <td >备注</td>
+      <td ColSpan="8">&nbsp;</td>
+   </tr>
+   <tr class="trcolor NUM">
+      <td >值班</td>
+      <td>&nbsp;</td>
+      <td >接班</td>
+      <td>&nbsp;</td>
+       <td >批号</td>
+      <td>&nbsp;</td>
+       <td >审核</td>
+      <td ColSpan="2">&nbsp;</td>
+   </tr>
+</table>
+<input type="hidden" name="operate">
+<input type="button" name="save1" class="bt1" value="保存" onclick="dosubmit('temp')">
+<input type="button" name="save2" class="bt1" value="正试转存"  onclick="dosubmit('save')">
+</form>
+<div><input type="button" name="search" class="bt1" value="重新查询" onclick="window.location='jjbreport.aspx'"></div>
+</body>
+<script>
+function countdiff(val,row){
+   var xinsheng = datatable.rows(row+1).cells(6).innerText; 
+   var read = val.value;
+   if(read=='' || read=='-') read=0;
+   var diff =   parseInt(read)-parseInt(xinsheng);
+   document.getElementById("difftext"+row).innerText = diff;
+   document.getElementById("diffs"+row).value=diff;
+}
+
+function dosubmit(op){
+if(form1.read){
+  form1.operate.value=op;
+  form1.submit();
+  }
+}
+</script>
+</html>

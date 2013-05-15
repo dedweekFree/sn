@@ -1,0 +1,773 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===销售计划===</title>
+<!--<script language="javascript" src="../../../js/PlanGridEdit.js"></script>-->
+<script language="javascript" src="../../../js/OutStockOrderGridEditw.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(3,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon += '0'; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd += '0';  
+clock += dd;
+if (parseInt(hh) < 10) hh += '0';  
+clock += hh; 
+if (parseInt(ss) < 10) ss += '0';  
+clock += ss;
+if (parseInt(mil) < 10){mil += '00';
+}else if(10 <= parseInt(mil) < 100){mil += '0';}
+clock += (mil.substr(0,3));
+var bid=0;
+var a = 'bck';
+var b = clock;
+var c = bid;
+var d = a+b+c
+var a1 = '1002ck'+clock;
+var a2 = '1002tk'+clock;
+
+var gsh=0;
+var gcount=0;
+var gre=0;
+var gmsg='';
+
+var bData1=new Array(); 
+bData1=[
+      ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15','退库数量16']
+ #set($i=1)
+ #foreach($m in $stocknum)
+      ,['$m.ITEMCODE','$m.ITEMDESC','$m.ITEMSPEC',$m.NNUMBER,'0','0','N','$i','$m.NC_PROD_PK','$m.UNITCODE','$m.BATCHCODE','#if($m.FSTYLE=='0')<font color="red">零托</font>#else整托#end','',$m.DTVALUE,$m.UVALUE,'',0]
+   #set($i=$i+1)
+ #end
+]
+var outdata=new Array(); 
+  outdata = [
+    ['产品代码','库位','批次号','产品主键','出库数量','库存数量']
+ #foreach($m in $outstocknum)
+      ,['$m.ITEMCODE','$m.UNITCODE','$m.BATCHCODE','$m.NC_PROD_PK',$m.NNUMBER,$m.SNUMBER]
+ #end
+];
+
+var ncoutdata=new Array(); 
+  ncoutdata = [
+     ['产品代码','应发数量','库位','批次号','产品主键','回流数量','实发数量','DTVALUE']
+#foreach($m in $ncoutstocknum)
+      ,['$m.ITEMCODE',$m.NSHOULDOUTNUM,'$m.UNITCODE','$m.BATCHCODE','$m.NC_PROD_PK',$m.NNUMBER,'0',$m.DTVALUE]
+#end
+];
+var pageSize=50;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+//计算单品参数
+function para(pcode){
+        var tempnum=0;
+	gsh=0;
+	gcount=0;
+	gre=0;
+	for(var i=1;i<bData1.length;i++){
+	    if(bData1[i][0]==pcode && bData1[i][5]>0 && bData1[i][6]=='Y'){
+	      tempnum=bData1[i][4];
+	      gsh+=parseInt(bData1[i][5]);
+	      if(bData1[i][15]!=''){
+	         gcount++;
+	      }
+	    }
+	}
+	gre=gsh-parseInt(tempnum);
+}
+
+//计算单品实发
+function sfnum(pcode){
+        var psfnum=0;
+	for(var i=1;i<bData1.length;i++){
+	    if(bData1[i][0]==pcode && bData1[i][5]>0 && bData1[i][6]=='Y'){
+	      psfnum+=parseInt(bData1[i][5]);
+	    }
+	 }
+	 return psfnum;
+}
+//计算单品回流次数
+function recount(pcode){
+        var precount=0;
+	for(var i=1;i<bData1.length;i++){
+	    if(bData1[i][0]==pcode && bData1[i][15]!='' && bData1[i][6]=='Y'){
+	      precount++;
+	    }
+	 }
+	 return precount;
+}
+//计算回流数量
+function renum(pcode){
+        var prenum=0;
+	prenum=sfnum(pcode);
+	for(var i=1;i<bData1.length;i++){
+	    if(bData1[i][0]==pcode){
+	      prenum=prenum-parseInt(bData1[i][4]);
+	      break;
+	    }
+	 }
+	 return prenum;
+}
+
+//计算回流库位状态
+function rbpara(pcode,ucode,bcode,rbcode){
+        var tempn=0;
+	for(var i=1;i<bData1.length;i++){
+	  if(bData1[i][6]=='Y'){
+	    if(bData1[i][15]==rbcode){ //库位存在
+	      if(bData1[i][0]==pcode){
+	         if(bData1[i][9]==ucode && bData1[i][10]==bcode){
+		   tempn=0;
+		 }else{
+		   gmsg='二次回流且库位占用';
+		   return 1;  //二次回流且库位占用
+		 }
+	      }else{
+	           gmsg='库位占用';
+	           return 2;  //库位占用
+	      }
+	    }
+            if(bData1[i][15]!=''){
+	      if(bData1[i][0]==pcode){
+	         if(bData1[i][9]==ucode && bData1[i][10]==bcode){
+		   tempn=0;
+		 }else{
+		   gmsg='二次回流';
+		   return 3;  //二次回流
+		 }
+	      }
+	    }
+	  }
+	}
+	return 0;
+}
+
+function toclear(i){
+   document.getElementById("edittbprice"+i).value = "";
+   savepage(pageno);
+	for(var n=1;n<ncoutdata.length;n++){
+		    if(ncoutdata[n][0]==table6.rows[parseInt(i)].cells[1].innerText){
+			  ncoutdata[n][2]='';
+		    }
+	}
+}
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+//设置回流
+function re(i,v){
+   var ss=i;
+   var temprenum=0;
+   //检验是回流库位是否是整托
+   if(table6.rows[parseInt(ss)].cells[8].innerText!='整托'){
+        alert("该库位是零托库位，不能回流！");
+	document.getElementById("edittbprice"+ss).value="";
+	return false;
+   }
+   if(rbpara(table6.rows[parseInt(ss)].cells[1].innerText,table6.rows[parseInt(ss)].cells[7].innerText,table6.rows[parseInt(ss)].cells[9].innerText,document.getElementById("edittbprice"+ss).value)>0){
+     alert(gmsg);
+     document.getElementById("edittbprice"+ss).value="";
+     return false;
+   }
+   savepage(pageno);
+   temprenum=renum(table6.rows[parseInt(ss)].cells[1].innerText);
+   if(parseInt(temprenum)<0){
+        alert("不需要回流！");
+	document.getElementById("edittbprice"+ss).value="";
+	savepage(pageno);
+	return false;
+   }
+	for(var i=1;i<ncoutdata.length;i++){
+		    if(ncoutdata[i][0]==table6.rows[parseInt(ss)].cells[1].innerText){
+			  ncoutdata[i][2]=v;
+		    }
+	}
+
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked>";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox'>";
+	  }
+    //       ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][4]
+	  for(var j=5;j<6;j++){
+	     with (row.insertCell())
+             {
+	       innerHTML=rdata[(page-1)*pageSize+i][j];
+	       if(rdata[(page-1)*pageSize+i][j]!=rdata[(page-1)*pageSize+i][j+5]){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	     }
+	 }
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][9];
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][11];
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][10]; 
+	 if(rdata[(page-1)*pageSize+i][11]=='整托')
+	    row.insertCell().innerHTML='<input type="text" name=edittbprice'+((page-1)*pageSize+i)+' id=edittbprice'+((page-1)*pageSize+i)+' size="7" value="'+rdata[(page-1)*pageSize+i][15]+'" readonly><input type="button"  value="..." onclick="showindow('+((page-1)*pageSize+i)+')"><input type="button" size="5" value="清除" onclick="toclear('+((page-1)*pageSize+i)+')">';
+         else
+	    row.insertCell().innerHTML='<input type="hidden" name=edittbprice'+((page-1)*pageSize+i)+' id=edittbprice'+((page-1)*pageSize+i)+' size="7" value="'+rdata[(page-1)*pageSize+i][15]+'" readonly>';
+	 row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][13]; 
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+function showindow(m){
+if(parseInt(table6.rows[parseInt(m)].cells[5].innerText)==0){
+  alert("请先输入出库数量！");
+  return false;
+};
+var ReturnAllQualityValue=showModalDialog('wunusestock.aspx?a='+1,"a",'dialogWidth:1000px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+	if(ReturnAllQualityValue!=null){
+		document.getElementById("edittbprice"+m).value=ReturnAllQualityValue;
+		re(m,ReturnAllQualityValue);
+	}
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+    //       ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="O")
+        bstatus=(bData1[i][3]>0);
+    else
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+	//alert(bstatus)
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++;
+	}
+ }
+ toPage(1);
+}
+
+function save(step,status)
+{
+  savepage(pageno);
+  var datahtml="";
+  var num=0;
+  var nextnum=0;
+  var strhtml = "";
+  var isreturnstock = false;
+  var hdatahtml="";
+  var wcknum=0;
+  var az = 0;
+  var a111 =0;
+
+  hdatahtml+="<input type=hidden name=billno value='$form_billno'></br>";
+  hdatahtml+="<input type=hidden name=cgeneralhid value='$form_cgeneralhid'></br>";
+  hdatahtml+="<input type=hidden name=billtype value='2'></br>";
+  hdatahtml+="<input type=hidden name=outstockstatus value='"+status+"'></br>";
+
+  for(var j = 1 ; j < ncoutdata.length; j ++){
+    para(ncoutdata[j][0]);
+    a111 = gsh;
+    if(a111 - parseInt(ncoutdata[j][1]) >= parseInt(ncoutdata[j][7])){
+	   alert(ncoutdata[j][0]+"出库数量多于应发数量超过1整托");
+	   return false;
+    } 
+    if(gre >0 && gcount==0){
+	   alert(ncoutdata[j][0]+"出库数量多于应发数量,未设置回流库位");
+	   return false;
+    }      
+    if(a111 - parseInt(ncoutdata[j][1]) <0){
+	wcknum++;
+    }   
+  }
+    // ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' &&  bData1[i][5]>0){
+      datahtml+="<input type=hidden name=bbillno value='$form_billno'></br>";
+      datahtml+="<input type=hidden name=nc_prod_pk value='"+bData1[i][8]+"'></br>"; //产品主键
+      datahtml+="<input type=hidden name=batchcode value='"+bData1[i][10]+"'></br>"; //批次
+      datahtml+="<input type=hidden name=unitcode value='"+bData1[i][9]+"'></br>"; //库位代码
+      datahtml+="<input type=hidden name=billno_bid value='"+(d+i)+"'></br>";
+      datahtml+="<input type=hidden name=nnumber value='"+bData1[i][5]+"'></br>"; //出库储量
+      if(bData1[i][15] != ''){
+	       isreturnstock = true;
+	       strhtml+="<input type=hidden name=bbillno value='"+(a2+0)+"'></br>";
+	       strhtml+="<input type=hidden name=nc_prod_pk value='"+bData1[i][8]+"'></br>"; //产品主键
+	       strhtml+="<input type=hidden name=batchcode value='"+bData1[i][10]+"'></br>"; //批次
+	       strhtml+="<input type=hidden name=unitcode value='"+bData1[i][15]+"'></br>"; //库位代码
+	       strhtml+="<input type=hidden name=billno_bid value='"+(d+j+0)+"'></br>";
+	       strhtml+="<input type=hidden name=nnumber value='"+renum(bData1[i][0])+"'></br>"; //回流储量
+      }
+    }
+ }
+
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ if(wcknum == 0){
+	 if(isreturnstock == false){
+	       subdata.innerHTML=hdatahtml+datahtml;
+	       document.form_submit.action="wnewoutstockdetailSubmit1.aspx";
+	 }else{
+	        strhtml+="<input type=hidden name=billno_id value='"+(a2+0)+"'></br>";
+		subdata.innerHTML=hdatahtml+datahtml+strhtml;
+		document.form_submit.action="wnewoutstockdetailSubmit1.aspx";
+	 }
+	 form_submit.submit();
+   }else{
+        if(confirm("产品没有全部出库,确定要提交吗？")){
+	 if(isreturnstock == false){
+	       subdata.innerHTML=hdatahtml+datahtml;
+	       document.form_submit.action="wnewoutstockdetailSubmit1.aspx";
+	 }else{
+	        strhtml+="<input type=hidden name=billno_id value='"+(a2+0)+"'></br>";
+		subdata.innerHTML=hdatahtml+datahtml+strhtml;
+		document.form_submit.action="wnewoutstockdetailSubmit1.aspx";
+	 }
+	 //alert(subdata.innerHTML);
+	 //document.all.pg.innerText=subdata.innerHTML;
+	 form_submit.submit();
+      }
+   }
+}
+
+function savepage(page)
+{
+   if(page>0){
+     for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked){ 
+          rdata[(page-1)*pageSize+i][6]='Y';
+	  if(document.getElementById('edittbprice'+i).value != ""){
+	  rdata[(page-1)*pageSize+i][15]=document.getElementById('edittbprice'+i).value;
+	  }else{
+	     rdata[(page-1)*pageSize+i][15]="";
+	  }
+      }else{
+        rdata[(page-1)*pageSize+i][6]='N';
+      }
+      for(var j=5;j<6;j++){
+        if(table6.rows[i].cells[j+1].innerText==""){
+	  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+        }
+      }
+      //rdata[(page-1)*pageSize+i][9]=table6.rows[i].cells[7].innerText;
+      bData1[rdata[(page-1)*pageSize+i][7]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function document.onkeydown(){
+   key=event.keyCode;
+   if(key==83 && event.ctrlKey){
+    save();
+    return;
+   }
+   if(key==38)   //向上箭头
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+        var ly=event.srcElement.parentNode.offsetTop;
+	var hy=mdiv.scrollTop;
+	if(ly>hy && (ly-hy<2*ftr.offsetHeight)) mdiv.scrollTop=mdiv.scrollTop-ftr.offsetHeight*2; 
+  	//window.status=event.y+","+mdiv.offsetTop;
+	//form2.elements[0].value=ftr.offsetHeight;
+     }
+     return;
+   }
+   if(key==34)   //page down
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }else{
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }
+     return;
+   }
+   if(key==33)   //page up
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }else{
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }
+   }
+   return;
+}
+
+function init()     
+{  
+   //  ['产品代码0','产品名称1','产品规格2','库存量3','应发数量4','出库数量5','状态6','0','产品主键8','库位9','批次号10','FSTYLE11','nobillno12','DTVALUE13','UVALUE14','bxunitcode15']
+
+   //  outdata = [['产品代码','库位','批次号','产品主键','出库数量']
+        var sf=0;
+	var count=0;
+
+	for(var i=1;i<bData1.length;i++){
+	  //出库赋值
+	  for(var j=1;j<outdata.length;j++){
+	    if(bData1[i][0]==outdata[j][0] && bData1[i][9]==outdata[j][1]  && bData1[i][10]==outdata[j][2]){
+	      count++;
+	      bData1[i][5]=outdata[j][4];
+	      bData1[i][6]='Y';
+	      rdata[i]=bData1[i];
+	      break;
+	    }
+	  }
+	  //回流赋值
+	  for(var j=1;j<ncoutdata.length;j++){
+	    if(bData1[i][0]==ncoutdata[j][0] && bData1[i][5]>ncoutdata[j][5]  && bData1[i][10]==ncoutdata[j][3] && bData1[i][11]=='整托'){
+	      bData1[i][15]=ncoutdata[j][2];
+	      bData1[i][16]=ncoutdata[j][5];
+	      rdata[i]=bData1[i];
+	      break;
+	    }
+	  }
+
+	  //nc出库赋值      ['产品代码','应发数量','库位','批次号','产品主键','回流数量','实发数量']
+
+	  for(var j=1;j<ncoutdata.length;j++){
+	    if(bData1[i][0]==ncoutdata[j][0]){
+	      bData1[i][4]=ncoutdata[j][1];
+	      rdata[i]=bData1[i];
+	    }
+	  }
+   }
+
+   form2.elements[2].value='Y';
+   search();
+
+    for(var i=1;i<table1.rows.length;i++){
+        sf=sfnum(table1.rows[i].cells[0].innerText);
+        eval('document.all.sf'+table1.rows[i].cells[0].innerText+'.innerText='+sf);
+	eval('document.all.sy'+table1.rows[i].cells[0].innerText+'.innerText='+(parseInt(table1.rows[i].cells[3].innerText)-sf));
+    }
+}
+
+function allPlan(element,oldvalue)
+{
+  savepage(pageno);
+  //设置出库数量   ['产品代码','应发数量','库位','批次号','产品主键','回流数量','实发数量']
+  for(var j = 1; j < ncoutdata.length; j ++){
+     allcount = sfnum(ncoutdata[j][0]);    
+     ncoutdata[j][6]=allcount;
+     ncoutdata[j][5]=allcount-parseInt(ncoutdata[j][1]);
+     //如果不用回流
+     if(ncoutdata[j][5]<0){
+	    for(var m=1;m<table6.rows.length;m++){
+		    if(ncoutdata[j][0]==table6.rows[parseInt(m)].cells[1].innerText){
+			  document.getElementById('edittbprice'+m).value='';
+			  savepage(pageno);
+		    }
+	    }
+	    ncoutdata[j][5]=0;
+	    ncoutdata[j][2]='';
+     }
+  }
+    for(var i=1;i<table1.rows.length;i++){
+        sf=sfnum(table1.rows[i].cells[0].innerText);
+        eval('document.all.sf'+table1.rows[i].cells[0].innerText+'.innerText='+sf);
+	eval('document.all.sy'+table1.rows[i].cells[0].innerText+'.innerText='+(parseInt(table1.rows[i].cells[3].innerText)-sf));
+    }
+  return false;
+}
+
+function se(pcode)
+{
+   form2.elements[0].value=pcode;
+   search();
+}
+</script>
+
+
+<body onload="init()">
+<p align="left"><font size="4"><b>修改出库单$form_vbillcode</b></font>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+   <form name="form9" id="table9">
+<table  border="0" cellpadding="0" cellspacing="2" width="100%"  id="table1">
+    <tr>
+      <td height="19" width="10%">产品编码</td>
+      <td height="19" width="30%">产品名称</td>
+      <td height="19" width="10%">产品规格</td>
+      <td height="19" width="10%">应发数量</td>
+      <td height="19" width="10%">实发数量</td> 
+      <td height="19" width="10%">剩余数量</td>
+    </tr>
+    #foreach($m in $ncoutstocknum)
+	<tr onclick="se('$m.ITEMCODE')">
+	    <td>$m.ITEMCODE</td>
+	    <td>$m.ITEMDESC</td>
+	    <td>$m.ITEMSPEC</td>
+	    <td id='yf$m.ITEMCODE'>$m.NSHOULDOUTNUM</td>
+	    <td id='sf$m.ITEMCODE'>0</td>
+	    <td id='sy$m.ITEMCODE'>$m.NSHOULDOUTNUM</td>
+	</tr>
+    #end
+    </table>  
+</form>
+</div>
+<br>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()"> 
+状态：<select  onchange="search()">
+            <option value='all' selected>全部</option>
+	    <option value='N'>未报出库产品</option>
+	    <option value='Y'>已报出库产品</option>
+	    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">   
+	    &nbsp;&nbsp;
+</form>
+</div>
+<!--div class="mainDiv" id="mdiv"--> 
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+      <td height="19" bgcolor="#abcdef" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td height="19" bgcolor="#abcdef" width="15%" Name="pcode" >产品代码</td>
+      <td height="19" bgcolor="#abcdef" width="20%" Name="pname">产品名称</td>
+      <td height="19" bgcolor="#abcdef" width="10%" Name="pspec">产品规格</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="oldnum">库存量</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="Price">应发数量</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Amount" EditType="TextBox" DataType="IntQuantity1">出库数量</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price">库位</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price1">库位类型</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price">批次号</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price">零托退货库位</td>
+      <td height="19" bgcolor="#abcdef" width="9%" Name="Price">库位容量</td>
+    </tr>
+</table>
+ <!--/div-->
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value=" 保  存 " id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value=" 提  交 " id="btnSave2">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:window.location='outstock.aspx';">
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+btnSave.onclick=function()
+{
+   save(0,'N');	
+}
+//单击“提交”按钮
+btnSave2.onclick=function()
+{
+   save(0,'Y');	
+}
+
+</script>
+<script>
+	 EditTables(table6);
+	 //toPage(1);
+</script>
+<form name="form_submit" method="post" action="newSalePlanSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

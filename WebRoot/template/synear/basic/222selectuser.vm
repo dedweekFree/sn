@@ -1,0 +1,201 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>竞标商资料审核</title>
+<SCRIPT LANGUAGE="JavaScript">
+var parent_window = parent.opener.document;
+var to_form = parent_window.form1;
+var to_id =   to_form.TO_ID;
+var to_name = to_form.TO_NAME;
+var targetelement=null;
+var user_name = null;
+var user = null;
+function getOpenner()
+{
+   if(is_moz){
+      return parent.opener.document;
+   }else{
+      return parent.dialogArguments.document;
+   }
+}
+function checkinput()
+{  
+  thisform.page.value=1;
+  thisform.submit();
+}
+function click_user(user_id,username)
+{
+  TO_VAL=to_id.value;
+  TO_NAME=to_name.value;
+  targetelement=user_id;
+  user_name=user_id;
+  user = username;
+  if(TO_VAL.indexOf(","+user_id+",")>0 || TO_VAL.indexOf(user_id+",")==0)
+  {
+    if(TO_VAL.indexOf(user_id+",")==0)
+       to_id.value=to_id.value.replace(user_id+",","");
+    else if(TO_VAL.indexOf(","+user_id+",")>0)
+       to_id.value=to_id.value.replace(","+user_id+",",",");
+    
+    if(TO_NAME.indexOf(user_name+",")==0)
+       to_name.value=to_name.value.replace(user_name+",","");
+    else if(TO_NAME.indexOf(","+user_name+",")>0)
+       to_name.value=to_name.value.replace(","+user_name+",",",");
+    
+    borderize_off(targetelement);
+  }
+  else
+  {
+    to_id.value+=user_id+",";
+    to_name.value+=user_name+",";
+    borderize_on(targetelement);
+  }
+
+}
+function add_all()
+{
+  TO_VAL=to_id.value;
+  for (step_i=0; step_i<allElements.length; step_i++)
+  {
+    if(allElements[step_i].className.indexOf("menulines"+flag)>=0)
+    {
+       user_id=allElements[step_i].id;
+       user_name=allElements[step_i].title;
+
+       if(TO_VAL.indexOf(","+user_id+",")<0 && TO_VAL.indexOf(user_id+",")!=0)
+       {
+         to_id.value+=user_id+",";
+         to_name.value+=user_name+",";
+         borderize_on(allElements[step_i]);
+       }
+    }
+  }
+}
+
+function del_all()
+{
+  for (step_i=0; step_i<allElements.length; step_i++)
+  {
+    TO_VAL=to_id.value;
+    TO_NAME=to_name.value;
+    if(allElements[step_i].className.indexOf("menulines"+flag)>=0)
+    {
+       user_id=allElements[step_i].id;
+       user_name=allElements[step_i].title;
+       if(TO_VAL.indexOf(user_id+",")==0)
+          to_id.value=to_id.value.replace(user_id+",","");
+       else if(TO_VAL.indexOf(","+user_id+",")>0)
+          to_id.value=to_id.value.replace(","+user_id+",",",");
+       
+       if(TO_NAME.indexOf(user_name+",")==0)
+          to_name.value=to_name.value.replace(user_name+",","");
+       else if(TO_NAME.indexOf(","+user_name+",")>0)
+          to_name.value=to_name.value.replace(","+user_name+",",",");
+       
+       borderize_off(allElements[step_i]);
+    }
+  }
+}
+function borderize_on(targetelement)
+{
+   if(targetelement.className.indexOf("TableRowActive") < 0)
+      targetelement.className = "TableRowActive " + targetelement.className;
+}
+function borderize_off(targetelement)
+{
+   if(targetelement.className.indexOf("TableRowActive") >= 0)
+      targetelement.className = targetelement.className.substr(15);
+}
+</SCRIPT>
+</head>
+
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr>
+  <form name="thisform" method="post" action="selectuser.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="trcolor">
+		    <td colspan="4" align="left">用户查询</td>
+		  </tr>
+		  <tr class="trcolor">
+		    <td>用户名:</td>
+		    <td align="left"><input type="text" name="username" style="width:100px" value="$!form_username"/></td>
+		    <td>姓名:</td>
+		    <td align="left"><input type="text" name="name" style="width:100px" value="$!form_name"/></td>
+		  </tr>
+		  <tr class="trcolor">
+		    <td>角色:</td>
+		    <td align="left">
+			<select name="roleid" style="width:100px" value="$!form_roleid">
+			    <option value=''>请选择角色</option>
+				#set($i=0)
+				#foreach($!m in $selRolename)
+					<option value='$m.ROLEID'>$m.ROLENAME</option>
+				#set($i=$i+1)
+				#end
+		        </select>	
+		    </td>
+		    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+		  </tr>
+		<tr>
+		   <td align="center" colspan="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+   </td></form>
+</tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+  <tr class="trcolor">
+    <td>用户名</td>
+    <td>姓名</td>
+  </tr>
+  <tr class="TableControl">
+  <td onclick="javascript:add_all();" style="cursor:pointer" align="center" colspan="2">全部添加</td>
+</tr>
+<tr class="TableControl">
+  <td onclick="javascript:del_all();" style="cursor:pointer" align="center" colspan="2">全部删除</td>
+</tr>
+  #set($i=0)
+  #foreach($!m in $selbaseuserinfo)
+  <tr class="trcolor"  onclick="click_user('$!m.USERNAME','$!m.USERNAME')" style="cursor:hand">
+    <td>$!m.USERNAME</td>
+    <td>$!m.NAME</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="4">      
+      <input type="button" name="b2" value="刷&nbsp;&nbsp;新" class="bt1" onclick="javascript:location.reload()"/></td><!--javascript:location.reload()-->
+  </tr></table>
+</td></tr>
+</table>
+
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>
+<script language="javascript">
+   function toalert(vendorcode,username){
+      var aa = "";
+      aa+=vendorcode;
+      alert(aa);
+      window.opener.document.getElementById("people").value=vendorcode;
+      window.opener.document.getElementById("username").value=username;
+   }
+   function toSelectRow(rowIdx){
+      alert(rowIdx);
+   }
+</script>

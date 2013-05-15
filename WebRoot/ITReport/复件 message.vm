@@ -1,0 +1,33 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="/js/string.js"></script>
+	<script type="text/javascript">
+	function sub(){ 
+	    //mTarget转向目标窗口，空为不作处理
+      var message="$!app_message";
+	var mTarget="$!app_target";
+	var mUrl="$!app_url";
+        if(mTarget==""){
+          alert(message);
+	}else{
+          if(mUrl==""){
+            mUrl=top.oldurl;
+	  }
+	  if(!mUrl.haveChar(")")){
+	   mUrl=mTarget+".location.replace('"+mUrl+"')";
+	  }
+	  document.all.thisform.submit();
+	  alert(message);
+          eval(mUrl);	
+	}
+	}
+	</script>
+</head>
+<body onload="sub()">
+<form name="thisform" action="/RecReqMess">
+	<input type="hidden" name="Text" value="$!form_Text [$!form_deptname $!form_phone $!form_name] ">
+	<input type="hidden" name="phones" value="$!form_phones">
+</form>
+</body>
+</html>

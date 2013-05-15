@@ -1,0 +1,101 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>====</title>
+<script language="javascript">
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	if(document.getElementById('date1').value == ""){
+           document.getElementById('date1').value=Today;
+	}
+	if(document.getElementById('date2').value == ""){
+	  document.getElementById('date2').value=Today;
+	}
+    }
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+	 function tosearch(){
+	     document.thsiform.orderbytime.value="1";
+	     thsiform.submit();
+	 }
+    </script>
+</head>
+
+<body onload="GetDateString()">
+<form name="thsiform" action="zdcsquery.aspx" method="post">
+<input type="hidden" name="orderbytime" value = "1">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>开始时间</td>
+    <td><input type="text" name="date1" value="$!form_date1" onclick="ShowDate(this)"/></td>
+    <td>结束时间</td>
+    <td><input type="text" name="date2" value="$!form_date2" onclick="ShowDate(this)"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>转单时间</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;#if($form_zdsc != "")<input type="text" name="zdsc" value="$form_zdsc">#else<input type="text" name="zdsc" value="4">#end小时</td>
+    <td>是否提前接单</td>
+    <td><select name="isjd">
+       <option></option>
+       <option value="Y" #if($!form_isjd == "Y") selected #end>是</option>
+       <option value="N" #if($!form_isjd == "N") selected #end>否</option>
+       </select>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="center" colspan="4"><input type="button" onclick="tosearch()" name="bt1"  class="bt1" value="查询"></td>
+  </tr>
+</table>
+</from>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>转单人</td>
+    <td>转单类型</td>
+    <td>受理类型</td>
+    <td>受理人</td>
+    <td>报修问题</td>
+    <td>报修时间</td>
+    <td>转单时间</td>
+    <td>受理时间</td>
+  </tr>
+  #foreach($!m in $ITzdycinfo)
+  <tr class="trcolor">
+    <td nowrap>$!m.ZRNAME</td>
+    <td nowrap>$!m.ZRTYPE</td>
+    <td nowrap>$!m.SENDTYPENAME</td>
+    <td nowrap>$!m.NAME</td>
+    <td nowrap align="left">$!m.REMARK</td>
+    <td nowrap>$!m.TS</td>
+    <td nowrap>$!m.ZRTIME</td>
+    <td nowrap>$!m.RECETIME</td>
+  </tr>
+  #end
+   <tr class="trcolor">
+      <td colspan=10 align="right">$pagecode</td>
+   </tr>
+</table>
+</form>
+</body>
+</html>

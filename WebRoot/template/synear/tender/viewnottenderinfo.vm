@@ -1,0 +1,65 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>招标信息未审核通过</title>
+</head>
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+  <form name="thisform" method="post">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+</form>
+    <td colspan="6" align="left">招标信息未审核通过</td>
+  </tr>
+  <tr class="trcolor">
+    <td nowrap>项目编码</td>
+    <td nowrap>项目名称</td>
+    <td nowrap>开始时间</td>
+    <td nowrap>开标时间</td>
+    <td nowrap>结束时间</td>
+    <td nowrap>状态</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $viewtendinfocheckno)
+  <tr>
+    <td nowrap align="center">
+	#if($!m.ISAREA == 'Y')<a href="zbinfodetailarea.aspx?proid=$!m.PROID">$!m.PROID</a>#else<a href="zbinfodetail.aspx?proid=$!m.PROID">$!m.PROID</a>#end
+   </td>
+    <td nowrap  align="center">
+	<a href="tenderedit.aspx?proid=$!m.PROID&ptype=$!m.TENDTYPEID&isacc=$!m.ISACC&isarea=$!m.ISAREA&departtype=$!m.DEPARTID">$!m.PRONAME</a>
+    </td>
+    <td nowrap  align="center">
+        $!m.ATIME
+   </td>
+   <td nowrap  align="center">
+        $!m.KTINE
+   </td>
+   <td nowrap  align="center">
+        $!m.ZTIME
+   </td>
+   <td nowrap  align="center">
+        #if($!m.ISCHECK == 0)
+	    未审核
+	#else
+            <font color='red'>未通过</font>
+	#end
+   </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="6">      
+      <input type="button" name="b2" value="刷&nbsp;&nbsp;新" class="bt1" onclick="javascript:location.reload()"/></td>
+  </tr>
+  <tr >
+        <td class="tdlabel" colspan="6">$pagecode</td>
+   </tr>
+</table>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+
+<script language="javascript" src="../../../js/PlanGridEdit.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+
+.EditCell_TextBox_NoWidth {
+border:1px solid #0099CC;
+}
+
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+var bData1=new Array(); 
+bData1=[
+      ['主键','产品代码','产品名称','产品规格','单位','计划排产量','状态','实际用时','0','原计划排产量','调整原因','现计划排产量']
+ #set($i=1)
+ #foreach($m in $getMonthPaiChan)
+      ,['$m.PK_PRODUCT','$m.INVCODE','$m.INVNAME','$m.INVSPEC','$m.MEASNAME','$m.PLANNUM','$m.FSTATUS','$m.REALHOURS','$i','$m.OLDPLANNUM','$m.PLANMEMO','$m.PLANNUM','$m.CLASSES']
+   #set($i=$i+1)
+ #end
+]
+var pageSize=50;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow();
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked onclick=\"javascript:setStatus("+i+")\">";
+	  else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' onclick=\"javascript:setStatus("+i+")\">";
+	  }
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][4];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][9];
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][11];
+          with (row.insertCell())
+         {
+	       innerHTML=rdata[(page-1)*pageSize+i][5];
+	       if(rdata[(page-1)*pageSize+i][5]!=rdata[(page-1)*pageSize+i][11]){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	  }
+
+	  with (row.insertCell())
+	  {
+		innerText=rdata[(page-1)*pageSize+i][10];
+		setAttribute("Size", '240');
+		setAttribute("Length", '40');
+	 }
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][1].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][2].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="0")
+    {
+        bstatus=((bData1[i][9]>0) || (bData1[i][6]=='Y'));
+    }
+    else
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ toPage(1);
+}
+function save(step,status)
+{
+  savepage(pageno);
+  var datahtml="";
+  var num=0;
+  var nextnum=0;
+  for(var i=0;i<bData1.length;i++){
+    if((bData1[i][6]=='Y' && bData1[i][5]>0) || bData1[i][11]>0){
+       datahtml+="<input type=hidden name=prodpk value='"+bData1[i][0]+"'>";
+       if(bData1[i][6]=='Y'){
+          datahtml+="<input type=hidden name=plannum value='"+bData1[i][5]+"'>";
+       }else{
+          datahtml+="<input type=hidden name=plannum value='0'>";
+       }
+       datahtml+="<input type=hidden name=plannumold value='"+bData1[i][11]+"'>";
+       datahtml+="<input type=hidden name=memo value='"+bData1[i][10]+"'>";
+    }
+ }
+ 
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ btnSave2.disabled = true;
+
+ datahtml+="<input type=hidden name=f_id value='$form_billno'>";
+ datahtml+="<input type=hidden name=pk_factory value='$form_pk_factory'>";
+ datahtml+="<input type=hidden name=billdate value='$form_billdate'>";
+ datahtml+="<input type=hidden name=makeruser value='$form_makeruser'>";
+ datahtml+="<input type=hidden name=ts1 value='$form_ts1'>";
+ datahtml+="<input type=hidden name=fstatus value='"+status+"'>";
+ datahtml+="<input type=hidden name=classes value='$form_classes'>";
+ subdata.innerHTML=datahtml;
+ //alert(datahtml)
+   form_submit.action="newMonthPaiChanSubmit2.aspx";
+   form_submit.submit();
+   //form1.submit();
+}
+
+function testok()
+{ 
+   form_submit.action="newPaiChanSubmit2.aspx";
+   form_submit.submit();
+}
+
+function savepage(page)
+{
+  if(page>0){	 
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][6]='Y';
+      else  rdata[(page-1)*pageSize+i][6]='N';
+        if(table6.rows[i].cells[7].innerText==""){
+	  rdata[(page-1)*pageSize+i][5]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][5]=table6.rows[i].cells[7].innerText;
+        }
+        if(table6.rows[i].cells[8].innerText==""){
+	 try{
+	  rdata[(page-1)*pageSize+i][10]=document.all.editbox.value;
+	 } catch(e){
+	  rdata[(page-1)*pageSize+i][10]="";
+	 }
+	}
+	else{
+          rdata[(page-1)*pageSize+i][10]=table6.rows[i].cells[8].innerText;
+        }
+      bData1[rdata[(page-1)*pageSize+i][8]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function document.onkeydown(){
+   key=event.keyCode;
+   if(key==83 && event.ctrlKey){
+    save();
+    return;
+   }
+   if(key==38)   //向上箭头
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+        var ly=event.srcElement.parentNode.offsetTop;
+	var hy=mdiv.scrollTop;
+	if(ly>hy && (ly-hy<2*ftr.offsetHeight)) mdiv.scrollTop=mdiv.scrollTop-ftr.offsetHeight*2; 
+  	//window.status=event.y+","+mdiv.offsetTop;
+	//form2.elements[0].value=ftr.offsetHeight;
+     }
+     return;
+   }
+   if(key==34)   //page down
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+	      case "String":
+	    	  if(event.strElement.value.search("^[a-zA-z]+$")!=0)
+	    	  {
+	    		  return false;
+	    	  }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }else{
+        if(pageno<Math.ceil((rdata.length-1)/pageSize)){
+	  toPage(pageno+1);
+	}
+     }
+     return;
+   }
+   if(key==33)   //page up
+   {
+     if(event.srcElement.className=="EditCell_TextBox"){
+	      var dataType = event.srcElement.parentNode.parentNode.parentNode.rows[0].cells[event.srcElement.parentNode.cellIndex].getAttribute("DataType");
+	      switch(dataType){
+	      case "Float":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Number":
+		 if(event.srcElement.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Int":
+		 if(event.srcElement.value.search("^-?\\d+$")!=0){
+		    return false;
+		 }
+		 break;
+	      case "Email":
+		 if(event.srcElement.value.search("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.?)*\\w+$")!=0){
+		    return false;
+		 }
+		 break;
+	      default:
+		break;
+	    }
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }else{
+        if(pageno>1){
+	  toPage(pageno-1);
+	}
+     }
+   }
+   return;
+}
+/**
+*返回时间字符串
+**/
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+
+function init()     
+{  
+   var pno="$form_begintime".split("-");
+   //document.all.jhqj.innerHTML='M'+pno[0]+pno[1];
+}
+
+function setStatus(lineno)
+{
+    allPlan(event.srcElement,lineno)
+}
+
+function allPlan(element,oldvalue)
+{
+  var num=0;
+  var nextnum=0;
+  savepage(pageno);
+  for(var i=1;i<bData1.length;i++){
+    if(bData1[i][6]=='Y' && bData1[i][5]>0){
+       num+=parseInt(bData1[i][5]);
+    }
+  }
+  //document.all.byjh.innerHTML=num;
+}
+
+</script>
+
+
+<body onload="search()">
+
+<p align="left"><font size="4"><b>修改排产信息</b></font>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+#foreach($m in $getMonthPaiChanByNo)
+<table  border="0" cellpadding="0" cellspacing="2" width="100%">
+    <tr>
+    <td class="tdinput" width="10%">分厂名称:$m.DEPTNAME     
+    <td class="tdinput" width="20%">排产月份:$m.BILLDATE
+     <input type="hidden" value=$session_NAME name="makeruser" id="makeruser">
+    </tr>
+    <tr> 
+      <td height="19" width="7%">排产人：$session_NAME</td> 
+    </tr>
+</table> 
+#end
+</div>
+<br>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品编码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()">
+状态<select id="select" name="select" onchange="search()">
+<option value="all" >全部</option>
+<option value="Y">已排产</option>
+<option value="N">未排产</option>
+<option value="0" selected>含调整</option>
+</select>
+&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">        
+</form>
+</div>
+<!--<div class="mainDiv" id="mdiv"> -->
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#9999FF"  id="ftr">
+      <td height="19" bgcolor="#9999FF" width="7%" Name="st">
+      <input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态
+      </td>
+      <td height="19" bgcolor="#9999FF" width="15%" Name="invcode" >产品编码</td>
+      <td height="19" bgcolor="#9999FF" width="23%" Name="invame">产品名称</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="invspec">产品规格</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="measname">单位</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="plannum">最初计划排产量</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="plannum1">现计划排产量</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="plannum2" EditType="TextBox" DataType="Int">调整后计划排产量</td>
+      <td height="19" bgcolor="#9999FF" width="9%" Name="memo" EditType="TextBox" DataType="Varchar" Size="120" Length="30">调整原因</td>
+    </tr>
+</table>
+ <!--</div>-->
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value=" 提  交 " id="btnSave2">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:history.go(-1);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+btnSave2.onclick=function()
+{
+   save(0,'1');	
+}
+</script>
+<script>
+	 EditTables(table6);
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="editTempSalePlanSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<form name="form1" method="post" action="testpc.aspx"  target="saveframe">
+  <input type="hidden" name="billno" value="$form_billno">
+  <input type="hidden" name="ts1" value="$form_ts1">
+  <input type="hidden" name="fstatus" value="1">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

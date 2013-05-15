@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>getProductHistoryPriceExportForQC</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产成品编码##产成品名称##规格##维护单价##单价生效时间##备注##维护人##单价维护时间</web:col>
+  <web:key>INVCODE##INVNAME##INVSPEC##COSTPRICE##STARTDATE##REMARK##MAKERID##TS</web:key>
+  <web:name>产成品价格及明细表（千味、出口）</web:name>
+</web:page>
+
+
+

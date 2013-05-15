@@ -1,0 +1,20 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../include/js/string.js"></script>
+	<script type="text/javascript">
+        #set($i='')
+        #foreach($!m in $testvstate)
+			#set($i=$!m.VSTATE)
+        #end 
+		#if($i=='申请')
+			parent.submitformexit("$!form_vmaker");
+		#else
+			alert("该会议状态已经被修改为$i ！");
+		#end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

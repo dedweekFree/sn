@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>		
+<title>客户网上付款</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../include/js/PopCalendar.js"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+</HEAD>
+<BODY>
+<FORM name=form1  method=post>
+    <TABLE class="datatable">
+      <tr class="trcolor"><TD align="right">客户交易编号        </TD>
+          <TD align="left"><INPUT NAME='MerchantTrnxNo' id='MerchantTrnxNo'    style="width:200"     VALUE='' readonly></TD></TR>
+	   #foreach($m in $getabcbanktime)
+      <tr class="trcolor"><TD align="right">交易日期            </TD>
+          <TD align="left"><INPUT NAME='TrnxDate'               VALUE='$m.TODAYDATE' readonly>（YYYY/MM/DD）</TD></TR>    
+      <tr class="trcolor"><TD align="right">交易时间            </TD>
+          <TD align="left"><INPUT NAME='TrnxTime'               VALUE='$m.NOWTIME' readonly>（HH:MM:SS）</TD></TR>
+	  #end
+      <tr class="trcolor"><TD align="right">交易金额            </TD>
+          <TD align="left"><INPUT NAME='TrnxAmount'             VALUE=''></TD></TR>
+      <tr class="trcolor"><TD align="right">收款方账号          </TD>
+          <TD align="left"><INPUT NAME='AccountDBNo'            VALUE='16-035201040034269' readonly></TD></TR>
+      <tr class="trcolor"><TD align="right">收款方账户名        </TD>
+          <TD align="left"><INPUT NAME='AccountDBName'          VALUE='郑州思念食品有限公司' readonly></TD></TR>
+      <tr class="trcolor"><TD align="right">收款方账户开户行联行号    </TD>
+          <TD align="left"><INPUT NAME='AccountDBBank'          VALUE='000000' readonly>（默认为000000）</TD></TR>
+      <!--<tr class="trcolor"><TD align="right">ResultNotifyURL</TD>-->
+          <TD align="left"><INPUT NAME='ResultNotifyURL'   type="hidden"     VALUE='http://222.88.22.69:8999/TrnxResult.jsp'></TD></TR>
+	  <!--http://172.16.22.64:8080/B2BClient/TrnxResult.jsp-->
+      <!--<tr class="trcolor"><TD align="right">MerchantRemarks     </TD>-->
+          <TD align="left"><INPUT NAME='MerchantRemarks'     type="hidden"    VALUE=''></TD></TR>
+      <tr class="trcolor"><TD colspan=2><INPUT type="button" name="sb1" value="提交查询内容" onclick="tosubmit()">
+    </TABLE>
+    <input type="hidden" name="custname" value="$session_NAME">
+    <input type="hidden" name="custcode" value="$session_USERNAME">
+  </FORM>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</HTML>
+<script language="javascript">
+var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(1,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon = '0'+mon; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd = '0'+dd;  
+clock += dd;
+if (parseInt(hh) < 10) hh = '0'+hh;  
+clock += hh; 
+if (parseInt(ss) < 10) ss = '0'+ss;  
+clock += ss;
+if (parseInt(mil) < 10){mil = '00'+mil;
+}else if(10 <= parseInt(mil) < 100){mil = '0'+mil;}
+clock += (mil.substr(0,3));
+document.getElementById('MerchantTrnxNo').value=clock+'$session_USERNAME';
+
+
+function tosubmit(){
+   document.form1.sb1.disabled = true;
+   document.form1.action='MerchantFundTransfer.jsp';
+   document.form1.submit();
+}
+</script>

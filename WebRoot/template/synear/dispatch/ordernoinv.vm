@@ -1,0 +1,258 @@
+<HTML>
+<HEAD>		
+<title>订单缺品率</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ }
+  function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	var v1 = "";
+	var v2 = "";
+	if(v1=="" && v2==""){ 
+		document.getElementById('billdate1').value=Today;
+		document.getElementById('billdate2').value=Today;
+	}else{
+		document.getElementById('billdate1').value=v1;
+		document.getElementById('billdate2').value=v2;
+	}
+    }
+    function togetmont(url){
+        window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+    }
+    function togetcust(url){
+        if(document.thisform.ocustname.value != ""){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"&xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetmccust(url){
+        if(document.thisform.custname.value != ""){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"&xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetkh(url){
+        key=event.keyCode;
+        if(document.thisform.ocustname.value != ""){
+	  if(key == 13){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	  }
+	}
+    }
+    function togetmckh(url){
+        key=event.keyCode;
+        if(document.thisform.custname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+    }
+    function osetdept(dm,mc,code) {
+      thisform.odeptname.value=mc;
+    }
+    function setdept(dm,mc,code) {
+      thisform.deptname.value=mc;
+    }
+    function osetVals(dm,mc,code) {
+      thisform.osalename.value=mc;
+    }
+    function setVals(dm,mc,code) {
+      thisform.salename.value=mc;
+    }
+    function setfzkh(dm,mc,code) {
+      thisform.fzkh.value=mc;
+    }
+    function downfile()
+    {
+       thisform.action="ordernoinvexcel.exl";
+       thisform.submit();
+    }
+//-->
+</SCRIPT>
+</HEAD>
+<BODY onload="GetDateString()">
+<div>
+  <form name="thisform" method="post" action="ordernoinv.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      	<tr class="search"> 
+	  <td class="tdlabel" width="10%" nowrap>单据开始日期</td>
+	  <td class="tdinput" width="20%"  nowrap>
+	    <input type="text" name="billdate1" id="billdate1" value="$!form_billdate1" onclick="ShowDate(billdate1)" style="width:80"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%"  nowrap>单据结束日期</td>
+	  <td class="tdinput" width="20%"  nowrap>
+	     <input type="text" name="billdate2" id="billdate2" value="$!form_billdate2" onclick="ShowDate(billdate2)" style="width:80"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%"  nowrap>经销商</td>
+	   <td class="tdinput" width="20%"  nowrap>
+	    <input type="text" name="ocustname" value="$!form_ocustname"  style="width:150" onkeydown="togetkh('/synear/public/khquery.aspx?custname=ocustname&invname='+document.thisform.ocustname.value)"/><input type="button" class="bt1" value="..." onclick="togetcust('/synear/public/custquery.aspx?custname=ocustname&invname='+document.thisform.ocustname.value)">	
+	   </td>
+	</tr>
+	<tr class="search"> 
+	   <td class="tdlabel" width="10%">卖场客户</td>
+	   <td class="tdinput" width="20%">
+	    <input type="text" name="custname" value="$!form_custname" style="width:150" onkeydown="togetmckh('/synear/public/khquery.aspx?custname=custname&invname='+document.thisform.custname.value)"/><input type="button" class="bt1" value="..." onclick="togetmccust('/synear/public/custquery.aspx?custname=custname&invname='+document.thisform.custname.value)">
+	   </td>
+	   <td class="tdlabel" width="10%"  nowrap>卖场所属系统</td>
+	   <td class="tdinput" width="20%"  nowrap>
+	    <input type="text" name="fzkh" value="$!form_fzkh"  style="width:150"/><input type="button" class="bt1" value="..." onclick="togetmont('/synear/public/fzkhquery.aspx?fzkh=fzkh')">	
+	   </td>
+	   <td class="tdlabel">&nbsp;</td>
+	   <td class="tdinput">&nbsp;</td>
+	</tr>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td align="left"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+			&nbsp;&nbsp;</td>
+	  <td class="tdlabel"><input type="button" value="导出EXCEL" onclick="downfile()"  class="bt1"></td>
+	   <td class="tdinput">&nbsp;</td>
+	   <td class="tdlabel">&nbsp;</td>
+	   <td class="tdinput">&nbsp;</td>
+	</tr>
+  </table>
+</form>
+</div>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">经销商</td>
+	<td nowrap="nowrap">卖场客户</td>
+	<td nowrap="nowrap">卖场所属系统</td>
+	<td nowrap="nowrap">订单件数</td>
+	<td nowrap="nowrap">卖场实收件数</td>
+	<td nowrap="nowrap">缺品件数</td>
+	<td nowrap="nowrap">缺品率</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $dispatchordernoinvquery)
+	<tr height="20" class="trcolor">
+		<td align="center">$i</td>
+		<td align="center" nowrap="nowrap">$!m.OCUSTNAME</td>
+		<td align="center" nowrap="nowrap">$!m.CUSTNAME</td>
+		<td align="center" nowrap="nowrap">#if($!m.DOCNAME!="")$!m.DOCNAME#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">$!m.NNUMBER</td>
+		<td align="center" nowrap="nowrap">$!m.SURENNUMBER</td>
+		<td align="center" nowrap="nowrap">
+		   $!m.QPNNUMBER
+		</td>
+		<td align="center" nowrap="nowrap">$!m.QPL%</td>
+	 </tr>
+	 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="17"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #else
+      #foreach($m in $dispatchordernoinvquerysum)
+          <tr height="20" class="trcolor">
+             <td align="center" colspan="4">合计</td>
+	     <td align="center" nowrap="nowrap">$!m.NNUMBER</td>
+	     <td align="center" nowrap="nowrap">$!m.SURENNUMBER</td>
+	     <td align="center" nowrap="nowrap">$!m.QPNNUMBER</td>
+	     <td align="center" nowrap="nowrap">$!m.QPL%</td>
+	  </tr>
+      #end
+   #end
+</table>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post">
+<input type="hidden" name="csaleid">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

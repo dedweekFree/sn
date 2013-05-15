@@ -1,0 +1,3 @@
+#foreach($m in $sql0)
+  $!m.PK
+#end

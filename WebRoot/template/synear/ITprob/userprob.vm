@@ -1,0 +1,70 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<title>受理人信息</title>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="3" align="left">受理人信息<input type="button" name="button" class="bt1" value="新增加" onclick="show()"></td>
+  </tr>
+  <tr class="trcolor">
+    <td>受理人姓名</td>
+    <td>受理人电话</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $itbuser)
+  <tr class="trcolor">
+    <td>$!m.NAME</td>
+    <td>$!m.PHONE</td>
+    <td><a href="deluserprob.aspx?name=$!m.NAME" target="saveframe">删除</a>&nbsp;&nbsp;<a href="moduserprob.aspx?name=$!m.NAME"">修改</a></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+<form name="form2" action="insertuserprobsub.aspx" method="post" target="saveframe">
+<table class="datatable" style="display:none" id="tb">
+  <tr class="trcolor">
+    <td>受理人姓名</td>
+    <td align="left"><input type="text" name="name" value=""/>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>受理人姓名拼音</td>
+    <td align="left"><input type="text" name="username" value=""/>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>受理人电话</td>
+    <td align="left"><input type="text" name="phone" value=""/>
+    </td>
+  </tr>
+</table>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>
+<script language="javascript">
+function h(){
+		if(document.form2.name.value=="" || document.form2.phone.value=="" ){
+			alert("请输入正确的数据!")
+			return false;
+		}else{
+			winMove.hide();
+			form2.submit();
+		}
+	}
+	function show(){
+		winMove.show()
+	}
+	var b = document.getElementsByName("form2")[0];
+	var btnMove = b.id;
+	document.getElementById("tb").style.display="block"
+	var winMove=new alai_win_xp(tb,"增加类型",400,250)
+	var btn = winMove.addButton("确定","js","h()")
+</script>

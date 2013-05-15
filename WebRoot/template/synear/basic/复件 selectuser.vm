@@ -1,0 +1,196 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<style type="text/css">
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};  
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+</style>
+<title>竞标商资料审核</title>
+<SCRIPT LANGUAGE="JavaScript">
+function checkinput()
+{  
+  thisform.page.value=1;
+  thisform.submit();
+}
+</SCRIPT>
+</head>
+
+<body onload="toPage(1)">
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr>
+  <form name="thisform" method="post" action="selectuser.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="trcolor">
+		    <td colspan="4" align="left">用户查询</td>
+		  </tr>
+		  <tr class="trcolor">
+		    <td>用户名:</td>
+		    <td align="left"><input type="text" name="username" style="width:100px" value="$!form_username"/></td>
+		    <td>姓名:</td>
+		    <td align="left"><input type="text" name="name" style="width:100px" value="$!form_name"/></td>
+		  </tr>
+		<tr>
+		   <td align="center" colspan="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+   </td></form>
+</tr>
+</table>
+</div>
+<div class="mainDiv" id="mdiv"> 
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+  <tr class="fixedHeaderTr" bgcolor="#EFEFEF">
+    <td>&nbsp;</td>
+    <td>用户名</td>
+    <td>姓名</td>
+  </tr>
+</table>
+</div>
+<div align="right">
+<span id="pg"></span>
+</div>
+<br>
+<div  align="center">
+<tr class="trcolor">
+    <td colspan="4">      
+      <input type="button" name="b2" value="刷&nbsp;&nbsp;新" class="bt1" onclick="javascript:location.reload()"/>
+      <input type="button" name="b2" value="确&nbsp;&nbsp;定" class="bt1" onclick="javascript:toselected()"/>  
+    </td>
+  </tr>
+</div>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>
+<script language="javascript">
+   function toalert(vendorcode,username){
+      var aa = "";
+      aa+=vendorcode;
+      alert(aa);
+      window.opener.document.getElementById("people").value=vendorcode;
+      window.opener.document.getElementById("username").value=username;
+   }
+   function toSelectRow(rowIdx){
+      alert(rowIdx);
+   }
+   function toselected(){
+       savepage(pageno);
+	  var datahtml="";
+	  var num=0;
+	  var nextnum=0;
+	  for(var i=0;i<bData1.length;i++){
+	    if(bData1[i][4]=='Y'){
+	       datahtml+="<input type=hidden name=userid value='"+bData1[i][0]+"'>";
+	       datahtml+="<input type=hidden name=username value='"+bData1[i][1]+"'>";
+	       datahtml+="<input type=hidden name=users value='"+bData1[i][2]+"'>";
+	    }
+	 }
+	 
+	 if(datahtml==''){
+	   alert("没有可更新的数据！");
+	   return false;
+	 }
+   }
+   var bData1 = new Array();
+	bData1 = [['ID','用户名','姓名','序号','aa']
+	#set($i=1)
+	#foreach($!m in $selbaseuserinfo1)
+	,['$!m.USERID','$!m.USERNAME','$!m.NAME','$i','N']
+	  #set($i=$i+1)
+	  #end
+	]
+	var pageSize=50;
+	var pageno=0;
+	var rdata=new Array();
+	rdata=bData1;
+	function toPage2() 
+	{
+	  var element=document.all.pgs;
+	  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+	     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+	     element.focus();
+	     return false;
+	  }
+	  if(element.value<1){
+	     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+	     element.focus();
+	     return false;
+	  }
+	  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+	     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+	     element.focus();
+	     return false;
+	  }
+	  toPage(element.value) 
+	}
+	function toPage(page) 
+	{
+	try{
+	  savepage(pageno);
+	  pageno=page;
+	  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+	  for(var i=1;i<=pageSize;i++){
+	    if(((page-1)*pageSize+i)<rdata.length){
+		  var row=table6.insertRow();
+		  if(rdata[(page-1)*pageSize+i][3]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked>";
+	          else row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox'>";
+		  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1];
+		  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2];
+	    }
+	 }
+	 var apg=Math.ceil((rdata.length-1)/pageSize);
+	 var npg=parseInt(page)+1;
+	 var ppg=parseInt(page)-1;
+	 var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+	 if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+	 else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+	 if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+	 if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+	 
+	 document.all.pg.innerHTML=pagetext;
+	 }catch(e){
+	   alert(e.description)
+	 }
+	}
+	function savepage(page)
+	{
+	   if(page>0){
+	    for(var i=1;i<table6.rows.length;i++){
+	      if(document.all.checkbox[i].checked){
+		      rdata[(page-1)*pageSize+i][4]='Y';
+	      } else {rdata[(page-1)*pageSize+i][4]='N';}
+	     /* for(var j=1;j<2;j++){
+		if(table6.rows[i].cells[j+1].innerText==""){
+		  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+		}else{
+		  rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j].innerText;
+		}
+	      }
+	      bData1[rdata[(page-1)*pageSize+i][3]]=rdata[(page-1)*pageSize+i];*/
+	    }
+	  }
+	}
+</script>

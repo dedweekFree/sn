@@ -1,0 +1,70 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=========</title>
+</head>
+
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">订单表头</td>
+  </tr>
+  #foreach($!m in $selshoworder)
+  <tr class="trcolor">
+    <td>订单号:</td>
+    <td align="left">$!form_vordercode</td>
+    <td>订单日期:</td>
+    <td align="left">$!m.DORDERDATE</td>
+  </tr>
+  <tr class="trcolor">
+    <td>供应商:</td>
+    <td align="left">$!m.CUSTNAME</td>
+    <td>业务员:</td>
+    <td align="left">$!m.PSNNAME</td>
+  </tr>
+  <tr class="trcolor">
+    <td>制单时间:</td>
+    <td align="left">$!m.TMAKETIME</td>
+    <td><input type="button" class="bt1" name="button" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  #end
+</table>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="10" align="left">订单明细</td>
+  </tr>
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>存货编码</td>
+    <td>存货名称</td>
+    <td>到货地点</td>
+    <td>含税单价</td>
+    <td>数量</td>
+    <td>累计到货数量</td>
+    <td>累计入库数量</td>
+    <td>计划到货日期</td>
+    <td>需求仓库</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selshoworderbody)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.VDEF4</td>
+    <td>$!m.NORGTAXPRICE</td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.NACCUMARRVNUM</td>
+    <td>$!m.NACCUMSTORENUM</td>
+    <td>$!m.DPLANARRVDATE</td>
+    <td>$!m.STORNAME</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</body>
+</html>

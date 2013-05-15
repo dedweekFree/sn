@@ -1,0 +1,296 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<script language="javascript">
+        var num1 = 0;
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+	 function toadd(url){
+	    document.form2.action=url;
+	    document.form2.submit();
+	 }
+	 function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+		   ;
+		 else
+		   idText.value=reValue;
+	    }
+
+	    function searchresults(url){
+	      
+	           document.thisform.action = url;
+		   document.thisform.submit();
+	    }
+	    function testok(){
+	        document.thisform.action = "tiaomasaomiaosaveadd.aspx";
+		document.thisform.submit();
+	    }
+	    function init(){
+	       var MyDate=new Date();
+		var Year=MyDate.getFullYear();
+		var MonthNum=MyDate.getMonth();
+		var Month;
+		if(MonthNum<9){
+		    Month="0"+(MonthNum+1);
+		}else{
+		    Month=MonthNum+1;
+		}
+		var Day=MyDate.getDate();
+		if(Day<=9){
+		    Day="0"+Day;
+		}
+		var Today=Year+"-"+Month+"-"+Day;
+		var v1 = "$!form_billdate1";
+	        var v2 = "$!form_billdate";
+		if(v1=="" && v2==""){ 
+		   document.getElementById('billdate1').value=Today;
+		   document.getElementById('billdate').value=Today;
+		}else{
+		   document.getElementById('billdate1').value=v1;
+		   document.getElementById('billdate').value=v2;
+		}
+	    }
+</script>
+</head>
+
+<body onload="init()">
+<form name="thisform" method="post" action="stockckdriverquery.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td>派车单号</td>
+    <td align="left"><input type="text" name="ordercode" value="$!form_ordercode" /></td>
+     <td>销售订单</td>
+    <td align="left"><input type="text" name="saleorder" value="$!form_saleorder" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>单据开始日期</td>
+    <td align="left"><input type="text" name="billdate" onclick="ShowDate(billdate)"  value="$!form_billdate" /></td>
+    <td>单据结束日期</td>
+    <td align="left"><input type="text" name="billdate1" onclick="ShowDate(billdate1)"  value="$!form_billdate1" /></td>
+  </tr>
+   <tr class="trcolor">
+     <td>车牌号</td>
+     <td align="left"><input type="text" name="drivernum" value="$!form_drivernum" /></td>
+     <td>运输公司</td>
+     <td align="left"><input type="text" name="sendcorpname" value="$!form_sendcorpname" /></td>
+  </tr>
+  <tr class="trcolor">
+        <td>装车状态1</td>
+        <td align="left"><select name="zcstatus1">
+	   <option value=""></option>
+           <option value="1" #if($form_zcstatus1 == '1')selected#end>未到</option>
+           <option value="4" #if($form_zcstatus1 == '4')selected#end>等待</option>
+	   <option value="3" #if($form_zcstatus1 == '3')selected#end>装车中</option>
+	   <option value="2" #if($form_zcstatus1 == '2')selected#end>完毕</option>
+	   </select>
+        </td>
+	<td>装车状态2</td>
+        <td align="left"><select name="zcstatus2">
+	   <option value=""></option>
+           <option value="1" #if($form_zcstatus2 == '1')selected#end>未到</option>
+           <option value="4" #if($form_zcstatus2 == '4')selected#end>等待</option>
+	   <option value="3" #if($form_zcstatus2 == '3')selected#end>装车中</option>
+	   <option value="2" #if($form_zcstatus2 == '2')selected#end>完毕</option>
+	   </select>
+        </td>
+  </tr>
+  <!--<tr class="trcolor">
+         <td>到车时间</td>
+        <td align="left"><select name="yytime">
+	   <option value=""></option>
+           <option value="1" #if($form_yytime == '1')selected#end>到车时间升序</option>
+           <option value="2" #if($form_yytime == '2')selected#end>到车时间降序</option>
+	</select>
+     </td>
+   </tr>-->
+   <tr class="trcolor">
+     <td>到货地</td>
+     <td align="left"><input type="text" name="ddhremark" value="$!form_ddhremark" /></td>
+     <td>&nbsp;</td>
+     <td align="left">&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input type="button" name="b1" class="bt1" value="查  询" onclick="sub()"/>&nbsp;<!--<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');">--></td>
+  </tr>
+</table>
+</form>
+<br>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff"  align="center" id="tb" class="datatable">
+  <tr  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+    <td nowrap>序号</td>
+    <td nowrap>操作</td>
+    <td nowrap>派车单号</td>
+    <td nowrap>数量</td>
+    <td nowrap>运输公司</td>
+    <td nowrap>车牌号</td>
+    <td nowrap>到货地</td>
+    <td nowrap>联系电话</td>
+    <td nowrap>月台</td>
+    <td nowrap>是否拼车</td>
+    <td nowrap>单据日期</td>
+    <td nowrap>装车地点</td>
+    <td nowrap>派车单时间</td>
+    <td nowrap>温控仪时间</td>
+    <td nowrap>温控仪编号</td>
+    <td nowrap>第一到车时间</td>
+    <td nowrap>第一到岗时间</td>
+    <td nowrap>第一装车开始时间</td>
+    <td nowrap>第一装车结束时间</td>
+    <td nowrap>装车状态1</td>
+    <td nowrap>第二到车时间</td>
+    <td nowrap>第二到岗时间</td>
+    <td nowrap>第二装车开始时间</td>
+    <td nowrap>第二装车结束时间</td>
+    <td nowrap>装车状态2</td>
+    <td nowrap>换票发货</td>
+    
+    
+  </tr>
+  #set($i=1)
+  #foreach($!m in $snstocksendmanagerquery)
+  <tr class="trcolor">
+    <td nowrap>$i</td>
+    <td nowrap><a href="stockdriverdetailquery.aspx?sendid=$m.SENDID">明细</a>&nbsp;
+    #if($!m.ENDTIME != "")
+	#else
+	    #if($!m.BEGINTIME != "")
+	    #else
+	        #if($!m.WAITTIME != "")
+                    #if($session_USERNAME == "xiajunqi" or $session_USERNAME == "baijizhong" or $session_USERNAME == "xxbs1"  or $session_USERNAME == "xxbc1")<a href="stockdriveredit.aspx?ordercode=$m.SENDID">修改</a>#end
+		#else
+		#end
+	    #end
+	#end
+   <!-- &nbsp;<a href="#" onclick="searchresults('testwaittime.aspx?saleorder=$m.SENDID')" target="saveframe">到车扫描</a>--></td>
+    <td nowrap>$!m.SENDID</td>
+    <td nowrap>$!m.QUANTITY</td>
+    <td nowrap>$!m.SENDCORPNAME</td>
+    <td nowrap>$!m.DRIVERNUMBER</td>
+    <td nowrap>#if($!m.RECEIPTADDRESS!="")$!m.RECEIPTADDRESS#else&nbsp;#end</td>
+    <td nowrap>$!m.PHONE</td>
+    <td nowrap>#if($!m.YUETAI!="")$!m.YUETAI#else&nbsp;#end</td>
+    <td nowrap>#if($!m.ISHECHE=='Y')是#else否#end</td>
+    <td nowrap>$!m.CREATEDATE</td>
+    <td nowrap>#if($!m.ADDRESSNAME=='chenzhai')陈寨#elseif($!m.ADDRESSNAME=='sinian')思念#end</td>
+    <td nowrap>#if($!m.OUTTIME!="")$!m.OUTTIME#else&nbsp;#end</td>
+    <td nowrap>#if($!m.WENTIME!="")$!m.WENTIME#else&nbsp;#end</td>
+    <td nowrap>#if($!m.WENNO!="")$!m.WENNO#else&nbsp;#end</td>
+    <td nowrap>#if($!m.WAITTIME!="")$!m.WAITTIME#else&nbsp;#end</td>
+   <!-- <td>#if($!m.ADDRESS == $m.ADDRESSCODE)$!m.ORDERDATE&nbsp;$!m.ORDERTIME#else&nbsp;#end</td>-->
+    <td nowrap>#if($!m.ASTERNTIME!="")$!m.ASTERNTIME#else&nbsp;#end</td>
+    <td nowrap>#if($!m.BEGINTIME!="")$!m.BEGINTIME#else&nbsp;#end</td>
+    <td nowrap>#if($!m.ENDTIME!="")$!m.ENDTIME#else&nbsp;#end</td>
+    <td nowrap>
+        #if($!m.ENDTIME != "")
+	     <font color="green">完毕</font>
+	#else
+	    #if($!m.BEGINTIME != "")
+                <font color="blue">装车中</font>
+	    #else
+	        #if($!m.WAITTIME != "")
+                    <font color="orange">等待</font>
+		#else
+		    <font color="red">未到</font>
+		#end
+	    #end
+	#end
+    </td>
+    <td nowrap>#if($!m.WAITTIME1!="")$!m.WAITTIME1 #else&nbsp;#end</td>
+    <td nowrap>#if($!m.ASTERNTIME1!="")$!m.ASTERNTIME1#else&nbsp;#end</td>
+    <td nowrap>#if($!m.BEGINTIME1!="")$!m.BEGINTIME1 #else&nbsp;#end</td>
+    <td nowrap>#if($!m.ENDTIME1!="")$!m.ENDTIME1 #else&nbsp;#end</td>
+    <td nowrap>
+      #if( $m.XFLAG != "" )
+        #if($!m.ENDTIME1 != "")
+	     <font color="green">完毕</font>
+	#else
+	    #if($!m.BEGINTIME1 != "")
+                <font color="blue">装车中</font>
+	    #else
+	        #if($!m.WAITTIME1 != "")
+                    <font color="orange">等待</font>
+		#else
+		    <font color="red">未到</font>
+		#end
+	    #end
+	#end
+      #end
+      &nbsp;
+    </td>
+    <td nowrap>#if($!m.SENDTIME!="")$!m.SENDTIME#else&nbsp;#end</td>
+    
+    
+  </tr>
+  #set($i=$i+1)
+  <script>//num1+=$m.QUANTITY </script>
+  #end
+  <tr class="trcolor">
+       <td colspan="3">合计</td>
+       <td>
+       #foreach($!m in $snstocksendmanagerquerysum)
+            $m.QUANTITY
+       #end
+       </td>
+       <td colspan="23">&nbsp;</td>
+  </tr>
+ <tr>
+        <td class="tdlabel" colspan="26">$pagecode</td>
+   </tr>
+</table>
+<form method="post" name="form2">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

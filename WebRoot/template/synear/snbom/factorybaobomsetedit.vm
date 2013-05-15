@@ -1,0 +1,366 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===销售计划===</title>
+<script language="javascript" src="../../../js/XunPlanGridEdit.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendarnew.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+
+</head>
+<script>
+//width:expression(document.body.clientWidth-20);  
+var bData1=new Array(); 
+bData1=[
+      ['产品代码0','产品名称1','产品规格2','版本号3','BOMid4','生效日期5','状态6','nc主键7','0','失效日期9']
+ #set($i=1)
+ #foreach($m in $snbomhfenpeibaoflag)
+      ,['$m.INVCODE','$m.INVNAME','$m.INVSPEC','$m.VERSION','$m.BOMID','$m.STARTDATE','$m.FLAG','$m.PK_INVBASDOC','$i','$m.ENDDATE','$m.TODAY']
+   #set($i=$i+1)
+ #end
+]
+var pdata = new Array();
+var pageSize=50;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][6]=='Y'){
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked onclick=\"javascript:setStatus("+i+")\">";
+	  }else{
+	     row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' onclick=\"javascript:setStatus("+i+")\">";
+	  }
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerHTML="<a href=\"#\" onclick=\"openewin('factorybomwdetail.aspx?bomid="+rdata[(page-1)*pageSize+i][4]+"&type=B')\">"+rdata[(page-1)*pageSize+i][3]
+	  row.insertCell().innerHTML='<input type="text" name=startdate'+((page-1)*pageSize+i)+' id=startdate'+((page-1)*pageSize+i)+' size="10" value="'+rdata[(page-1)*pageSize+i][5]+'" readonly >';
+	  row.insertCell().innerHTML='<input type="text" name=enddate'+((page-1)*pageSize+i)+' id=enddate'+((page-1)*pageSize+i)+' size="10" value="'+rdata[(page-1)*pageSize+i][9]+'" readonly>';
+	 //SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+    if(form2.elements[2].value=="O")
+        bstatus=bData1[i][6]=='Y';
+    else
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][6]==form2.elements[2].value);
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ toPage(1);
+}
+
+function save(step,status)
+{
+  if('$form_pk_deptdoc' == ""){
+	alert("分厂不能为空");
+	document.form1.pk_deptdoc.focus();
+	return false;
+  }
+  if(document.form1.startdate.value == ""){
+     alert("生效日期不能为空");
+     document.form1.startdate.focus();
+     return false;
+  }else{
+      /*if(document.form1.startdate.value<document.form1.today.value){
+             alert("生效日期不能小于当前日期");
+	     document.form1.startdate.focus();
+	     return false;
+      }*/
+  }
+  if(document.form1.enddate.value != ""){
+      if(document.form1.startdate.value >= document.form1.enddate.value){
+	      alert("生效日期不能大于等于失效日期");
+	      return false;
+      }
+  }
+  savepage(pageno);
+  var datahtml="";
+  var count = 0;
+  var snbomid = "";
+  var snbomid1 = "";
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][6]=='Y'){
+       count ++;
+       if(count==1){
+         snbomid =bData1[i][7];
+	 snbomid1 ="'"+bData1[i][7]+"'";
+         datahtml="<input type=hidden name=pk_invbasdoc value='"+bData1[i][7]+"'><input type=hidden name=bomid value=''><input type=hidden name=bbomid value='"+bData1[i][4]+"'>";
+       }else{
+         snbomid = (snbomid+","+bData1[i][7]);
+	  snbomid1 = snbomid1+",'"+bData1[i][7]+"'";
+         datahtml+="<input type=hidden name=pk_invbasdoc value='"+bData1[i][7]+"'><input type=hidden name=bomid value=''><input type=hidden name=bbomid value='"+bData1[i][4]+"'>";
+       }
+       if((snbomid.replace(bData1[i][7],"")).indexOf(bData1[i][7])!=-1){
+	    alert("存在相同产品不同的版本号");
+	    return false;
+	 }
+    }
+  }
+  
+	 if(count==0){
+	   alert("没有可更新的数据！");
+	   return false;
+	 }
+	/* if(status == 'N'){
+             document.getElementById('btnSave').disabled = true;
+	 }else{
+	     document.getElementById('btnSave2').disabled = true;
+	 }*/
+	 datahtml+="<input type=hidden name=pk_deptdoc value='$form_pk_deptdoc'><input type=hidden name=fstatus value='"+status+"'><input type=hidden name=startdate value='"+document.form1.startdate.value+"'><input type=hidden name=enddate value='"+document.form1.enddate.value+"'><input type=hidden name=fid value='$!form_fid'>";
+         subdata.innerHTML=datahtml;
+	 document.form1.sbpkinvbasdoc.value = snbomid1;
+         document.form1.target="saveframe";
+         form1.action="testbaofactorydate.aspx";
+         form1.submit();
+}
+function openewin(url){
+     window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+  }
+function testok()
+{  
+   form_submit.action="factorybaobomsavedit.aspx";
+   form_submit.submit();
+}
+
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][6]='Y';
+      else  rdata[(page-1)*pageSize+i][6]='N';
+      /*if(document.getElementById('startdate'+((page-1)*pageSize+i)).value != ""){
+	  rdata[(page-1)*pageSize+i][5]=document.getElementById('startdate'+((page-1)*pageSize+i)).value;
+      }else{
+          rdata[(page-1)*pageSize+i][5]="";
+      }
+      if(document.getElementById('enddate'+((page-1)*pageSize+i)).value != ""){
+	  rdata[(page-1)*pageSize+i][9]=document.getElementById('enddate'+((page-1)*pageSize+i)).value;
+      }else{
+          rdata[(page-1)*pageSize+i][9]="";
+      }*/
+      bData1[rdata[(page-1)*pageSize+i][8]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+
+
+function setStatus(lineno)
+{
+   if(document.all.checkbox[lineno].checked){
+      document.all.checkbox[lineno].value = 'Y';
+   }else{
+      document.all.checkbox[lineno].value = 'N';
+   }
+}
+function init(){
+   form2.elements[2].value = 'Y';
+   search();
+}
+</script>
+
+
+<body onload="init()">
+
+<p align="left"><font size="4"><b>分厂BOM修改</b></font>
+<br>
+<form id="form1" name="form1"><input type="hidden" name="sbpkinvbasdoc">
+分厂：<select name="pk_deptdoc">
+<option value=""></option>
+#foreach($!m in $synearfactoryquery)
+  <option value="$m.CHECKUSERNAME" #if($form_pk_deptdoc ==$m.CHECKUSERNAME)selected#end>$m.CNAME</option>
+#end
+</select>
+生效日期：<input type="text" name=startdate id=startdate size="10" value="$form_startdate" onfocus="calendar()" >
+失效日期：<input type="text" name=enddate id=enddate size="10" value="$form_enddate" onfocus="calendar()" >
+#foreach($!m in $queryzhnowdate)
+<input type="hidden" name="today" value="$m.TODAY">
+#end
+</form>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 
+产品名称：<input type="text" size="16" onkeyup="presearch()"> 
+状态：<select  onchange="search()">
+            <option value='all' selected>全部</option>
+	    <option value='N'>未选产品</option>
+	    <option value='Y'>已选产品</option>
+	    <option value='O'>全选产品</option>
+	    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">        
+</form>
+</div>
+<div class="mainDiv" id="mdiv"> 
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr class="fixedHeaderTr" bgcolor="#EFEFEF" id="ftr">
+      <td height="19" bgcolor="#abcdef" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td height="19" bgcolor="#abcdef" width="11%" Name="pcode" >产品代码</td>
+      <td height="19" bgcolor="#abcdef" width="20%" Name="pname">产品名称</td>
+      <td height="19" bgcolor="#abcdef" width="7%" Name="pspec">产品规格</td>
+      <td height="19" bgcolor="#abcdef" width="12%" Name="oldnum">版本号</td>
+      <td height="19" bgcolor="#abcdef" width="10%" Name="startdate">生效日期</td>
+      <td height="19" bgcolor="#abcdef" width="10%" Name="enddate">失效日期</td>
+    </tr>
+</table>
+ </div>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" value=" 保  存 " id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value=" 提  交 " id="btnSave2">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 取  消 " name="B222" onClick="javascript:window.location='factorybaobom.aspx';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+ btnSave.onclick=function()
+{
+   save(0,'N');	
+} 
+//单击“提交”按钮
+btnSave2.onclick=function()
+{
+   save(0,'Y');	
+}
+
+</script>
+<script>
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="newSalePlanSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

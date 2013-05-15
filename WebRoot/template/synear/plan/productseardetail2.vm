@@ -1,0 +1,291 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<script  src="../../inc/js/treePicker.js" language="javascript"></script>
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<style>
+  .FixedTitleRow
+{
+    position: relative; 
+    top: expression(this.offsetParent.scrollTop); 
+    z-index: 10;
+    background-color: #F3F8F8;
+    width:100%;
+    border:1px #F3F8F8 solid;
+    border-bottom-style:none;
+    border-right-style:none;
+    font:12px;
+    padding: 0; 
+    margin: 0; 
+}
+  </style>
+<title></title>
+<script language="JavaScript">    
+  function initDate(){   
+  var date = new Date();   
+  var curYear=date.getYear();   
+  var curMonth=date.getMonth()+1;   
+  var curDate=date.getDate(); 
+  if(curMonth<10&&curDate>=10){
+  var strDate=curYear   +"-0"+   curMonth   +"-"+   curDate; 
+  }else if(curMonth>=10&&curDate<10){
+  var strDate=curYear   +"-"+   curMonth   +"-0"+   curDate; 
+  }else if(curMonth<10&&curDate<10){
+  var strDate=curYear   +"-0"+   curMonth   +"-0"+   curDate; 
+  }else{
+  var strDate=curYear   +"-"+   curMonth   +"-"+   curDate;
+  }
+  document.getElementById("MyDate1").value=strDate;   
+  document.getElementById("MyDate2").value=strDate;
+  }
+  </script>
+<script>
+   function ss(){
+      var cal='';
+	for(var i=0;i<document.all.thisform.bdyname.options.length;i++){   
+		if(document.all.thisform.bdyname.options[i].selected){
+		     if(document.all.thisform.bdyname.options[i].value!='')
+		     cal=cal+document.all.thisform.bdyname.options[i].value+',';
+		}
+	}	
+	document.all.thisform.bodyname.value=cal;
+
+	 subss();
+	var a = document.all.MyDate1.value;
+	var b = a.substr(0,7);
+	 document.all.hDate.value=b;
+	 document.thisform.submit();
+	 document.thisform.action="productseardetail2.aspx";
+	}
+   function subss(){
+	var c = document.all.MyDate1.value;
+	var x = c.substring(0,7);
+	var d = x.replace('-','');
+	var h='M'+d;
+	document.all.periodno.value=h;
+	document.all.hhh.value= x;
+   }
+   function setVals(dm,mc,code) {
+	      setVal(dm,mc);
+	      document.thisform.ptype.value=code;
+	      document.thisform.ptypename.value=mc;
+		}
+   function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+"edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+	 var reValue=window.showModalDialog('../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue; 
+	 } 
+	var ATPlist = new Array();
+	ATPlist = [["产品代码","值"]      //nc可容量
+	#set($i=0)
+	#foreach($!m in $getATP)
+	,["$m.INVCODE","$m.NNUMFROM"]
+	#set($i=$i+1)
+	#end
+	]
+	function aa(){
+	 var sss = "";
+	 var t=""
+	 var g=""
+		 for(var m=1;m<=ATPlist.length;m++){
+		     sss="";
+		     t="";
+		     g=""
+		       try{
+		     sss='A'+ATPlist[m][0]+'.innerText='+ATPlist[m][1];
+		     eval(sss);
+		     var x= 'D'+ATPlist[m][0]+'.innerHTML'
+		     eval(x);
+		     if(eval(x)>0){
+			var s=(eval(sss)-eval(x)); 
+			t='C'+ATPlist[m][0]+'.innerText='+s;
+			}else{
+			t='C'+ATPlist[m][0]+'.innerText='+eval(sss);
+			g='D'+ATPlist[m][0]+'.innerText='+0;
+			eval(g);
+			}
+			eval(t);
+		    
+				     }catch(e){
+				     }
+			     }
+	}
+	var planlist = new Array();
+	planlist=[["产品代码","值"]
+	#set($i=0)
+	#foreach($!n in $getreqplan)      //本月计划
+	,["$n.ITEMCODE","$n.REQUIREQTY"]
+	#set($i=$i+1)
+	#end
+	]
+	function bb(){
+	         var b = "";
+		 for(var m=1;m<=planlist.length;m++){
+		     b="";
+		     try{
+		     b='B'+planlist[m][0]+'.innerText='+"'"+planlist[m][1]+"'";
+		     eval(b);
+		     }catch(e){}
+		     }
+	}
+	function init(){
+	aa();
+	bb();
+	//uniteTable(tb,2);
+	  	for(var i=0;i<document.all.thisform.bdyname.options.length;i++){   
+		if(document.all.thisform.bodyname.value.indexOf(document.all.thisform.bdyname.options[i].value)>-1){
+			     document.all.thisform.bdyname.options[i].selected=true;
+			}
+		}
+	 stree.location='class_tree.aspx';
+	}
+</script>
+<script language="JavaScript">
+function checkselect(objname){
+	o = document.getElementById(objname);
+	t = document.getElementById("bodyname");
+	var intvalue="";
+	for(i=0;i<o.length;i++){   
+		if(o.options[i].selected){
+			intvalue+=o.options[i].value+",";
+		}
+	}
+	t.value=intvalue.substr(0,intvalue.length-1);
+}
+	function uniteTable(thistab,colLength){
+
+		  var rn=thistab.rows.length;//取得行数   
+		  var rowspann=0;   
+		  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+		    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+		      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+			rowspann+=thistab.rows[i].cells[j].rowSpan;;
+			thistab.rows[i].deleteCell(j);   
+		      }else{   
+			thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+			rowspann=0;   
+		      }   
+		    }   
+		    //检测无表头的表   
+		    if(i==0&&rowspann>0){   
+		      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+		      rowspann=0;   
+		    }   
+		  }   
+		}  
+  </script>
+</head>
+
+<body onload="init()">
+<form name="thisform" method="post" action="">
+<table border="1" class="datatable">
+  <tr class="trcolor">
+    <td align="left">查询日期:
+       <input type="text" id="MyDate1" name="MyDate1" size="10" value="$!form_MyDate1" onclick="ShowDate(MyDate1)"/> -
+       <input type="text" id="MyDate2" name="MyDate2" size="10" value="$!form_MyDate2" onclick="ShowDate(MyDate2)"/>
+       <input type="hidden" id="hDate" name="hDate" value="">
+       <input type="hidden" id="peridno" name="periodno" value="">
+       <input type="hidden" id="hhh" name="hhh" vale="">
+    </td>
+    <td>
+	  发货库存组织：
+	  #foreach($!m in $getDBILLDATE)
+	  <input type="hidden" name="bodyname" value="$m.BODYNAME" readonly>
+	  #end
+          <select name="bdyname" style="width:200px" multiple onchange="checkselect('bdyname')">
+	  #set($i=0)
+	  #foreach($!m in $getnewbodyname)
+	  <option value="$m.PK_CALBODY">$m.BODYNAME</option>
+	  #set($i=$i+1)
+	  #end
+          </select>
+     </td>
+  </tr>
+  <tr class="trcolor">
+    
+     <td>产品系列
+				<input type="text" name="ptypename" value=""  readonly>
+				<input type="hidden" name="ptype" value="">
+				<input type='button' name=bt class='btn' value='选择' onclick="click_on_tree_selector($F('ptypename'),$F('dm_zzjg_tree_layer'))">
+				<div class="dtree" id="dm_zzjg_tree_layer" style="position:absolute;width:300px;height:208px;visibility:Hidden;z-index:1"> 
+				<table width="100%" border="1" cellspacing="0" cellpadding="0" height="100%"><tr><td>
+					<IFRAME style="width:100%;height:100%" id='stree' name="swjgdm_tree_frame" marginWidth=0 marginHeight=0 src="" frameBorder=0 
+						width="100%" height="100%" scrolling=auto BORDERCOLOR="#000000" ></IFRAME>
+				</td></tr></table>
+			        </div>
+			        <script>
+				   selector_layers[selector_layers.length]=document.all.dm_zzjg_tree_layer;
+			        </script>
+    </td>
+     <td align="left">产品明细:
+     #foreach($!m in $getDBILLDATE)
+    <input type="text" name="productdetail" value="$m.PRODUCTDETAIL">
+    #end
+    </td>
+  <tr class="fCopy">
+    <td colspan="3"><input type="submit" name="searchbutton" value="查询" onclick="ss()">
+		    <input type="button" name="button" value="导出Excel" onclick="javascript:method1('tb');">
+    </td>
+  </tr>
+</table>
+</form>
+<div id = "scrolDiv" style="width: 100%; overflow: auto; cursor: default; display: inline; position: absolute; height: 60%;">
+  <table class="datatable"  id = "tb" cellpadding='0' cellspacing='0' style="table-layout: auto" bordercolor="lightgrey" border = "1" width="100%" height="30%">
+  <tr class="FixedTitleRow" align="center">
+    <td>存货名称</td>
+    <td>存货编码</td>
+    <td>预定数量</td>  
+  </tr>
+  #set($i=1)
+  #foreach($!m in $getproductdetail2)
+	#if($!m.INVNAME!='合计' && $!m.INVCODE!='0' && $!m.INVCODE!='')
+    <tr class="trcolor"> 
+       <td>$m.INVNAME</td>
+       <td>$m.INVCODE</td>
+       <td>$m.NNUMBER</td> 
+    </tr>
+    #else
+    #end
+   #if($!m.INVNAME=='合计' && $!m.INVCODE=='')	
+    <tr class="trcolor"> 
+       <td>&nbsp;</td>
+       <td>合计</td>
+       <td>$m.NNUMBER</td> 
+    </tr>
+#else
+  #end
+  #set($i=$i+1)
+  #end 
+</table>
+ </div>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

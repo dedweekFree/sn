@@ -1,0 +1,262 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>======</title>
+<script src="../../../js/sunnyfunc.js"></script>
+<script>
+var submitok=false;
+var ChosedList=new Array();
+var header=9;		//定单头的个数
+var thisCol=4;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=10;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+   var datatb;
+
+
+function init()
+{
+    addListener();
+}
+
+function toNext(i)
+{
+   var elms=event.srcElement;
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+      if(elms.name=="F_pfee")
+        document.form1.F_pmemo[i].focus(); 
+      else if(elms.name=="F_pmemo")
+      {
+        if(i<(row-1))
+          document.form1.F_pfee[i+1].focus(); 
+      }
+   }else{
+      if(elms.name=="F_pfee"){
+	   if(isNaN(elms.value))
+           { 
+              alert("费用必须为数字");
+              return;
+           } 
+	   else
+              allfee();
+      }
+   }
+}
+
+function allfee() 
+{
+   var pfee=0;
+   var afee=0;
+   try{
+	   for(i=0;i<row;i++){
+	     if(form1.F_prodpk[i].value!="" && form1.F_pfee[i].value!=""){
+		if(!isNaN(form1.F_pfee[i].value)){
+		  pfee=pfee+parseFloat(form1.F_pfee[i].value);
+		}
+	     }
+	   }
+   }catch(e){}
+   if(!isNaN(form1.F_endfee.value)){
+       if(form1.F_endfee.value!="") afee=afee+parseFloat(form1.F_endfee.value);
+   }
+   else
+   { 
+        alert("费用必须为数字");
+        return;
+   } 
+   if(!isNaN(form1.F_returnfee.value)){
+	if(form1.F_returnfee.value!="")  afee=afee+parseFloat(form1.F_returnfee.value);
+   }
+   else
+   { 
+        alert("费用必须为数字");
+        return;
+   } 
+   afee=afee+pfee;
+   document.all.F_allprodfee.innerText=pfee;
+   form1.F_prodfee.value=pfee;
+   document.all.F_allfee.innerText=afee;
+   form1.F_allfee2.value=afee;
+}
+
+function spellStr() 
+{
+
+   var str="";
+   var spell_sql="";
+    if(this.form1.F_endfee.value==""){
+       alert("终端费用不能为空！！！");
+       return false;
+    }
+    if(this.form1.F_returnfee.value==""){
+       this.form1.F_returnfee.value=0;
+    }
+   var b_sql="";
+   for(i=0;i<row;i++){
+        if(form1.F_pfee[i].value=="") form1.F_pfee[i].value=0;
+	//if(form1.F_prodpk[i].value=="") form1.F_prodpk[i].value=i;
+	if(form1.F_prodpk[i].value!="" && form1.F_pfee[i].value!=""){
+
+	   if(isNaN(form1.F_pfee[i].value))
+           { 
+              alert("费用必须为数字");
+              form1.F_pfee[i].focus();
+              return;
+           }  
+           b_sql="have";
+	}
+    }
+  allfee();
+  this.form1.action='areaFeeRequest_edit.aspx';
+  this.form1.target='dataframe';
+  if(!submitok)
+  {
+      submitok=true;
+      this.form1.submit();
+  }else{
+      alert("请不要确认两次！");
+	  return;
+  }
+}
+
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">客户费用申请表</div></td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td height="30" class="fCopy" id="help"></td></tr>
+</table>
+<form name="form1" method='post' action="">  
+<table width="90%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+#foreach($m in $getEditAreaFeeRequest)
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="24" nowrap><div align="right">申请时间：</div></td>
+    <td width="294" height="25" nowrap>$m.APPLYMONTH <input name="F_month" type="hidden" value="$!m.APPLYMONTH"></td>
+    <td width="140" height="25" nowrap><div align="right">客户名称：</div></td>
+    <td width="243" height="25" nowrap>  $!m.CUSTNAME
+     <input name="F_custpk" type="hidden" class="login" id="F_custpk" value="$form_custpk">
+    </td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+	<td width="140" height="25" nowrap><div align="right">预算终端费用：</div></td>
+	<td width="243" height="25" nowrap > 
+	 <div align="left">$!m.PRE_ENDFEE
+      </div></td>
+      <td width="140" height="25"  nowrap><div align="right">预算返利：</div></td>
+	<td width="243" height="25" nowrap> 
+	 <div align="left">$!m.PRE_RETURN
+      </div></td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+	<td width="140" height="25" nowrap><div align="right">预算产品费用：</div></td>
+	<td width="243" height="25"  nowrap>
+	 <div align="left">$!m.PRE_PRODFEE</div></td>
+      <td width="140" height="25" nowrap><div align="right">预算费用合计：</div></td>
+	<td width="243" height="25"  nowrap>
+	 <div align="left">$!m.PRE_ALLFEE</div></td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="51%" nowrap>
+    <div align="right">预算备注：</div></td>
+    <td height="60" colspan="3" nowrap>$!m.REMARK
+    </td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="51%" nowrap>
+    <div align="right">本期回款：</div></td>
+    <td height="60" colspan="3" nowrap>$!m.CASH
+    </td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+	<td width="140" height="25" nowrap><div align="right">申报终端费用：</div></td>
+	<td width="243" height="25" nowrap > 
+	 <div align="left">     
+	    <input name="F_endfee" type="text" class="login" id="F_endfee"  style="width:200 " value="$!m.PRE_ENDFEE2" onKeyUp="allfee()">*
+      </div></td>
+      <td width="140" height="25"  nowrap><div align="right">申报返利：</div></td>
+	<td width="243" height="25" nowrap> 
+	 <div align="left">     
+	    <input name="F_returnfee" type="text" class="login" id="F_returnfee"  style="width:200 " value="$!m.PRE_RETURN2"  onKeyUp="allfee()">
+      </div></td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+	<td width="140" height="25" nowrap><div align="right">申报产品费用：</div></td>
+	<td width="243" height="25"  nowrap>
+	 <div align="left" id="F_allprodfee">$!m.PRE_PRODFEE2</div></td>
+      <td width="140" height="25" nowrap><div align="right">申报费用合计：</div></td>
+	<td width="243" height="25"  nowrap>
+	 <div align="left" id="F_allfee">$!m.PRE_ALLFEE2</div></td>
+  </tr>
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="51%" nowrap>
+    <div align="right">申报备注：</div></td>
+    <td height="60" colspan="3" nowrap>
+    <textarea name="F_memo" cols="80" rows="2">$!m.REMARK2</textarea>
+    <input name="F_id" type="hidden" value="$!m.FEEID">
+    <input name="F_prodfee" type="hidden" value="$!m.PRE_PRODFEE2"><input name="F_allfee2" type="hidden" value="$!m.PRE_ALLFEE2">
+    </td>
+  </tr>
+#end
+            #foreach($mm in $getCustomerDept)
+               <input name="areacode" type="hidden" value="$mm.DEPTCODE">
+            #end
+</table>
+<br>
+<table id="tb" width="90%" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <th width="8%" height="25" nowrap class="fCopy">产品类别</th>
+    <th width="8%" height="25" nowrap class="fCopy">销售额</th>
+    <th width="8%" height="25" nowrap class="fCopy">部门名称</th>
+    <th width="10%" height="25" nowrap class="fCopy">预算金额</th>
+    <th width="10%" height="25" nowrap class="fCopy">申报金额</th>
+    <th width="38%" height="25" nowrap class="fCopy">备注</th>
+  </tr>
+  <tr bgcolor="#FFFFFF" style="display:none">
+     <td align="center" nowrap><input name="F_prodpk" type="hidden" value="0">	 </td>
+      <td align="center" nowrap></td>
+      <td align="center" nowrap><input name="F_deptcode" type="hidden" value="0"></td>
+      <td align="center" nowrap></td>
+      <td align="center" nowrap><input name="F_pfee" value="0" type="text" class="login3" style="width:120" onKeyUp="toNext(0)"></td>
+        <td align="center" nowrap><input name="F_pmemo" value="0" type="text" class="login3" style="width:480" onKeyUp="toNext(0)"></td>
+  </tr>
+  #set($i=1)
+  #foreach($m in $getEditAreaFeeRequest2)
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap>$!m.INVCLASSNAME
+     <input name="F_prodpk" type="hidden" value="$!m.PRODUCT_CLS_CODE">	 </td>
+      <td align="center" nowrap>$m.NMNY</td>
+      <td align="center" nowrap><input name="F_deptcode" type="hidden" value="$m.AREACODE">
+        $m.DEPTNAME
+      </td>
+       <td align="center" nowrap>$m.PRE_PRODUCTFEE</td>
+      <td align="center" nowrap><input name="F_pfee" value="$m.PRE_PRODUCTFEE2" type="text" class="login3" style="width:120" onKeyUp="toNext($i)"></td>
+        <td align="center" nowrap><input name="F_pmemo" value="$m.REMARK2" type="text" class="login3" style="width:480" onKeyUp="toNext($i)"></td>
+  </tr>
+  #set($i=$i+1)
+ #end
+ <script>thisRow=$i; row=$i</script>
+  </table>
+
+   <div align="center">
+  <input type="button" class="login2" value=" 保  存 " name="B22" onClick="spellStr();">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="history.go(-1);">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

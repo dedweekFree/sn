@@ -1,0 +1,117 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>客户计划完成情况</title>
+<script type="text/javascript">
+	$(function(){
+		$("#div1").hide();
+		$("#addbtn").click(function(){
+			$("#div1").show();
+		});
+		$("#savebtn").click(function(){
+			$catname = $("#catname").val();
+			$catsort = $("#catsort").val();
+			if($catname!="" && $catsort!=""){
+					$("#saveCategoryform").submit();
+			}else{
+				alert("分类名称和排序码都不能为空");
+			}
+		});
+		//监听键盘，只允许输入数字和小数点  
+        $("#catsort").keypress(function(event) {  
+            var keyCode = event.which;  
+            if (keyCode == 46 || (keyCode >= 48 && keyCode <=57))  
+                return true;  
+            else  
+               return false;  
+       }).focus(function() {  
+            this.style.imeMode='disabled';  
+        });  
+
+	});
+</script>
+<style>
+.editableTable{
+	border-collapse:collapse;
+	width:200px;
+}
+.editableTable td{
+	border:1px solid red;
+	width:50%;
+}
+</style>
+</head>
+<body>	
+	<input type="button" id="addbtn" class="bt1" value="添加分类">
+<form name="saveCategoryform" method="post" action="addChanLiangCategory.aspx" id="saveCategoryform" target="saveframe">
+	<div id="div1">
+		<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="editableTable" class="datatable">
+			<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+				<td  >分类名称</td>
+				<td  ><input type="text" id="catname" name="categoryname"/></td>
+				<td  >排序码</td>
+				<td  ><input type="text" id="catsort" name="sortkey" /></td>		
+				<td  ><input type="button" value="保存" class="bt1" id="savebtn"  /></td>		
+			</tr>
+		</table>
+		</br>
+	</div>
+</form>
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="editableTable" class="datatable">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" name="dalei">
+			<td  >编号</td>
+			<td  >分类名称</td>
+			<td  >排序码</td>
+			<td  >操作</td>		
+		</tr>
+		#set($i=1) 
+		#foreach($m in $getInvbasCategory)
+		<tr height="20" class="trcolor" name="edittr">
+			<td align="center" nowrap="nowrap" >$i</td>
+			<td align="center" nowrap="nowrap">$m.CATEGORYNAME</td>
+			<td align="center" nowrap="nowrap">$m.SORTKEY</td>
+			<td align="center" nowrap="nowrap" ><a href="setChanLiangItemResult.aspx?categoryid=$m.ID">修改分类</a></td>		
+		</tr>
+		#set($i=$i+1)
+		#end
+		#if($i==1)
+			 <tr height="20" bgcolor="#eeeeee" class="trcolor">
+			 <td colspan="3"  bgcolor="#eeeeee" align="center" class="trcolor"><label id="showContext">暂无分类</label></td>
+			 </tr>
+		#end	
+</table>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

@@ -1,0 +1,167 @@
+
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>成品调拨单</title>
+<script type="text/javascript">
+var stmp = "";
+function UPP(strg)
+{
+  var number = Math.round(strg*100)/100;
+  number = number.toString(10).split(".");
+  var a = number[0];
+  if (a.length > 12)
+    return "数值超出范围！支持的最大数值为 999999999999.99";
+  var e = "零壹贰叁肆伍陆柒捌玖";
+  var num1 = "";
+  var len = a.length-1;
+  for (var i=0 ; i<=len; i++)
+   num1 += e.charAt(parseInt(a.charAt(i))) + [["件","万","亿"][Math.floor((len-i)/4)],"拾","佰","仟"][(len-i)%4];
+  if(number.length==2 && number[1]!="")
+  {
+    var a = number[1];
+    for (var i=0 ; i<a.length; i++)
+    num1 += e.charAt(parseInt(a.charAt(i))) + ["角","分"][i]; 
+  }
+  num1 = num1.replace(/零佰|零拾|零仟|零角/g,"零");
+  num1 = num1.replace(/零{2,}/g,"零");
+  num1 = num1.replace(/零(?=件|万|亿)/g,"");
+  num1 = num1.replace(/亿万/,"亿");
+  num1 = num1.replace(/^件零?/,"");
+
+  if(num1!="" && !/分$/.test(num1))
+    num1 += "整";
+  return num1;
+}
+
+</script>
+<script>
+function deleteData(){  
+ if(confirm('你确定要删除吗？')){
+       var obj = window.event.srcElement;
+       var paras=obj.dtParams.split(",");
+       document.form2.PKROWID.value = paras[0];
+       document.form2.action="newdeleteout.aspx";
+       document.form2.submit();
+   }
+}
+</script>
+</head>
+<STYLE><!--
+	.datatable2{
+		width:95%;
+		border:1px #80B3B0 solid;
+		border-bottom-style:none;
+		border-right-style:none;
+		font:12px;
+		padding: 0; 
+		margin: 0; 
+	} 
+
+	.datatable2 td { 
+		border-right: 1px solid #80B3B0; 
+		border-bottom: 1px solid #80B3B0;  
+		font-size:12px;
+		line-height:200%;
+		padding: 0px 4px 0px 4px; 
+		margin: 0;
+	}
+--></STYLE>
+<body>	
+<div style="text-align:center"><B>成品调拨单</B></div>
+<br>
+<form name="form1" action="updateoutSubmit.aspx" method="post" target="saveframe">
+ <input type="hidden" name="PID" value="$form_PID">
+ <input type="hidden" name="pname" value="$form_pname">  
+<table width=95% align=center border="0" cellpadding="0" frame=box cellspacing="0">
+<tr><td width=30%>
+<div class="qx" style="text-align:left">调入单位：</div></td><td  width=35%><div class="qx" style="text-align:left">
+入库单号：$!form_PID</div></td></tr>
+<tr><td>
+<div class="qx" style="text-align:left">调出单位：</div></td><td><div class="qx" style="text-align:left">
+入库时间：&nbsp;  </div></td></tr>
+</table>
+<table class="datatable2" align=center border="0" cellpadding="0" frame=box id="datatable"
+		cellspacing="0">
+	<tr class="search">
+		<td class="CN" width=5% nowrap>编号</td>		
+		<td class="CN" width=15%>产品名称</td>		
+		<td class="CN" width=15%>规格</td>
+		<td class="CN" width=5% nowrap>单位</td>
+		<td class="CN" width=5% nowrap>收发类别</td>
+		
+		<td class="CN" width=15% nowrap>扫描时间</td>
+		<td class="CN" width=10%>入库数量</td>
+		<td class="CN" width=15%>数量大写</td>
+		<td class="CN" width=15%>备注</td>
+	</tr>
+	#set( $i = 0)
+    #foreach($k in $selectoutbillByIdcar2)
+	<tr class="trcolor NUM">
+		<td class="CN">$velocityCount</td>
+		<td class="CN">$k.INVNAME</td>
+		<td class="CN">$k.INVTYPE</td>
+                <td class="CN">$k.UNIT</td>
+	        <td class="CN">$k.OUTDISNAME</td>
+		<td class="CN">$k.SDATE</td>
+		<td class="CN">
+
+                <div id="inputtd$i" style="display: none">
+		<input name="OUTCOUNT" type="text" value="$k.OUTCOUNT"><input name="PKROWID" type="hidden" value="$k.PKROWID">
+                </div>
+                
+		<div  id="texttd$i" >
+		   $k.OUTCOUNT
+		</div>
+
+		</td>
+                <td class="CN"><script>document.write(UPP("$k.OUTCOUNT"))</script></td>
+		<td><span id="qxspan" dtParams="$k.PKROWID">
+                <a  id="modify$i" style='cursor:hand' onclick="javascript:if(this.firstChild.data=='保存'){document.form1.submit();return true}else{resultrow();oTextNode = document.createTextNode('保存');this.firstChild.replaceNode(oTextNode); document.getElementById('texttd$i').style.display='none';document.getElementById('inputtd$i').style.display=''}">修改</a></span>
+		&nbsp;<a  dtParams="$k.PKROWID" style='cursor:hand' onclick="javascript:deleteData()">删除</a></span>
+
+		</td>
+	</tr>
+	#set($i=$i+1)
+	
+   #end
+   <script>
+     var rownum = $i;
+     function resultrow(){
+       for(var i=0;i<rownum;i++){
+          document.getElementById('texttd'+i).style.display='';
+	  document.getElementById('inputtd'+i).style.display='none';
+	 
+          var linknode = document.getElementById('modify'+i);
+	  if(linknode.firstChild.data=='保存'){
+	    oTextNode = document.createTextNode('修改');
+	    linknode.firstChild.replaceNode(oTextNode);
+	  }
+       }
+     }
+   </script>
+</table>
+<table width=95% align=center border="0" cellpadding="0" frame=box cellspacing="0">
+<tr><td width=30%>
+<div class="qx" style="text-align:left">会计：</div></td><td  width=35%><div class="qx" style="text-align:left">
+保管：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td width=35%><div class="qx" style="text-align:left">
+经手人：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td></tr>
+</table>
+</form>
+<form name="form2" method="post" action="delprod.aspx"  target="saveframe">
+  <input type="hidden" name="PKROWID">
+  <input type="hidden" name="PID" value="$form_PID">
+   <input type="hidden" name="pname" value="$form_pname">
+</form>
+<input type=button value='返回' onclick="javascript:location.href='viewOutbill.aspx?PID=$form_PID'"> 
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>卖场和NC产品对应管理</title>
+<script>
+	function subi(){  
+		var pk_corp=$("#pk_corp").val();
+		var pk_xitong=$("#pk_xitong").val();
+		var mccpbm=$("#mccpbm").val();
+		var mccpmc=$("#mccpmc").val();
+		var nccpzj=$("#nccpzj").val();
+		if(pk_corp==""){
+            alert("请选择一个公司名称！");
+			return false;
+        }
+		if(pk_xitong==""){
+            alert("请选择一个系统名称！");
+			return false;
+        }
+		if(mccpbm==""){
+            alert("卖场产品编码不能为空！");
+			return false;
+        }
+		if(mccpmc==""){
+            alert("卖场产品名称不能为空！");
+			return false;
+        }
+		if(nccpzj==""){
+		    alert("选择一个与NC对应的产品！");
+			return false;
+		}
+			$("#mccpbm").val($("#mccpbm").val().replace("&nbsp;", ""));
+			$("#mccpmc").val($("#mccpmc").val().replace("&nbsp;", ""));
+			thisform.action="newtestmccpbm.aspx";
+			thisform.target = "saveframe";
+			thisform.submit();
+		}
+	function submitforms(){  
+		thisform.action="newsavecompare.aspx";
+		thisform.target = "saveframe";
+		thisform.submit();
+		}	
+	function subq(){  
+		thisform.page.value=1;
+		thisform.submit();
+		}
+	function setxitongname(dm,mc,code) {
+		thisform.xitongname.value=mc;
+		thisform.pk_xitong.value=dm;
+    }	
+	function fuzhi(){  
+		var pk_invbasdoc=$("input[name='pk_invbasdoc']:checked").val();
+		$("#nccpzj").val(pk_invbasdoc);
+		}
+	function togetmont(url){
+        window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+    }
+</script>
+</head>
+<body>
+添加卖场和NC的产品对应关系：
+<form name="thisform" method="post" action="newcompare.aspx">
+<input type="hidden" name="pk_xitong" id="pk_xitong" value="$!form_pk_xitong">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>所属公司名称</td>
+    <td align="left">
+		<select name="pk_corp" id="pk_corp">							
+			<option value="">请选择公司</option>
+			#foreach($m in $getCorpList)
+				<option value="${m.PK_CORP}"	
+				#if($!form_pk_corp==$m.PK_CORP)
+					selected="selected"
+				#end
+				>${m.UNITNAME}</option>
+			#end							
+        </select>
+	</td>
+	<td>所属系统名称</td>
+    <td align="left">
+		<input type="text" name="xitongname" value="$!form_xitongname"  style="width:150"/><input type="button" class="bt1" value="..." onclick="togetmont('/synear/maichang/selxitonglist.aspx?xitongname=xitongname')">
+	</td>
+	<td>选择的NC产品主键</td>
+    <td align="left"><input type="text" name="nccpzj" id="nccpzj" readonly = "readonly"/>
+		(选择下面的单选按钮)
+	</td>
+   </tr>
+   <tr class="trcolor">
+	<td>卖场产品编码</td>
+    <td align="left"><input type="text" name="mccpbm" id="mccpbm" value="$!form_mccpbm"/></td>
+    <td>卖场产品名称</td>
+    <td align="left"><input type="text" name="mccpmc" id="mccpmc" value="$!form_mccpmc"/></td>
+	
+    <td colspan="2"><input type="button" name="b1" value="确认添加" class="bt1" onclick="subi()" /></td>
+  </tr>
+</table>
+</br>
+选择对应的NC产品：
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <input type="hidden" name="mccpbm" value="$!form_mccpbm">
+   <input type="hidden" name="mccpmc" value="$!form_mccpmc">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>快捷查询：</td>
+    <td>NC产品编码:<input type="text" name="invcode" value="$!form_invcode"/></td>
+    <td>NC产品名称:<input type="text" name="invname" value="$!form_invname"/></td>
+	<td>NC产品规格:<input type="text" name="invspec" value="$!form_invspec"/></td>
+	<td><input type="button" name="b2" value="查询" class="bt1" onclick="subq()" /></td>
+  </tr>
+	  <tr class="trcolor">
+		<td>选择</td>
+		<td>NC产品编号</td>
+		<td colspan="2">NC产品名称</td>
+		<td>NC产品规格</td>
+	  </tr>
+	  #set($i=1)
+	  #foreach($!m in $selInvs)
+	  <tr class="trcolor">
+		<td><input type="radio" name="pk_invbasdoc" value="$!m.PK_INVBASDOC" onclick="fuzhi()"/></td>
+		<td>$!m.INVCODE &nbsp;</td>
+		<td colspan="2">$!m.INVNAME &nbsp;</td>
+		<td>$!m.INVSPEC &nbsp;</td>
+	  </tr>
+	  #set($i=$i+1)
+	  #end
+     <tr>
+	  <td colspan=8 align="right">$pagecode</td>
+     </tr>
+</table>
+</form>
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

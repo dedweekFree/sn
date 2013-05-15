@@ -1,0 +1,118 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>产品计划分类统计查询</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+
+function fsubmit()
+{
+   if(thisform.valnum.value=='')
+   {
+      thisform.valnum.value=0;
+   }else{
+         if(thisform.valnum.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+            alert("单件体积必须是数字!");
+            return false;
+         }
+   }
+   if(thisform.wetnum.value=='')
+   {
+      thisform.wetnum.value=0;
+   }else{
+         if(thisform.wetnum.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+            alert("单件重量必须是数字!");
+            return false;
+         }
+   }
+   if(thisform.disnum.value=='')
+   {
+      thisform.disnum.value=0;
+   }else{
+         if(thisform.disnum.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+            alert("折算系数必须是数字!");
+            return false;
+         }
+   }
+   thisform.submit();
+}
+</SCRIPT>
+<body>	
+  <form name="thisform" method="post" action="setProdToNcSubmit.aspx" target='saveframe'>
+  #foreach($m in $getSysProdInfo2)
+       <input type="hidden" name="nc_pk" value="$m.PK_INVBASDOC">
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">产品分类/代码</td>
+			<td class="tdinput" width="20%">$m.INVCLASSNAME/$m.INVCLASSCODE
+			</td>	
+			<td class="tdlabel" width="10%">单件体积(立方米)</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="valnum" value="0">		
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">产品名称/代码</td>
+			<td class="tdinput" width="20%">$m.INVNAME/$m.INVCODE
+			</td>	
+			<td class="tdlabel" width="10%">单件重量(公斤)</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="wetnum" value="0">		
+			</td>
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">产品规格</td>
+			<td class="tdinput" width="20%">$m.INVSPEC
+			</td>	
+			<td class="tdlabel" width="10%">折算系数(折算成标准件)</td>
+			<td class="tdinput" width="20%">
+				<input type="text" name="disnum" value="1">		
+			</td>
+                </tr>
+
+                <tr>
+			<td align="center" colspan="4">	
+				<input type="button" name="search" class="bt1" value="同步" onclick="fsubmit()">&nbsp;	
+				<input type="button" name="search" class="bt1" value="取消" onclick="javascript:window.location='prodInfo.aspx';">&nbsp;
+			</td>
+		</tr>	
+		
+</table>
+#end 
+
+
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</form>	
+</body>
+</html>

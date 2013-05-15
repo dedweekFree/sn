@@ -1,0 +1,90 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script src="../../../inc/js/time.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<script language="javascript">
+     function toadd(TO_ID, TO_NAME){
+	 window.open("selectuser.aspx?TO_ID="+TO_ID+"&TO_NAME="+TO_NAME,'','top='+(screen.height - 400) / 2 +',left='+(screen.width - 350) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=350,height=400');
+     }
+</script>
+<title>系统消息查询</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+    function toaddsave(){
+       document.form1.id.value=getnowtimemli();
+       document.form1.status.value="1";
+       document.form1.submit();
+    }
+    function toaddsave1(){
+       document.form1.id.value=getnowtimemli();
+       document.form1.status.value="2";
+       var strhtml = "";
+       var aa = document.form1.TO_ID.value;
+       if(aa==""){
+           alert("收信人不能为空");
+	   return false;
+       }
+       if(document.form1.title.value==""){
+	   alert("标题不能为空");
+	   document.form1.title.focus();
+	   return false;
+       }
+       if(document.form1.content.value==""){
+	   alert("内容不能为空");
+	   document.form1.content.focus();
+	   return false;
+       }
+       var bb ;
+       for(var i = 0 ; i < aa.split(",").length; i ++){
+          if(aa.split(",")[i] != ""){
+	  bb = aa.split(",")[i];
+          strhtml+="<input type=hidden name=user value='"+bb+"'>";;
+	  }
+       }
+       subdata.innerHTML = strhtml;
+       document.form1.submit();
+    }
+    function toclear(){
+       document.form1.TO_ID.value="";
+       document.form1.TO_NAME.value="";
+    }
+</script>
+<body>	
+  <form name="form1" method="post" action="sysmessageadd.aspx"  target="dataframe">
+  <input type="hidden" name="id"><input type="hidden" name="status">
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" class="datatable">
+<tr>
+	<td width="10%" align="center">收信人</td>
+	<input type="hidden" name="TO_ID" value="">
+	<td nowrap="nowrap"><textarea name="TO_NAME" style="font-size: 10pt;padding: 1px 5px;  border: 1px solid #C0BBB4; background: #E0E0E0;" cols="80" rows="4" disabled></textarea>&nbsp;&nbsp;<a href="#" onclick="toadd('TO_ID', 'TO_NAME')">添加</a>&nbsp;&nbsp;<a href="#" onclick="toclear()">清空</a></td>
+</tr>
+<tr>
+	<td width="10%" align="center">标题</td>
+	<td nowrap="nowrap"><input type="text" name="title" style='width:580'></td>
+</tr>
+<tr>
+	<td nowrap="nowrap" align="center">内容</td>
+	<td nowrap="nowrap"><textarea name="content" cols="80" rows="10"></textarea></td>
+</tr>
+<div id = "subdata"></div>
+<tr align="center">
+   <td colspan="2"><input type="button" class="bt1" value="保&nbsp;存" onclick="toaddsave1()">&nbsp;<input type="reset" class="bt1" value="重&nbsp;置">&nbsp;<input type="button" class="bt1" value="返&nbsp;回" onclick="history.back(-1)"></td>
+</tr>
+</table>
+</form>	
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

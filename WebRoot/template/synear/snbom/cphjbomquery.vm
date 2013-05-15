@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>产品BOM查询</title>
+</head>
+
+<body>
+<form name="form1" method="post" action="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td align="left">产品名称<input type="text" style="width:100" name="invname" value="$!form_invname">&nbsp;<input type="button" value="查询" onclick="tosearch()"></td>
+    <input type="hidden" name="xtype" value="1"><input type="hidden" name="row" value="$!form_row">
+  </tr>
+</table>
+</form>
+<table class="datatable" id="TableList">
+   <tr class="trcolor">
+    <td>选择</td>
+    <td>版本号</td>
+    <td>产品编码</td>
+    <td>产品名称</td>
+    <td>产品规格</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $querybzhjbom)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="ButtonSelectOk($i)"/></td>
+    <td>$!m.VERSION</td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME<input type="hidden" name="invname" id='invname$i' value="$!m.BOMID" ></td>
+    <td>$!m.INVSPEC&nbsp;</td>
+  </tr>
+#set($i=$i+1)
+#end
+</table>
+</body>
+</html>
+<script language="javascript">
+function ButtonSelectOk(i){
+    var htmlstr = "";
+    var htmlstrname = "";
+    if(document.getElementById('Checkbox'+i).checked == true){
+       htmlstrname =document.getElementById('invname'+i).value;
+    }
+    if('$!form_type' == 'A'){
+       window.top.opener.document.getElementById("bzbomid$!form_row").value= htmlstrname;
+    }else if('$!form_type' == 'B'){
+       window.top.opener.document.getElementById("hjbomid$!form_row").value= htmlstrname;
+    }
+    window.top.close();
+}
+function tosearch(){
+   document.form1.action="fhwlbomquery.aspx?pk_invbasdoc=$form_pk_invbasdoc";
+   document.form1.submit();
+}
+</script>

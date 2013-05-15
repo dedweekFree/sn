@@ -1,0 +1,196 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<script language="javascript">
+        var num1=0;
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+	 function toadd(url){
+	    document.form2.action=url;
+	    document.form2.submit();
+	 }
+	 function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+		   ;
+		 else
+		   idText.value=reValue;
+		 
+	    }
+
+	   
+	    function toprint(url){
+	       window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	    function GetDateString(){
+		var t1=""
+		var t2=""
+		var v1 = "$!form_billdate1";
+	        var v2 = "$!form_billdate";
+		#foreach($!m in $sendsalemonthday)
+                     t1 = "$m.FIRSTDAY";
+		     t2 = "$m.LASTDAY";
+		#end
+		if(v1=="" && v2==""){ 
+		document.getElementById('billdate1').value=t2;
+		document.getElementById('billdate').value=t1;
+		}else{
+		document.getElementById('billdate1').value=v1;
+		document.getElementById('billdate').value=v2;
+		}
+	    }
+	    function downfile()
+		{
+		   thisform.action="downfile.exl";
+		   thisform.submit();
+		}
+            function toedit(url){
+	       document.thisform.target="saveframe";
+	       document.thisform.action=url;
+	       thisform.submit();
+	    }
+	    function testok(url){
+	       document.form2.action = url;
+	       document.form2.submit();
+	    }
+	    function todel(url){
+	       if(confirm("确认要删除吗？")){
+	          document.thisform.target="saveframe";
+	          document.thisform.action=url;
+	          thisform.submit();
+	       }
+	    } 
+	    function testok11(url){
+	       document.form2.target="saveframe";
+	       document.form2.action = url;
+	       document.form2.submit();
+	    }
+</script>
+</head>
+
+<body onload="GetDateString()">
+<form name="thisform" method="post" action="sendsaleorderquery.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+     <td>单据开始日期</td>
+     <td align="left"><input type="text" name="billdate" onclick="ShowDate(billdate)"  value="$!form_billdate" /></td>
+     <td>单据结束日期</td>
+     <td align="left"><input type="text" name="billdate1" onclick="ShowDate(billdate1)"  value="$!form_billdate1" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td>订单号</td>
+    <td align="left"><input type="text" name="saleorder" value="$!form_saleorder" /></td>
+    <td>运输公司</td>
+     <td align="left"><input type="text" name="sendcorpname" value="$!form_sendcorpname" /></td>
+  </tr>
+<!--  <tr class="trcolor">
+     <td>是否生成派车单</td>
+     <td align="left"><select name="ispai">
+       <option value=""></option>
+       <option value="Y" #if($!form_ispai == 'Y')selected#end>是</option>
+       <option value="N" #if($!form_ispai == 'N')selected#end>否</option>
+    </select></td>
+    <td>是否发车</td>
+    <td align="left"><select name="flag">
+       <option value=""></option>
+       <option value="2" #if($!form_flag == '2')selected#end>是</option>
+       <option value="1" #if($!form_flag == '1')selected#end>否</option>
+    </select></td>
+  </tr>-->
+  <tr class="trcolor">
+    <td>客户</td>
+    <td align="left"><input type="text" name="custname" value="$!form_custname" /></td>
+    <td>&nbsp;</td>
+     <td align="left">&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input type="button" name="b1" class="bt1" value="查  询" onclick="sub()"/>&nbsp;<input type="button" class="bt1" onclick="toadd('saleorderadd.aspx')" value="添  加" >&nbsp;<input type="button" class="bt1" name="btnss" value="导出excel表" onclick="downfile()"></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable" cellspacing=0 cellpadding=0 border=0 id="tb">
+  <tr class="trcolor">
+    <td nowrap>订单号</td>
+    <td nowrap>客户</td>
+    <td nowrap>到货地</td>
+    <td nowrap>数量</td>
+    <td nowrap>车型</td>
+    <td nowrap>运输公司</td>
+    <td nowrap>单据日期</td>
+    <td nowrap>开单时间</td>
+   <!-- <td nowrap>是否发车</td>-->
+    <td nowrap>创建人</td>
+    <td nowrap>操作</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $sendsaleorderquery)
+  <tr class="trcolor">
+    <td>$!m.SALEORDER</td>
+    <td>$!m.CUSTNAME</td>
+    <td>#if($!m.RECEIPTADDRESS!="")$!m.RECEIPTADDRESS#else&nbsp;#end</td>
+    <td>$!m.NNUMBER</td>
+    <td>#if($!m.DRIVERTYPE!="")$!m.DRIVERTYPE#else&nbsp;#end</td>
+    <td>#if($!m.SENDCORPNAME!="")$!m.SENDCORPNAME#else&nbsp;#end</td>
+    <td>$!m.CREATEDATE</td>
+    <td>$!m.TAUDITTIME</td>
+    <!--<td>#if($!m.FLAG == '1')否#elseif($!m.FLAG == '2')<font color="red">是</font>#end</td>-->
+    <td>$!m.MAKER</td>
+    <td nowrap><a href="saleorderd.aspx?saleorder=$m.SALEORDER">明细</a>&nbsp;&nbsp;<a href="#" onclick="toedit('testexistdrivercode.aspx?saleorder11=$m.SALEORDER')">修改</a>&nbsp;&nbsp;<a href="#" onclick="todel('testexistdrivercode1.aspx?saleorder11=$m.SALEORDER')">删除</a></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  #foreach($!m in $sendsaleorderquerysum)
+  <tr class="trcolor">
+      <td colspan="3">合计</td>
+      <td>$m.QUANTITY</td>
+      <td colspan="6">&nbsp;</td>
+  </tr>
+  #end
+ <tr>
+        <td class="tdlabel" colspan="17">$pagecode</td>
+   </tr>
+</table>
+
+<form method="post" name="form2">
+<input type="hidden" name="saleorder11">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

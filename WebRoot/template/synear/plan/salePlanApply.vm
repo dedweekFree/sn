@@ -1,0 +1,254 @@
+<HTML>
+<HEAD>		
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var orgrole='';
+//明细
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+   document.form1.periodno.value = paras[0];
+   document.form1.deptcode.value = paras[1];
+   //document.form1.status.value = paras[2];
+   document.form1.status.value ='';
+   document.form1.allnum.value = paras[3];
+   document.form1.nextallnum.value = paras[4];
+   document.form1.tallnum.value = paras[7];
+   document.form1.tnextallnum.value = paras[8];
+   document.form1.plancls.value = paras[6];
+   document.form1.action="salePlanApplyDtail.aspx";
+   document.form1.target="dataframe";
+   document.getElementById("show").style.display="block"
+
+       document.form1.submit();
+}
+
+//报批
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+   document.form1.periodno.value = paras[0];
+   document.form1.deptcode.value = paras[1];
+   document.form1.plancls.value = paras[6];
+   document.form1.status.value = 'F';
+   document.form1.addstep.value ='1';
+   document.form1.oldstep.value = '0';
+   document.form1.ok.value ='1';
+   document.form1.action="testPlan.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+//产品明细
+function PRow()
+{      
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+   document.form1.periodno.value = paras[0];
+   document.form1.deptcode.value = paras[1];
+   //document.form1.status.value = paras[2];
+   document.form1.status.value ='';
+   document.form1.allnum.value = paras[3];
+   document.form1.nextallnum.value = paras[4];
+   document.form1.tallnum.value = paras[7];
+   document.form1.tnextallnum.value = paras[8];
+   document.form1.plancls.value = paras[6];
+   document.form1.action="salePlanApplyDtailPy.aspx";
+   document.form1.target="dataframe";
+   document.getElementById("show").style.display="block"
+   document.form1.submit();
+}
+
+//客户明细
+function CRow()
+{      
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+   document.form1.periodno.value = paras[0];
+   document.form1.deptcode.value = paras[1];
+   //document.form1.status.value = paras[2];
+   document.form1.status.value ='';
+   document.form1.plancls.value = paras[6];
+   document.form1.action="salePlanApplyDtailC.aspx";
+   document.form1.target="dataframe";
+   document.getElementById("show").style.display="block"
+       document.form1.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput2()
+{  
+      if(document.all.thisform.begintime.value==""){
+         alert("请选择计划期间！");
+	 return false;
+      }
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择客户！");
+	 return false;
+      }
+      document.all.form1.roleid.value ="R1465";
+      var pno=document.all.thisform.begintime.value.split("-");
+      var mpno='M'+pno[0]+pno[1];
+      document.all.thisform.periodno.value =mpno;
+      document.all.form1.custpk.value =document.all.thisform.custpk.value;
+      document.all.form1.periodno.value =mpno;
+      document.all.form1.action="testPlan.aspx";
+      document.all.form1.target="saveframe";
+      document.all.form1.submit();
+}
+
+function testok()
+{  
+   document.form1.action="checkSalePlanSubmit.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">计划期间</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">区域代码</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">区域名称</td>
+	<td nowrap="nowrap">业务代表</td>
+	<td nowrap="nowrap">分管客户数</td>
+	<td nowrap="nowrap">已报客户数</td>
+	<td nowrap="nowrap">被否决客户数</td>
+	<td nowrap="nowrap">本月计划（件）</td>
+	<td nowrap="nowrap">下月计划（件）</td>
+	<td nowrap="nowrap">本月任务（件）</td>
+	<td nowrap="nowrap">下月任务（件）</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getSalePlanOk)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		        <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.PERIODNO</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.DEPTCODE</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.DEPTNAME</td>
+                        <td align="center" nowrap="nowrap">$session_USERNAME</td>
+			<td align="center" nowrap="nowrap">$!m.ANUM</td>
+			<td align="center" nowrap="nowrap">$!m.RNUM</td>
+			<td align="center" nowrap="nowrap">
+			   $!m.STATUS
+			</td>
+			<td align="center" nowrap="nowrap">$!m.ALLNUM</td>
+			<td align="center" nowrap="nowrap">$!m.NEXTALLNUM</td>
+			<td align="center" nowrap="nowrap">$!m.TALLNUM</td>
+			<td align="center" nowrap="nowrap">$!m.TNEXTALLNUM</td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.PERIODNO,$!m.DEPTCODE,$!m.STATUS,$!m.ALLNUM,$!m.NEXTALLNUM,$!m.ORGROLE,$!m.PLANROLE,$!m.TALLNUM,$!m.TNEXTALLNUM">
+			<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>明细</font></a>&nbsp;&nbsp;
+			     <a style='cursor:hand' onclick="javascript:okRow()"><font color=blue>报批</font></a>&nbsp;&nbsp;
+			     <a style='cursor:hand' onclick="javascript:PRow()"><font color=blue>产品明细</font></a>&nbsp;&nbsp;
+			</span></td>
+		 </tr>
+		 <script>
+		    orgrole='$!m.ORGROLE';
+		 </script>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="salePlanApplySubmit.aspx">
+  <input type="hidden" name="deptcode" value="">
+  <input type="hidden" name="billno">
+  <input type="hidden" name="ok" value="">
+  <input type="hidden" name="remark">
+  <input type="hidden" name="saleman" value="$session_USERNAME">
+  <input type="hidden" name="periodno" value="$form_periodno">
+  <input type="hidden" name="status" value="">
+  <input type="hidden" name="plantype" value="P">
+  <input type="hidden" name="allnum" value="">
+  <input type="hidden" name="nextallnum" value="">
+  <input type="hidden" name="tallnum" value="">
+  <input type="hidden" name="tnextallnum" value="">
+  <input name="addstep" type="hidden" value="0">
+  <input name="oldstep" type="hidden" value="0">
+  <input type="hidden" name="first" value="Y">
+    <input type="hidden" name="custcls">
+    <input type="hidden" name="plancls">
+    <input type="hidden" name="act" value="APPLY">
+</form>
+<br>
+<div style="width:100%; height:80%;" id="show" style="display:none">
+<iframe name="dataframe" src="about:blank" width="100%" height="600" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</div>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</BODY>
+<script>
+    document.all.form1.custcls.value =orgrole;
+</script>
+</HTML>

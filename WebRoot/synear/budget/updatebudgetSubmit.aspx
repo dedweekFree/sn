@@ -1,0 +1,11 @@
+<web:page>
+  <web:sql>insertbudget</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>item_pk,zymc,jxs,hj,jxszxj,mcpjgj,budgettype,nbzyj,ckcb</web:multiValue>
+  <web:successMsg>数据修改成功！</web:successMsg>
+  <web:failMsg>数据修改失败！</web:failMsg>
+  <web:url>budgetlist.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

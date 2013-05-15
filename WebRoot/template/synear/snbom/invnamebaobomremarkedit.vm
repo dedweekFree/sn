@@ -1,0 +1,215 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>======</title>
+<script src="../../js/sunnyfunc.js"></script>
+<script>
+var accountdata=new Array();
+accountdata = [['ID','产品名称']
+#foreach($!m in $snbomquerybypkinvbasdoc)
+,['$m.SN_STOCK_IN_PK','$m.INVNAME']
+#end
+];
+		var batchdef = "#foreach($!m in $selbatchdef)$!m.BATCHDEF#end";
+
+		var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(3,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon = '0'+mon; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd = '0'+dd;  
+clock += dd;
+if (parseInt(hh) < 10) hh = '0'+hh;  
+clock += hh; 
+if (parseInt(ss) < 10) ss = '0'+ss;  
+clock += ss;
+if (parseInt(mil) < 10){mil = '00'+mil;
+}else if(10 <= parseInt(mil) < 100){mil = '0'+mil;}
+clock += (mil.substr(0,3));
+var bid=0;
+var submitok=false;
+var ChosedList=new Array();
+var header=9;		//定单头的个数
+var thisCol=13;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=accountdata.length-1;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+var datatb;
+var lingtuo="";
+var shenyukeru="0";
+var kuwei="";
+var data=new Array();//单个记录元素数据数组
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+ function save(status){
+      document.form1.target="dataframe";
+      document.form1.action="invnamebaobomremarksavedit.aspx";
+      document.form1.submit();
+}
+function testok(){
+   document.all.thisform.action="invnamebaobomremarksavedit.aspx";
+   document.all.thisform.submit();
+}
+function togetmont(url){
+    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+ }
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f" align="center">修改包装BOM</td>
+  </tr>
+</table>
+
+<form name="form1" method='post'>  
+<input type=hidden name=ptype value='$!form_ptype'>
+<input type=hidden name=bomid value='$form_bomid'>
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+   #foreach($!m1 in $snbomhquerybybomid)
+      <tr bgcolor="#E3E3E3" class="fCopy">
+      <td height="24" width="20%" nowrap><div align="right">产品:</div></td>
+      <td width="30%"><input type="text" name="invname" id="invname" value="$m1.INVNAME" readonly><input type="hidden" name="invnameid" id="invnameid" value="$m1.PK_INVBASDOC"><input type="button" value="..." onclick="togetmont('itemdescquery.aspx')"></td>
+      <td height="24" width="20%" nowrap><div align="right">物料类型:</div></td>
+      <td width="30%">
+           <select name="bomcls">
+	      <option value='B' #if($m1.BOMCLS == 'B')selected#end>包装</option>
+	   </select>
+      </td>
+   </tr>
+   <tr bgcolor="#E3E3E3" class="fCopy">
+      <td height="24" width="20%" nowrap><div align="right">版本号:</div></td>
+      <td width="30%"><input type="text" name="version" value="$m1.VERSION"></td>
+      <td height="24" width="20%" nowrap><div align="right">BOM名称:</div></td>
+      <td width="30%"><input type="text" name="bomname" value="$m1.BOMNAME"></td>
+   </tr>
+   <tr bgcolor="#E3E3E3" class="fCopy">
+      <td height="24" width="20%" nowrap><div align="right">计量单位:</div></td>
+      <td width="30%"><select name="meaname" disabled>
+      <option value=""></option>
+       #foreach($m in $snmeasdocquery)
+          <option value="$!m.PK_MEASDOC" #if($!m1.PK_MEASDOC==$!m.PK_MEASDOC)selected#end>$!m.MEASNAME</option>
+       #end
+      </td>
+      <td height="24" width="20%" nowrap><div align="right">基数:</div></td>
+      <td width="30%"><input type="text" name="hnum" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" value="$m1.HNUM"></td>
+   </tr>
+   <tr bgcolor="#E3E3E3" class="fCopy">
+      <td height="24" width="20%" nowrap><div align="right">备注:</div></td>
+      <td colspan="3"><textarea  name="remark" style="width: 90%; height: 100px;">$m1.REMARK</textarea></td>
+      <td height="24" width="20%" nowrap><div align="right" style="display:none">工艺路线:</div></td>
+      <td width="30%"><div align="right" style="display:none">
+         <select name="prodline">
+        <option value=""></option>
+        #foreach($m in $snbomproclinequery)
+          <option value="$!m.PROCLINEID" #if($!m1.PROCLINEID==$!m.PROCLINEID)selected#end>$!m.PROCLINENAME</option>
+        #end</div>
+      </td>
+   </tr>
+   #end
+</table>
+<br>
+<table width="100%" id="tb" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+     <th width="1%" height="25" nowrap class="fCopy" style="display:none">产品主键</th>
+    <th width="15%" height="25" nowrap><font color="red">包装物名称</font></th>
+    <th width="5%" height="25" nowrap><font color="red">计量单位</font></th>
+    <th width="5%" height="25" nowrap class="fCopy">物料类型</th>
+    <th width="10%" height="25" nowrap><font color="red">单位用量</font></th>
+    <th width="10%" height="25" nowrap class="fCopy">正误差率</th>
+    <th width="10%" height="25" nowrap class="fCopy">负误差率</th>
+    <th width="10%" height="25" nowrap class="fCopy">损耗率</th>
+    <th width="10%" height="25" nowrap class="fCopy">固定损耗量</th>
+    <th width="10%" height="25" nowrap class="fCopy" style="display:none">工序</th>
+    <th width="5%" height="25" nowrap class="fCopy">参考类别</th>
+    <th width="5%" height="25" nowrap class="fCopy">客户供应标识</th>
+  </tr>
+  #set($i=0)
+  #foreach($!m1 in $snbomquerybypkinvbasdoc)
+  <tr bgcolor="#FFFFFF" class="fCopy" id="A$i">
+     <td align="center" nowrap>
+     $m1.INVNAME
+      </td>
+      <td align="center" nowrap>
+         <select name="masname" id="masname$i" disabled>
+	 <option value=""></option>
+	       #foreach($m in $snmeasdocquery)
+		  <option value="$!m.PK_MEASDOC" #if($m1.PK_MEASDOC==$m.PK_MEASDOC)selected#end>$!m.MEASNAME</option>
+	       #end
+	 </select>
+      </td>
+      <td align="center" nowrap>
+         <select type="hidden" name="invtype" id="invtype$i">
+	 <option value="A">一般物料</option>
+	 </select>
+      </td>
+      <td align="center" nowrap>
+         $m1.NNUM
+      </td>
+      <td align="center" nowrap>
+         $m1.ERRU
+      </td>
+      <td align="center" nowrap>
+         $m1.ERRD
+      </td>
+      <td align="center" nowrap>
+         $m1.DIS
+      </td>
+      <td align="center" nowrap>
+         $m1.DISNUM
+      </td>
+      <td align="center" nowrap>
+         <select name="CLSID" id="CLSID$i">
+	 <option value=""></option>
+	       #foreach($m in $snbompclsqueryall)
+		  <option value="$!m.CLSID" #if($m1.CLSID == $!m.CLSID) selected #end>$!m.CLSNAME</option>
+	       #end
+	 </select>
+      </td>
+      <td align="center" nowrap>
+         <select name="FLAG" id="FLAG$i">
+	 <option value="N" #if($m1.FLAG == 'N')selected#end>不计成本</option>
+	 <option value="Y" #if($m1.FLAG == 'Y')selected#end>计算成本</option>
+	 </select>
+      </td>
+  </tr>
+  <tr><td colspan=11 style="padding:0px" ><table id="dtb"></table></td></tr>
+  #set($i=$i+1)
+  #end
+  </table>
+   <div align="center">
+<input type="button" class="login2" value=" 提  交 " name="B22" onclick="save('Y')">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value="返  回" name="B222" onClick="javascript:location.href='invnamebaobom.aspx'">
+  </div>
+</form>
+<form name="thisform" action="" method="post" target="dataframe">
+<span id="subdata"></span>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

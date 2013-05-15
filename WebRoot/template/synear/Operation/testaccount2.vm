@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ var def20 = '';
+ #foreach($m in $selcustsfjicai)
+   def20='$m.DEF20';
+ #end
+ //if(def20 == 'Y' && '$session_CORPID' == '1002'){
+	 #foreach($m in $selenteraccountallcount)
+	   feenum='$m.CO';
+	 #end
+	 if(parseInt(feenum)>0) {
+	   alert("本月已经添加过企业往来对账单");
+	   parent.submitok=false;
+	 }else if(feenum=='0'){
+	    #foreach($m in $selenteraccountallcountbyday1)
+	     feenum='$m.SS';
+	    #end
+	   if(parseInt(feenum)>0) {
+	   //if(parseInt(feenum)<0) {
+	       alert("超过19日，本月不能添加企业往来对账单");
+	       parent.submitok=false;
+	   }else{
+		parent.testok2();
+	   }
+	 }else{
+	   alert("出现未知错误！");
+	   parent.submitok=false;
+	 }
+// }else{
+//	alert("必须进郑州思念食品有限公司填对账单");
+//	parent.submitok=false; 
+ //}
+	</script>
+</head>
+<body>
+</body>
+</html>
+

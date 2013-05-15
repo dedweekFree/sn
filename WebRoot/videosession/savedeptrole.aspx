@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>saveuserdeptinfo</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>vdeptid</web:multiValue>
+  <web:successMsg>操作成功！</web:successMsg>
+  <web:failMsg>操作失败！</web:failMsg>
+  <web:url>deptrole.aspx</web:url>
+  <web:template>videosession/message.vm</web:template>
+</web:page>

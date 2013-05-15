@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>招标信息审核</title>
+</head>
+<body>
+<table class="datatable">
+  <tr class="trcolor">
+  <form name="thisform" method="post">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+</form>
+    <td colspan="6" align="left">招标信息审核</td>
+  </tr>
+  <tr class="trcolor">
+    <td nowrap>项目编码</td>
+    <td nowrap>项目名称</td>
+    <td nowrap>开始时间</td>
+    <td nowrap>开标时间</td>
+    <td nowrap>结束时间</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $querytendinfocheckno)
+  <tr>
+    <td nowrap align="center">
+        $!m.PROID
+   </td>
+    <td nowrap  align="center">
+	#if($!m.ISAREA == 'Y')<a href="zbinfodetailarea.aspx?proid=$!m.PROID&ischeck=1">$!m.PRONAME</a>#else<a href="zbinfodetail.aspx?proid=$!m.PROID&ischeck=1">$!m.PRONAME</a>#end
+    </td>
+    <td nowrap  align="center">
+        $!m.ATIME
+   </td>
+   <td nowrap  align="center">
+        $!m.KTINE
+   </td>
+   <td nowrap  align="center">
+        $!m.ZTIME
+   </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="5">      
+      <input type="button" name="b2" value="刷&nbsp;&nbsp;新" class="bt1" onclick="javascript:location.reload()"/></td>
+  </tr>
+  <tr >
+        <td class="tdlabel" colspan="5">$pagecode</td>
+   </tr>
+</table>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

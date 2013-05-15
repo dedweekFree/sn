@@ -1,0 +1,61 @@
+<%@ page language="java" pageEncoding="GB18030"%>
+<%@ page import="com.synear.onlinestat.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    request.setAttribute("stat",StoreFactory.getStore().getUsers());
+%>
+<%--2007-9-20--%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <base href="<%=basePath%>"/>    
+    <title>在线用户统计</title>    
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>    
+    <meta http-equiv="keywords" content="wallimn"/>
+    <meta http-equiv="description" content="在线用户显示，wallimn，2008年4月"/>
+    <style >
+        h1{
+            text-align:center;
+            font-size:18px;
+            margin-top:10px;
+            margin-bottom:10px;
+        }
+        table{
+            border-collapse:collapse;
+            font-size:12px;
+        }
+        table,td,th{
+            border:1px solid #EAEAEA;
+        }
+        th{
+            height:28px;
+        }
+        td{
+            height:24px;
+            padding-left:1em;
+        }
+    </style>
+    <script type="text/javascript">
+    </script>
+  </head>  
+  <body>
+      <h1>登录用户列表</h1>
+      <table width="80%" align="center">
+               <tr>
+                  <th>用户</th><th>登录时间</th>
+              </tr>
+         <c:forEach items="${stat}" var="item">
+              <tr>
+                  <td>${item[0]}</td><td>${item[1]}</td>
+              </tr>
+          </c:forEach>
+      </table>
+ </body>
+ 
+</html>
+
+

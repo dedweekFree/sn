@@ -1,0 +1,282 @@
+<HTML>
+<HEAD>		
+<title>费用申请表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+	//查看
+	function ViewRow(){  
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+		   document.form1.billno.value = paras[0];
+		   document.form1.target="_self";
+		   document.form1.action="viewbudget.aspx";
+		   document.form1.submit();
+	}
+
+	//报批前验证
+	function okRow(){  
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+	   document.form1.billno.value = paras[0];
+	   document.form1.billdate.value = paras[2];
+	   document.form1.billdesc.value = paras[4];
+	   document.form1.action="budgetApplyOkSubmit.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+	}
+
+	//修改申报
+	function editRow(){  
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+		   document.form1.billno.value = paras[0];
+		   document.form1.billdate.value = paras[2];
+		   document.form1.area.value = paras[3];
+		   var updateBilldate = paras[2];
+		   //alert(paras[3]);
+		   if(updateBilldate != ""){
+				var updateBilldate = "M"+updateBilldate.replace("-","");
+				$("#updateBilldate").val(updateBilldate);
+		   }
+		   //alert($("#updateBilldate").val());
+		   document.form1.target="_self";
+		   document.form1.action="editbudget.aspx";
+		  //alert(document.form1.custcls.value);
+		  //return false;
+		   document.form1.submit();
+	}
+
+	//申报数据汇总
+	function PRow(){      
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+	   document.form1.billno.value = paras[0];
+	   document.form1.billdate.value = paras[2];
+	   document.form1.area.value = paras[3];
+	   document.form1.action="detailbudget.aspx";
+	   document.form1.target="_self";
+	   document.form1.submit();
+	}
+
+	//删除申报
+	function DelRow(){      
+		  var obj = window.event.srcElement;
+			obj = getParent(obj,"SPAN");
+		   var paras=obj.dtParams.split(",!");
+	  
+		 if(confirm('你确定要删除吗？'))
+		 {
+		   document.form1.billno.value = paras[0];
+		   document.form1.action="delBudgetSubmit.aspx";
+		   document.form1.target="saveframe";
+		   document.form1.submit();
+	   }
+	}
+	//搜索申报列表
+	function checkinput(){  
+	   document.thisform.page.value =1;
+	   document.thisform.submit();
+	}
+	//申报验证通过执行申报
+	function testok(){  
+	   thisform.action="newbudget.aspx";
+	   thisform.target="_self";
+	   thisform.submit();
+	}
+
+	function budgetapply(){  
+		$deptcode = $("#deptcode").val();
+		$billdate = $("#billdate").val();
+		if($deptcode == ""){
+			alert("请选择部门");
+			return false;
+		}
+		if($billdate == ""){
+			alert("请选择预算期间");
+			return false;
+		}
+		if($billdate != ""){
+			var newbilldate = "M"+$billdate.replace("-","");
+			$("#newbilldate").val(newbilldate);
+		}
+		thisform.action="testBudgetApply.aspx";
+		thisform.target="saveframe";
+		thisform.submit();
+	}
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" target="_self" action="budgetlist.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <input type="hidden" name="newbilldate" id="newbilldate" value="">
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">部门名称</td>
+			<td class="tdinput" width="20%">
+				<select name="deptcode" id="deptcode">
+					<option value="">请选择部门</option>
+					#foreach($m in $getCustomerBudgetDept)
+						<option value="$!m.NC_PK"  #if($!form_deptcode==$!m.NC_PK) selected #end>$!m.DEPTNAME</option>
+					#end
+				</select>	   
+			</td>	
+			<td class="tdlabel">预算期间</td>
+			<td class="tdinput">
+				<input type="text" name="billdate" id="billdate" readonly value="$!from_billdate" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})" class="Wdate" />
+			</td>
+        </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="20%" >起始日期：</td>
+			<td class="tdinput" >
+				<input type="text" name="begintime" readonly value='$!form_BEGINTIME' onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" class="Wdate" />
+			</td>	
+			<td class="tdlabel" >结束日期：</td>
+			<td class="tdinput" >	
+				<input type="text" name="endtime" readonly value='$!form_ENDTIME' onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" class="Wdate" />
+			</td>
+			</td>	
+        </tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="left" >	
+				<input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">&nbsp;&nbsp;
+			</td>
+			<td align="left" colspan="2">	
+				<input type="button" value="预算上报" onclick="budgetapply()"  class="bt1">
+			</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+		<tr height="20"  align="center"   class="FixedTitleRow">
+			<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">预算编号</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">地区</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">预算期间</td>
+			<td nowrap="nowrap">状态</td>
+			<td nowrap="nowrap">当前位置(参考人)</td>
+			<td nowrap="nowrap">创建时间</td>
+			<td nowrap="nowrap">操作</td>
+		</tr>
+    #set($i=1) 
+    #foreach($m in $getallbudgetapply)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		    <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLNO</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.NAME2/$!m.NAME1</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLDATE</td>
+            <td align="center" nowrap="nowrap" 
+				#if($m.STATUS=="K") 
+					style=color:green; 
+				#end
+				#if($m.STATUS=="R" || $m.STATUS=="N") 
+					style=color:red; 
+				#end
+				
+				>
+			   #if($m.STATUS=="K") 审批完成/$!m.STATUS #end
+			   #if($m.STATUS=="B") 已报/$!m.STATUS #end
+			   #if($m.STATUS=="N") 待报/$!m.STATUS #end
+			   #if($m.STATUS=="F") 待批/$!m.STATUS #end
+			   #if($m.STATUS=="R") 被否决/$!m.STATUS #end
+			   #if($m.STATUS=="D") 要求重报/$!m.STATUS #end
+			</td>
+			<td align="center" nowrap="nowrap">$!m.ROLENAME（$!m.REALNAME）</td>
+			<td align="center" nowrap="nowrap">$!m.CREATEDATE</td>
+			<td align="left" nowrap="nowrap">
+				<span id="qxspan" dtParams="$!m.BILLNO,!$!session_ROLES,!$!m.BILLDATE,!$!m.PK_DEPT,!$!m.BILLDESC">
+					<a style='cursor:hand' onclick="javascript:PRow()"><font color=blue>申报预算汇总</font></a>&nbsp;
+					<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>明细</font></a>&nbsp;&nbsp;
+					#if($m.STEP==0 && ($m.STATUS=="N" || $m.STATUS=="D"|| $m.STATUS=="R") && ($m.MAKER==$!session_USERNAME))
+						<a style='cursor:hand' onclick="javascript:okRow()"><font color=blue>上报</font></a>&nbsp;&nbsp;
+						<a style='cursor:hand' onclick="javascript:editRow()"><font color=blue>修改</font></a>&nbsp;&nbsp;
+						<a style='cursor:hand' onclick="javascript:DelRow()"><font color=blue>删除</font></a>&nbsp;&nbsp;
+					#end	   
+			    </span>
+			</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="10"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+</form>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="salePlanOkSubmit.aspx">
+  <input type="hidden" name="billno">
+  <input type="hidden" name="roleid" value="$!session_ROLES">
+  <input type="hidden" name="billdate" value="">
+  <input type="hidden" name="area" value="">
+  <input type="hidden" name="updateBilldate" id="updateBilldate" value="">
+  <input type="hidden" name="billdesc" value="">
+  <input type="hidden" name="log_status" value="F">
+  <input type="hidden" name="status" value="F">
+  <input type="hidden" name="step" value=1>
+</form>
+<form name="form2" method="post" target="saveframe">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

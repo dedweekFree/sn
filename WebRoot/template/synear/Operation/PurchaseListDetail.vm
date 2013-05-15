@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+	
+ function init(){
+  uniteTable(document.all.tb,5);//执行
+}
+
+var undefined;		
+function uniteTable(thistab,colLength){
+
+  var rn=thistab.rows.length;//取得行数   
+  var rowspann=0;   
+  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+	rowspann+=thistab.rows[i].cells[j].rowSpan;;
+	thistab.rows[i].deleteCell(j);   
+      }else{   
+	thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+	rowspann=0;   
+      }   
+    }   
+    //检测无表头的表   
+    if(i==0&&rowspann>0){   
+      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+      rowspann=0;   
+    }   
+  }   
+}  
+</script>
+</head>
+
+<body onload="init()">
+<form name="thisform" action="PurchaseListDetail.aspx" method="post">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="6" align="left">采购单查询</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">采购单日期:</td>
+    <td align="left"><input type="text" name="TextZhiDanRiQi1y1" onclick="ShowDate(TextZhiDanRiQi1y1)" style="width: 80px" value="$!form_TextZhiDanRiQi1y1"/>-<input type="text" name="TextZhiDanRiQi1y2"  onclick="ShowDate(TextZhiDanRiQi1y2)" style="width: 80px" value="$!form_TextZhiDanRiQi1y2"/></td>
+    <td align="right">&nbsp;</td>
+    <td align="left">&nbsp;</td>
+    <td align="right">状态:</td>
+    <td align="left"><select name="select">
+    <option value="">无</option>
+    </select></td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">请购单号:</td>
+    <td align="left"><input type="text" name="vpraycode" value="$!form_vpraycode"/></td>
+    <td align="right">采购订单号:</td>
+    <td align="left"><input type="text" name="vordercode" value="$!form_vordercode"/></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="6"><input type="submit" class="bt1" name="button" value="查&nbsp;&nbsp;询" />
+		<input type="button" class="bt1" name="button" value="返&nbsp;&nbsp;回" onclick="javascript:history.go(-1)"/>
+		<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');">
+    </td>
+  </tr>
+</table>
+</form>
+<table class="datatable" id="tb">
+  <tr class="trcolor">
+    <td>供应商名字</td>
+    <td>存货编码</td>
+    <td>存货名字</td>
+    <td>请购单号</td>
+    <td>订单号</td>
+    <td>订单备注</td>
+    <td>状态1</td>
+    <td>状态2</td>
+    <td>状态3</td>
+    <td>订单日期</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selPurchaseList)
+  <tr class="trcolor">
+    <td>$!m.CUSTNAME</td>
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.VPRAYCODE</td>
+    <td><a href="PurchaseInfo.aspx?vordercode=$!m.VORDERCODE&yes=1&corp=$!m.PK_CORP">$!m.VORDERCODE</a></td>
+    <td>$!m.VMEMO</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>$!m.DORDERDATE</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

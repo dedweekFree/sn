@@ -1,0 +1,140 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>======</title>
+<script src="../../js/sunnyfunc.js"></script>
+<script>
+   var treeCol=new Array();
+	treeCol = [['库位','已入数量','托数','填写数量','单托']
+		#set($i=1)
+		#foreach($!m in $selstockunitcode21)
+		,['$!m.UNITCODE','$!m.NNUMBER','$!m.UVALUE','0','$!m.DTVALUE']
+		#set($i=$i+1)
+		#end
+	]
+	function checknum(){
+		var tab = document.getElementById("tb");
+		for(var i=0;i<tab.rows.length;i++){
+			try{
+				var b2 = isNaN(parseInt(document.getElementById("F_number"+i).value))?0:parseInt(document.getElementById("F_number"+i).value);
+				var f2 = document.getElementById("unitcode"+i).value;
+				for(var j=1;j<treeCol.length;j++){
+					if(f2==treeCol[j][0]){
+							if(treeCol[j][1]!='0'){
+							document.getElementById("keru"+i).value=parseInt(treeCol[j][2])*parseInt(treeCol[j][4])-parseInt(treeCol[j][1])
+							}
+					}
+				}
+			}catch(e){}
+		}
+	}
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="checknum()">
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f" align="center">产成品入库</td>
+  </tr>
+</table>
+<form name="form1" method='post' action="Storeagesub.aspx">  
+<table width="90%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+  #foreach($!m in $selmodstock)
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="24" nowrap><div align="right">入库时间:</div></td>
+    <td width="294" height="25" nowrap> 
+     <input name="F_dealDate" type="text" class="login" id="instoredate" value="$!m.BILLDATE" readonly>
+     <input type="button" value="↓" onClick="ShowDate(F_dealDate);" class="button" name="button23" >*
+     <input type="hidden" name="billno" id="billno" value="$!m.BILLNO"></td>
+    <td width="140" height="25" nowrap><div align="right">单据类型:</div></td>
+    <td width="243" height="25" nowrap> 
+<span class="style3 style1">
+        <select name="billtype" id="billtype">
+         <option value="1" #if($!m.BILLTYPE=='1') selected #else #end>生产入库</option>
+         <option value="3" #if($!m.BILLTYPE=='3') selected #else #end>零托退库</option>
+	</select>*
+      </span></td>
+  </tr>
+<tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="24" nowrap><div align="right">操作人</div></td>
+    <td width="294" height="25" nowrap> 
+     <input name="makeuser" type="text" class="login" id="makeuser" name="makeuser" value="$!m.MAKEUSER" readonly>*</td>
+    <td width="140" height="25" nowrap><div align="right">生产分厂:</div></td>
+        <td width="294" height="25" nowrap> 
+	 <select id="sourceaddr" name="sourceaddr">
+        <option value="1002AV10000000005B1O" #if($!m.PRODUCTIONADDR=="1002AV10000000005B1O") selected #else #end>一生缘厂</option>
+	<option value="1002AV1000000000KUFT" #if($!m.PRODUCTIONADDR=="1002AV1000000000KUFT") selected #else #end>瑞香源厂</option>
+	<option value="1002AG1000000000034O" #if($!m.PRODUCTIONADDR=="1002AG1000000000034O") selected #else #end>思念一分厂</option>
+	<option value="1002AG1000000000034P" #if($!m.PRODUCTIONADDR=="1002AG1000000000034P") selected #else #end>思念二分厂</option>
+	<option value="1002AG1000000000034Q" #if($!m.PRODUCTIONADDR=="1002AG1000000000034Q") selected #else #end>思念三分厂</option>
+	<option value="1002AG1000000000034R" #if($!m.PRODUCTIONADDR=="1002AG1000000000034R") selected #else #end>思念四分厂</option>
+	<option value="1002AG1000000000034S" #if($!m.PRODUCTIONADDR=="1002AG1000000000034S") selected #else #end>思念五分厂</option>
+	<option value="1002AG1000000000034U" #if($!m.PRODUCTIONADDR=="1002AG1000000000034U") selected #else #end>遂平分厂</option>
+	<option value="1002AG10000000000353" #if($!m.PRODUCTIONADDR=="1002AG10000000000353") selected #else #end>思念六分厂</option>
+	<option value="1002AV10000000000U4V" #if($!m.PRODUCTIONADDR=="1002AV10000000000U4V") selected #else #end>龙源厂</option>
+	<option value="1002AV10000000000U4W" #if($!m.PRODUCTIONADDR=="1002AV10000000000U4W") selected #else #end>欣朝厂</option>
+	<option value="1002AV10000000000U4X" #if($!m.PRODUCTIONADDR=="1002AV10000000000U4X") selected #else #end>思源厂</option>
+	<option value="1002AV10000000000U4Y" #if($!m.PRODUCTIONADDR=="1002AV10000000000U4Y") selected #else #end>淇乐多二厂</option>
+	<option value="1002AV10000000000U4Z" #if($!m.PRODUCTIONADDR=="1002AV10000000000U4Z") selected #else #end>焦作亨得利</option>
+	<option value="1002AV10000000000U50" #if($!m.PRODUCTIONADDR=="1002AV10000000000U50") selected #else #end>园林厂</option>
+	<option value="1002AV10000000000U51" #if($!m.PRODUCTIONADDR=="1002AV10000000000U51") selected #else #end>开发区厂</option></select>*</td>
+  </tr>
+  #end
+</table>
+<br>
+
+<table id="tb" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <th width="16%" height="25" nowrap class="fCopy">产品名称</th>
+    <th width="8%" height="25" nowrap class="fCopy">产品规格</th>
+    <th width="8%" height="25" nowrap class="fCopy" style="display:none">产品主键</th>
+    <th width="8%" height="25" nowrap class="fCopy">库位</th>
+    <th width="10%" height="25" nowrap class="fCopy">批次</th>
+    <th width="10%" height="25" nowrap class="fCopy">数量</th>
+    <th width="5%" height="25" nowrap class="fCopy">单托件数</th>
+    <th width="10%" height="25" nowrap class="fCopy">剩余可入数量</th>
+    <th width="16%" height="25" nowrap class="fCopy">备注</th>
+  </tr>  
+  #set($i=0)
+  #foreach($!m in $selmodstockb)
+  <tr bgcolor="#FFFFFF" class="fCopy" id="A0">
+     <td align="center" nowrap><input name="F_prodName" id="F_prodName$i" type="text" value="$!m.ITEMDESC"  style="width:150" class='login3' onKeyUp="showdata(this,$i)"></td>
+     <td><input name="F_invspec" id="F_invspec$i" type="text" value="$!m.ITEMSPEC"  style="width:100" class='login3' readonly></td>
+     <td style="display:none"><input name="F_nc_pk" id="F_nc_pk$i" value="$m.NC_PK" type="hidden" style="width:100" class='login3' readonly></td>
+     <td align="center" nowrap><input type="text" name="unitcode" id="unitcode$i" value="$!m.UNITCODE" onKeyUp="checkunit(0)" style="width:100" readonly><input type="button" value="..." onclick="showindow(0)">
+      </td>
+      <td align="center" nowrap><input name="F_batchcode" id="F_batchcode$i" value="$!m.BATCHCODE" type="text" class="login3" style="width:120" ></td>
+        <td align="center" nowrap><input name="F_number" id="F_number$i" value="$!m.NNUMBER" type="text" class="login3" style="width:80" onblur="check($i)"><input name="F_hnumber" id="F_hnumber$i" value="$!m.NNUMBER" type="hidden" class="login3" style="width:80">
+	 <input name="billno_bid" id="billno_bid$i" value="$!m.BILLNO_BID" type="hidden"></td>
+	<td align="center" nowrap><input name="dantuo" id="dantuo$i" value="$!m.DTVALUE" type="text" class="login3" style="width:50" readonly></td>
+	<td align="center" nowrap><input name="keru" id="keru$i" type="text" class="login3" style="width:100" readonly>
+		<script>
+		var a = parseInt($!m.UVALUE);
+		var b = parseInt($!m.NNUMBER); 
+		var d = parseInt($!m.DTVALUE); 
+		if(b==0){
+		document.getElementById("keru$i").value=a*d
+		}else{
+		document.getElementById("keru$i").value=a*d-b;
+		} 
+		</script>
+	</td>
+	<td align="center" nowrap><input name="F_remark" id="F_remark$i" value="$!m.REMARKS" type="text" class="login3" style="width:150">
+		<input name="lt" id="lt$i" type="hidden" class="login3" value="$!m.FSTYLE" style="width:150">
+	</td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+   #set($i=$i+1)
+   #end
+  </table>
+   <div align="center">
+<input type="button" class="login2" value="返  回" name="B222" onClick="javascript:history.go(-1)">
+  </div>
+</form>
+<form name="thisform" action="" method="post" target="dataframe">
+<span id="subdata"></span>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../include/js/string.js"></script>
+	<script type="text/javascript">
+		#set($freeaccountcount = $loadFreeAccount.size()) 
+        #set($n='')
+		#set($f=",")
+        #foreach($!m in $loadFreeAccount)
+			#set($n=$n+$!m.PK_AID)
+			#if($velocityCount < $freeaccountcount) 
+				#set($n=$n+"$f")
+			#end
+        #end
+		#set($i='')
+        #foreach($!m in $testvstate)
+			#set($i=$!m.VSTATE)
+        #end
+		#set($c=0)
+        #foreach($!m in $loadPersonCount)
+			#set($c=$!m.CONN)
+        #end
+		#if($c==$freeaccountcount)
+			#if($i=='申请')
+				parent.submitformagree("$n");
+			#else
+				alert("该会议状态已经被修改为 $i ！");
+			#end
+		#else
+			alert("空闲的账号不足");
+		#end
+	</script>
+</head>
+<body>
+</body>
+</html>
+

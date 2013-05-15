@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>招标信息</title>
+</head>
+<body onload="init()">
+<form name="thisform" method="post">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+ </form>
+<table class="datatable"  id="tab">
+  <tr class="trcolor">
+    <td>项目名称</td>
+    <td>开始时间</td>
+     <td>结束时间</td>
+    <td>招标数量</td>
+    <td>单位</td>
+    <td>到货目的地</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $zhaobiaoinfo)  
+  <tr>
+    <td align="center" nowrap>$!m.PRONAME</td>
+    <td align="center" nowrap>
+	$!m.ATIME
+    </td>
+    <td align="center" nowrap>
+	$!m.ZTIME
+    </td>
+    <td align="center" nowarp>
+	$!m.TENDQUANTITY
+    </td>
+    <td align="center" nowrap>
+    $!m.TYPENAME
+    </td>
+    <td align="center" nowrap>
+    #if($!m.AREANAME == 'synear')&nbsp;#else$!m.AREANAME#end
+    </td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  
+</table>
+<div align="right" class="tdlabel td">
+<tr class="tdlabel td">
+        <td class="tdlabel td" colspan="6" align="right">$pagecode</td>
+   </tr>
+</div>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>
+<script language="javascript">
+var undefined;
+
+function init(){
+  uniteCols(document.all.tab);//执行
+}
+
+function uniteTable(thistab,colLength){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=1;   
+  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[j].rowSpan;   
+        thistab.rows[i].deleteCell(j);   
+      }else{   
+        thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+        rowspann=1;   
+      }   
+    }   
+    //检测无表头的表   
+    if(i==0&&rowspann>0){   
+      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+      rowspann=0;   
+    }   
+    
+  }   
+}  
+//本业务合并
+function uniteCols(thistab){  
+  var   rn=thistab.rows.length;//取得行数  
+  var   rowspann=1;   
+  for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查  
+      if(thistab.rows[i].cells[0].innerText==thistab.rows[i-1].cells[0].innerText&&thistab.rows[i].cells[0].colSpan==thistab.rows[i-1].cells[0].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[0].rowSpan; 
+	thistab.rows[i].deleteCell(4);
+	thistab.rows[i].deleteCell(3);
+	thistab.rows[i].deleteCell(2);
+	thistab.rows[i].deleteCell(1);
+ 
+	thistab.rows[i].deleteCell(0);
+      }else{   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[1].rowSpan+=rowspann;
+	thistab.rows[i].cells[2].rowSpan+=rowspann;
+	thistab.rows[i].cells[3].rowSpan+=rowspann;
+	thistab.rows[i].cells[4].rowSpan+=rowspann;
+        rowspann=0;   
+      }   
+  }   
+  //检测无表头的表   
+  if(i==0&&rowspann>0){   
+        thistab.rows[i].cells[0].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[1].rowSpan+=rowspann;
+	thistab.rows[i].cells[2].rowSpan+=rowspann;
+	thistab.rows[i].cells[3].rowSpan+=rowspann;
+	thistab.rows[i].cells[4].rowSpan+=rowspann;
+      rowspann=0;   
+  }   
+} 
+</script>

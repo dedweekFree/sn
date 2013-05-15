@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>createReport</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>categorys,accsubjIds,xiangmus</web:multiValue>
+  <web:successMsg>数据保存成功！</web:successMsg>
+  <web:failMsg>数据保存失败！</web:failMsg>
+  <web:url>queryReport.aspx</web:url>
+  <web:template>template/synear/common/messagezzfy.vm</web:template>
+</web:page>

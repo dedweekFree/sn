@@ -1,0 +1,130 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+	<title>===预算===</title>
+	<script>
+		$(function(){
+			//计算TP重点费用小计
+			var $tpzymc = $("td[name='tpzymc']");
+			var $tpjxs = $("td[name='tpjxs']");
+			var $tphj = $("td[name='tphj']");
+			var $zymc = 0;
+			var $jxs = 0;
+			var $hj = 0;
+			for(var i=0;i< $tpzymc.length;i++){
+				$zymc+=parseFloat($tpzymc[i].innerText);
+				$jxs+=parseFloat($tpjxs[i].innerText);
+				$hj+=parseFloat($tphj[i].innerText);
+			}
+			$(".tpzymc")[0].innerText = $zymc;	
+			$(".tpjxs")[0].innerText = $jxs;	
+			$(".tphj")[0].innerText = $hj;
+			//计算固定费用小计
+			var $cpzymc = $("td[name='cpzymc']");
+			var $cpjxs = $("td[name='cpjxs']");
+			var $cphj = $("td[name='cphj']");
+			$zymc = 0;
+			$jxs = 0;
+			$hj = 0;
+			for(var i=0;i< $cpzymc.length;i++){
+				$zymc+=parseFloat($cpzymc[i].innerText);
+				$jxs+=parseFloat($cpjxs[i].innerText);
+				$hj+=parseFloat($cphj[i].innerText);
+			}
+			$(".cpzymc")[0].innerText = $zymc;	
+			$(".cpjxs")[0].innerText = $jxs;	
+			$(".cphj")[0].innerText = $hj;	
+		});	
+	</script>
+</head>
+
+<body>
+	<input type="button" class="bt1" value=" 返   回 " onClick="javascript:window.location='report.aspx?code=$!form_deptcode&date=$!form_billdate';">
+	 <input type="button" class="bt1" value="导出Excel" onclick="javascript:exportMethod('tb');"> <br/> 
+	<!-- <label style="font-size:12px;">如果点击导出按钮后没有起效，请点击浏览器 工具--Internet选项--安全--自定义级别--对未标记为可安全执行脚本的ActiveX控件初始化并执行脚本   设置为启用 </label> -->
+	<table  border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+			<tr>
+				<td height="19" align="center" colspan="6" style="font:25px; font-weight:bold;" >
+					$!form_billdate $!form_deptname 重点费用预算表
+				</td> 
+			</tr>
+			<tr>
+				<td height="19" align="center" rowspan="2">费用性质</td> 
+				<td height="19" align="center" rowspan="2">费用项目</td> 
+				<td height="19" align="center" rowspan="2">细项</td> 
+				<td height="19" align="center" colspan="3">费用预算</td> 
+			</tr>
+			<tr>
+				<td height="19" align="center">直营卖场</td> 
+				<td height="19" align="center">经销商</td> 
+				<td height="19" align="center">合计</td> 
+			</tr>
+			<tr>
+				<td height="19" align="center" rowspan="14">TP</td> 
+			</tr>
+			#foreach($m in $reportTPzd)
+			<tr >
+				<td height="19" align="center">$!m.NAME1</td> 
+				<td height="19" align="center">$!m.NAME2</td> 
+				<td height="19" align="center" name="tpzymc">$!m.ZYMC</td> 
+				<td height="19" align="center" name="tpjxs">$!m.JXS</td> 
+				<td height="19" align="center" name="tphj">$!m.HJ</td> 
+			</tr>
+			#end
+			<tr>
+				<td height="19" align="center" colspan="2">TP费用小计</td> 
+				<td height="19" align="center" class="tpzymc" >10</td> 
+				<td height="19" align="center" class="tpjxs">10</td> 
+				<td height="19" align="center" class="tphj">10</td> 
+			</tr>
+			<tr>
+				<td height="19" align="center" rowspan="10">CP</td> 
+			</tr>
+			#foreach($m in $reportCPzd)
+			<tr >
+				<td height="19" align="center">$!m.NAME1</td> 
+				<td height="19" align="center">$!m.NAME2 &nbsp;</td> 
+				<td height="19" align="center" name="cpzymc">$!m.ZYMC </td> 
+				<td height="19" align="center" name="cpjxs">$!m.JXS</td> 
+				<td height="19" align="center" name="cphj">$!m.HJ</td> 
+			</tr>
+			#end
+			<tr>
+				<td height="19" align="center" colspan="2">CP费用小计</td> 
+				<td height="19" align="center" class="cpzymc" >0</td> 
+				<td height="19" align="center" class="cpjxs">0</td> 
+				<td height="19" align="center" class="cphj">0</td> 
+			</tr>
+		</table>      
+	<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</html>
+

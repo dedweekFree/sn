@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ var feenum1='F';
+ #foreach($m in $testNewVendor)
+   feenum='$m.VENDORNUM';
+ #end
+ #foreach($n in $testNewVendor1)
+   feenum1='$n.VENDORNUM1';
+ #end
+ if(parseInt(feenum)>0) { 
+   if(parseInt(feenum1)>0) {
+	   alert("此供应商已注册！");
+	   parent.submitok=false;
+    }else{
+       alert("此供应商可添加！");
+       parent.document.form1.ishave.value="2";
+    }
+ }else if(feenum=='0'){
+   alert("此供应商可添加！");
+   parent.document.form1.ishave.value="1";
+ }else{
+   alert("出现未知错误！");
+   parent.submitok=false;
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>

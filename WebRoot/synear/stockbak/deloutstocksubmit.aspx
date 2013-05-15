@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>deletestock</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>É¾³ý³É¹¦£¡</web:successMsg>
+  <web:failMsg>É¾³ýÊ§°Ü£¡</web:failMsg>
+  <web:url>outstock.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

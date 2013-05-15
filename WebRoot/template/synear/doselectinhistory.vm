@@ -1,0 +1,114 @@
+
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script type="text/javascript" src="../../../inc/js/array2.js"></script>
+<title>入库统计报表</title>
+</head>
+<script type="text/javascript">
+
+function showTotal()
+{
+//  插入行
+   var coltotal=datatable.rows[1].cells.length;
+   var oldid = datatable.rows(1).id;
+   for(var i=1;i<datatable.rows.length;i++)   {   
+     if(oldid!= datatable.rows(i).id){ 
+	  newrow =datatable.insertRow(i);
+	  newrow.id="newrow"+oldid;
+	  newrow.setAttribute('id','newrow'+oldid);
+	  var col1=newrow.insertCell();
+	  col1.colSpan=4;
+	  var col3=newrow.insertCell();
+	  var col4=newrow.insertCell();
+	  col1.innerHTML = "合计";
+         /*
+	   row=document.createElement("tr");   
+           cel1=document.createElement("td");   
+	   cel2=document.createElement("td"); 
+	   cel3=document.createElement("td");
+           text=document.createTextNode("合计");  
+	   cel1.setAttribute("colSpan","4");  
+	   cel1.appendChild(text);
+           row.appendChild(cel1);
+	   row.appendChild(cel2);
+	   row.appendChild(cel3);
+           datatable.rows(i).appendChild(row);
+	   */
+	   i=i+1;
+     }
+     oldid = datatable.rows(i).id;
+   } 
+
+   //求合
+    for(var k=4;k<coltotal;k++) {
+        var str=0;
+	var temp = 0;
+        for(var i=1;i<datatable.rows.length;i++)   {  
+	    if(datatable.rows(i).id.indexOf("newrow")>=0){ 
+	        datatable.rows(i).cells(k-3).innerText=ForDight(temp,4);
+		temp = 0;
+	    }else{
+	        temp = temp + Number(datatable.rows(i).cells(k).innerText);
+	        str = str + Number(datatable.rows(i).cells(k).innerText);
+	    }
+	 
+	}
+         datatable.rows(i-1).cells(k).innerText=ForDight(str,4);
+    }
+
+function ForDight(Dight,How) { 
+	Dight = Math.round (Dight*Math.pow(10,How))/Math.pow(10,How); 
+	return Dight; 
+} 
+
+ }
+  
+
+  
+</script>
+
+<body onload="showTotal()">	
+<div class="qx" style="text-align:left">日期:$!form_begintime:$!form_endtime&nbsp;&nbsp;&nbsp;&nbsp; <!-- $form_begintime 至 -->
+生产分厂/仓库：$!form_facname  $!form_stor</div>
+<table class="datatable" border="0" cellpadding="0" frame=box id="datatable" cellspacing="0">
+	<tr class="search">
+		<td >名称</td>		
+		<td >规格</td>
+		<td >单件重量</td>		
+		<td >收发类别</td>
+		<td >本期入库（件）</td>	
+		<td >本期入库（吨）</td>	
+	</tr>
+
+    #foreach($k in $sql0)
+	<tr class="trcolor NUM" id="$k.CDISPATCHERID">
+		<td class="CN">$k.INVNAME</td>
+		<td class="NUM">$k.INVTYPE</td>
+		<td>$k.UNITWEIGHT</td>
+		<td id=a$k.INVCODE>$k.INDISNAME</td>
+		<td id=b$k.INVCODE>$k.INCOUNT</td>			
+		<td id=c$k.INVCODE>$k.INCOUNT2</td>
+
+		
+	</tr>
+   #end
+	<tr class="trcolor NUM">
+		<td class="CN">总合计</td>
+		<td class="NUM"></td>
+		<td></td>
+
+		<td>0</td>
+
+		<td>0</td>			
+		<td>0</td>
+
+	
+	</tr>
+</table>
+<div><input type="button" name="search" class="bt1" value="重新查询" onclick="window.location='selectinhistory.aspx'"></div>
+</body>
+</html>

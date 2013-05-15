@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>到货不合格次数明细</title>
+</head>
+
+<body>
+<table class="datatable" id="tab">
+  <tr class="trcolor">
+    <td>供应商名称:</td>
+    <td>$!form_custname</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>考核时间:</td>
+    <td>$!form_monthdate1 - $!form_monthdate2 </td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>  </tr>
+  <tr class="trcolor">
+    <td>序号</td>
+    <td>供货产品</td>
+    <td>到货单号</td>
+    <td>到货时间</td>
+    <td>到货数量</td>
+    <td>到货地点</td>
+    <td>质检结果</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selvarrordercishu)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.VARRORDERCODE</td>
+    <td>$!m.VDEF10</td>
+    <td>$!m.NARRVNUM</td>
+    <td>$!m.VDEF4</td>
+    <td>$!m.VMEMO</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+<input type="button" class="bt1" name="b1" value="返&nbsp;&nbsp;回" onclick="javacript:history.go(-1)" />
+<input type="button" class="bt1" name="b2" value="导出EXCEL表"  onclick="javascript:method1('tab');"/>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

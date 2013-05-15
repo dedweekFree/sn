@@ -1,0 +1,118 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>系统消息查询</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+
+function fsubmit()
+{
+   thisform.page.value=1;
+   thisform.submit();
+}
+function addmesss(){
+   document.thisform.action="messageadd.aspx";
+   document.thisform.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+</script>
+<body>	
+  <form name="thisform" method="post" action="sysmessage.aspx">
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+                <tr>
+			<td align="center" colspan="5">	
+				<input type="button" name="search" class="bt1" value="新&nbsp;增" onclick="addmesss()">	
+			</td>
+		</tr>	
+		
+</table>
+
+
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">发布时间</td>
+	<td nowrap="nowrap">标题</td>
+        <td nowrap="nowrap">内容</td>
+	<td nowrap="nowrap">添加人</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+
+    #set($i=1) 
+    #foreach($m in $querySysMessage)
+        #if($m.ADDUSER==$session_USERNAME || $session_USERNAME=="admin")
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.ADDTIME</td>
+			<td align="left" nowrap="nowrap">$m.TITLE</td>
+			<td align="left" width="50%">$m.CONTENT.replaceAll('lt;','<').replaceAll('gt;','>')</td>
+			<td align="center" nowrap="nowrap">$m.ADDUSER</td>
+			<td align="center" nowrap="nowrap"><a href="editsysmessage.aspx?id=$m.ID">修改</a>&nbsp;<a href="delsysmessage.aspx?id=$m.ID" target="saveframe">删除</a></td>
+		 </tr>
+         #end
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</form>	
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe>
+</body>
+</html>

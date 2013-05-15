@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>账期维护</title>
+<script language="javascript">
+	function s(){
+	        if(form1.accountname.value == ""){
+                      alert("账期不能为空");
+		      return false;
+		}
+		form1.accountid.value=getTimeStr();
+		form1.submit();
+	}
+	function todelete(url){
+	    if(confirm("确定要删除吗？")){
+                 document.form1.action=url;
+		 form1.submit();
+	    }
+	}
+	function toedit(url){
+	   document.form1.action=url;
+	   form1.submit();
+	}
+	function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   
+   var bb  = parseInt(Math.random()*1000);
+   if(bb < 1000 && bb >= 100){
+       str = str+"0"+bb;
+   }else if(bb < 100 && bb >= 10){
+       str = str+"00"+bb;
+   }else if(bb < 10 && bb >= 0){
+       str = str+"000"+bb;
+   }else{
+       str = str+bb;
+   }
+   str = str.substring(2,12);
+   return str;  
+}
+</script>
+</head>
+
+<body>
+<form name="form1" method="post" action="accountperiodinsert.aspx" target="dataframe">
+<input type="hidden" name="accountid">
+<table class="datatable">
+  <tr class="search"> 
+	<td class="tdlabel" width="10%">账期</td>
+	<td class="tdinput" width="20%">
+		<input type="text" name="accountname" value="$!form_accountname">		
+	</td>
+	</tr>
+   <tr>
+    <td colspan="4" align="right"><input type="button" name="button" class="bt1" value="提交" onclick="s()"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  </table>
+  </form>
+  <table class="datatable">
+  <tr class="trcolor">
+    <td>账期</td>
+    <td>状态</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selaccountperiod)
+  <input type="hidden" name="accountid" id="accountid$i" value="$!m.ACCOUNTID">
+  <tr>
+    <td align="center">
+    <input value="$!m.ACCOUNTNAME" name="accountname" id="accountname$i" type="text" ></td>
+    <td align="center">
+        <select name="fstatus" id="fstatus$i">
+	   <option value="1" #if($m.FSTATUS == '1')selected#end>启用</option>
+	   <option value="2" #if($m.FSTATUS == '2')selected#end>停用</option>
+	</select>
+    </td>
+    <td align="center">
+       <a href="#"  onclick="toedit('accountperiodsavedit.aspx?accountid=$!m.ACCOUNTID&fstatus='+document.getElementById('fstatus$i').value+'&accountname='+document.getElementById('accountname$i').value)">修改</a>
+    &nbsp;&nbsp;&nbsp;<a href="#"  onclick="todelete('accountperioddel.aspx?accountid=$!m.ACCOUNTID')">删除</a></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

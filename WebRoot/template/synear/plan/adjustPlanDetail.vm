@@ -1,0 +1,59 @@
+
+
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<title>调整明细</title>
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+
+</script>
+<body>	
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">客户名称</td>
+	<td nowrap="nowrap">产品名称</td>
+	<td nowrap="nowrap">计划期间</td>
+	<td nowrap="nowrap">调整数量</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getAdjustPlanD)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+			<td align="center" nowrap="nowrap">$m.ORGDESC</td>
+			<td align="center" nowrap="nowrap">$m.ITEMDESC</td>
+			<td align="center" nowrap="nowrap">$m.PERIODNO &nbsp;</td>
+			<td align="center" nowrap="nowrap">$m.REQUIREQTY</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+</table>
+<div style="width:100%;txt-align:center;border:0 double gray;">
+<input type="button" class="login2" value=" 返  回 " name="B222" onClick="javascript:history.go(-1);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+</body>
+</html>

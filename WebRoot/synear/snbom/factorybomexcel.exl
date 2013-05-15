@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>snfactorybomhqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>分厂编码##分厂名称##产品编码##产品名称##产品规格##物料版本号##生效日期##失效日期##创建人</web:col>
+  <web:key>DEPTCODE##DEPTNAME##INVCODE##INVNAME##INVSPEC##VERSION##STARTDATE##ENDDATE##MAKER</web:key>
+  <web:name>产品出入库汇总</web:name>
+</web:page>
+
+
+

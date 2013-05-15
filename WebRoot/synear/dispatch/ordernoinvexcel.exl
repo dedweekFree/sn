@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>dispatchordernoinvqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>经销商##订单件数##卖场实收件数##缺品件数##缺品率</web:col>
+  <web:key>OCUSTNAME##NNUMBER##SURENNUMBER##QPNNUMBER##QPL</web:key>
+  <web:name>订单缺品率</web:name>
+</web:page>
+
+
+

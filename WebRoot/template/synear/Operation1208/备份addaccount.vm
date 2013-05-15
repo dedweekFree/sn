@@ -1,0 +1,385 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>企业往来对账添加</title>
+<script src="../../js/sunnyfunc.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendarnew.js"></script>
+<script>
+ var now = new Date(); //获取系统日期 
+var yyy ="'"+now.getYear()+"'"; //截取年		
+var yy = yyy.substring(3,5);
+var mon = now.getMonth()+1; //截取月
+var dd = now.getDate(); //截取日
+//取时间 
+var hh = now.getHours(); //截取小时 
+var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+var mil = now.getMilliseconds();//毫秒
+ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+var clock = yy; //将得到的各个部分连接成一个日期时间 
+if (parseInt(mon) < 10) mon = '0'+mon; //字符串 
+clock += mon;  
+if (parseInt(dd) < 10) dd = '0'+dd;  
+clock += dd;
+if (parseInt(hh) < 10) hh = '0'+hh;  
+clock += hh; 
+if (parseInt(ss) < 10) ss = '0'+ss;  
+clock += ss;
+if (parseInt(mil) < 10){mil = '00'+mil;
+}else if(10 <= parseInt(mil) < 100){mil = '0'+mil;}
+clock += (mil.substr(0,3));
+var bid=0;
+var submitok=false;
+var ChosedList=new Array();
+var header=4;		//定单头的个数
+var thisCol=6;	//表单体的列数
+var others=0;		//表单中非表单体的控件数
+var thisRow=10;     //初始行数
+var submitok=false; //是否已提交
+var testRow=-1;     //验证数据行号
+var row=thisRow;
+var submitfirst=true;
+var undefined;
+var seleRow=0;
+var datatb;
+var lingtuo="";
+var shenyukeru="0";
+var kuwei="";
+var data=new Array();//单个记录元素数据数组
+
+//一维数组赋值     
+function data1()
+{
+	var data=new Array()
+	args=data1.arguments;
+	for(i=0;i<args.length;i++)
+	{
+	  data[i]=args[i];
+	}
+	return data;
+}
+     
+//二维数组赋值     
+function data2(data)
+{
+	this.data=data;
+}
+
+var bData1=new Array(); 
+   data=new data1('产品名称','产品代码','产品规格','产品主键');
+   bData1[0]=new data2(data);
+ #set($i=1)
+ #foreach($m in $selncinvcl)
+   data=new data1('$m.INVNAME','$!m.INVCODE','$m.INVSPEC','$m.PK_INVBASDOC');
+   bData1[$i]=new data2(data);
+   #set($i=$i+1)
+ #end
+
+
+function addListener() {
+ var inputList = document.body.getElementsByTagName("INPUT");
+ if(inputList[0]) firstInput = inputList[0];
+    for(var i=0;i<inputList.length;i++) {
+      inputList[i].attachEvent ('onfocus', onInputFocus);
+   }
+}
+function addRow() 
+{  
+     var tempR=document.all.tb.insertRow();
+	 tempR.bgcolor="#FFFFFF";
+	 var temp1=tempR.insertCell();	
+	 var temp2=tempR.insertCell();	
+	 var temp3=tempR.insertCell();	
+	 var temp4=tempR.insertCell();	
+	 var temp5=tempR.insertCell();	
+	
+	//temp3.style.display='none';
+
+
+	 temp1.innerHTML="<p align=\"center\"><input name='F_prodpk' id='F_prodpk"+row+"' type='text' class='login3' style='width:150' onKeyUp='showdata(this,"+row+")'>";   
+ 	 temp2.innerHTML="<p align=\"center\"><input name='F_invspec' id='F_invspec"+row+"' style='width:150' class='login3' type='text' onkeyup=\"if(isNaN(value))execCommand('undo')\" onafterpaste=\"if(isNaN(value))execCommand('undo')\">";
+	 temp3.innerHTML="<p align=\"center\"><input name='unitcode' id='unitcode"+row+"' style='width:150' class='login3' type='text'  onkeyup=\"if(isNaN(value))execCommand('undo')\" onafterpaste=\"if(isNaN(value))execCommand('undo')\">";
+	 temp4.innerHTML="<p align=\"center\"><input type='text' name='F_batchcode' id='F_batchcode"+row+"'  value='' style='width:140' onfocus=\"calendar()\"><input name='F_prodName' id='F_prodName"+row+"' style='width:150' class='login3' type=\"hidden\">";
+	 temp5.innerHTML="<p align=\"center\"><input name='F_number' id='F_number"+row+"' value='' style='width:150' class='login3' type='text'  onkeyup=\"if(isNaN(value))execCommand('undo')\" onafterpaste=\"if(isNaN(value))execCommand('undo')\">";
+	 document.form1.elements[row*thisCol+header].focus();
+	 row=row+1;
+     tempR=document.all.tb.insertRow();
+     temp1=tempR.insertCell(); 
+     temp1.innerHTML="<table id=\"dtb\"></table>";
+     temp1.colSpan=8; 
+}
+function getdata(i,k) { //v6.0
+  document.form1.elements[thisCol*k+header+0].value=bData1[i].data[0];
+  document.form1.elements[thisCol*k+header+4].value=bData1[i].data[3];
+  tb.rows[k*2+2].style.display="none";
+  document.form1.elements[k*thisCol+header+1].focus();
+}
+
+function hidetr(k) { //v6.0
+    tb.rows[k*2+2].style.display="none";
+}
+
+
+ function save(status){
+     if(document.getElementById("qichumoney").value == ""){
+	alert("期初余额不能为空");
+	document.form1.qichumoney.focus();
+	return false;
+     }
+     var a = 'dz';
+     var b = clock;
+     var d = a+b;
+     var tab = document.getElementById("tb");
+     var hdatahtml="";
+	   hdatahtml+="<input type=hidden name=accountid value='"+d+"'>";
+	   hdatahtml+="<input type=hidden name=qichumoney value='"+document.getElementById('qichumoney').value+"'>";
+	   hdatahtml+="<input type=hidden name=weikaimoney value='"+document.getElementById('weikaimoney').value+"'>";
+	   hdatahtml+="<input type=hidden name=remark value='"+document.getElementById('remark').value+"'>";
+	   hdatahtml+="<input type=hidden name=vendorremark value='"+document.getElementById('vendorremark').value+"'>";
+
+  var datahtml="";
+ 	for(var i=0;i<tab.rows.length;i++){
+		try{
+		var a = document.getElementById("F_prodName"+i).value;
+		}catch(e){
+		var a="";
+		}
+		if(a!="" && document.getElementById("F_invspec"+i).value!="" && document.getElementById("unitcode"+i).value!=""){
+		datahtml+="<input type=hidden name=F_prodName value='"+document.getElementById('F_prodName'+i).value+"'>";
+		datahtml+="<input type=hidden name=F_invspec value='"+document.getElementById('F_invspec'+i).value+"'>";
+		datahtml+="<input type=hidden name=unitcode value='"+document.getElementById('unitcode'+i).value+"'>";
+		datahtml+="<input type=hidden name=F_batchcode value='"+document.getElementById('F_batchcode'+i).value+"'>";
+		datahtml+="<input type=hidden name=F_number value='"+document.getElementById('F_number'+i).value+"'>";
+		datahtml+="<input type=hidden name=F_prodpk value='"+document.getElementById('F_prodpk'+i).value+"'>";
+		}
+	}
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ subdata.innerHTML=hdatahtml+datahtml;
+ document.form1.B22.disabled = true; 
+      document.all.thisform.action="accountaddsub.aspx";
+      document.all.thisform.submit();
+}
+function showdata(obj,k)
+{
+   key=event.keyCode;
+   if(key==40)   //向下箭头
+   {
+      try{
+        MouseOut(datatb.rows[seleRow]);
+        if(seleRow==(datatb.rows.length-1))
+          seleRow=1;
+        else
+          seleRow++;
+        MouseOver(datatb.rows[seleRow]);
+      }catch(e){}
+   }else if(key==38)   //向上箭头
+   {
+      try{
+        MouseOut(datatb.rows[seleRow]);
+        if(seleRow==1)
+          seleRow=(datatb.rows.length-1);
+        else
+          seleRow--;
+        MouseOver(datatb.rows[seleRow]);
+      }catch(e){}
+   }else if(key==13 && tb.rows[k*2+2].style.display!="none")      //回车
+   {
+     try{
+       datatb.rows[seleRow].onclick();
+     }catch(e){}
+   }
+   else{
+      var str="";
+      var zcode=obj.value;
+      var slen=0
+      slen=zcode.length;
+      var mm=0;
+      for(i=0;i<bData1.length;i++)
+      {
+        if((bData1[i].data[0].indexOf(zcode)>-1) && zcode!="")
+        {
+             str+="<tr class=\"fCopy\" onMouseOver=\"MouseOut(datatb.rows[seleRow]);seleRow=this.rowIndex;MouseOver(this);\" onMouseOut=\"MouseOut(datatb.rows[seleRow]);seleRow=1;MouseOut(this);\" onclick=\"getdata("+i+","+k+")\"><td>"+bData1[i].data[0]+"</td><td>"+bData1[i].data[1]+"</td><td>"+bData1[i].data[2]+"</td></tr>";
+             mm++;
+        }
+      }
+      if(zcode=="")
+      {
+		//document.form1.elements[k*thisCol+header].value="";
+		//document.form1.elements[k*thisCol+header+1].value="";
+		//document.form1.elements[k*thisCol+header+3].value="";
+		//document.form1.elements[k*thisCol+header+4].value="";
+      }
+      if(str!=""){
+        str="<tr class=\"fCopy\" onclick=\"hidetr("+k+")\"><td>"+bData1[0].data[0]+"</td><td>"+bData1[0].data[1]+"</td><td>"+bData1[0].data[2]+"</td></tr>"+str;
+        str="<table id=\"dtb\">"+str+"</table>";
+        tb.rows[k*2+2].style.display="";
+        tb.rows[k*2+2].cells[0].innerHTML="<span>"+str+"</span>";
+        
+        datatb=dtb[k];
+        try{
+          MouseOver(datatb.rows[1]);
+        }catch(e){}
+        seleRow=1;
+      }
+      else
+        tb.rows[k*2+2].style.display="none";
+    }
+}
+function init()
+{
+    addListener();
+}
+/**
+*在行上聚焦和失焦
+**/
+function MouseOver(i){
+   for(j=0;j<i.cells.length;j++){
+       i.cells[j].style.backgroundColor='#e9e9e9'; i.cells[j].style.cursor='hand';
+   }
+}
+function MouseOut(i){
+   for(j=0;j<i.cells.length;j++){
+       i.cells[j].style.backgroundColor='#FFFFFF';
+   }
+}
+</script>
+<link href="../../../css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f" align="center">添加企业往来对账单</td>
+  </tr>
+</table>
+<form name="form1" method='post' action="accountaddsub.aspx">  
+#foreach($!m1 in $selenteraccountdate2)
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999">
+  <tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="24" nowrap width="15%"><div align="right">$m1.MONTHNAME初期初余额:</div></td>
+    <td width="30%" height="25" nowrap> 
+     <input type="text" name="qichumoney"  id = "qichumoney" value="" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">*</td>
+    <td width="15%" height="25" nowrap><div align="right">$m1.MONTHNAME$m1.DAYNAME未开发票金额:</div></td>
+    <td width="35%" height="25" nowrap> 
+<span class="style3 style1">
+        <input type="text" name="weikaimoney"  id = "weikaimoney" value="" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+      </span>*</td>
+  </tr>
+<tr bgcolor="#E3E3E3" class="fCopy">
+    <td height="15%" nowrap><div align="right">供应商备注</div></td>
+    <td width="35%" height="25" nowrap> 
+     <textarea type="text" name="vendorremark"  id = "vendorremark" value="" cols="30" rows="5"></textarea></td>
+    <td width="15%" height="25" nowrap><div align="right">财务备注:</div></td>
+        <td width="30%" height="25" nowrap> 
+	<textarea type="text" name="remark"  id = "remark" value="" cols="30" rows="5" readonly></textarea>
+	</td>
+	</tr>
+ </table>
+ <table id="tb" border="1" align="center" cellpadding="0" cellspacing="1" bordercolor="#D4D0C8" bgcolor="#FFFFFF">
+  <tr bgcolor="#E3E3E3" align="center">
+    <td width="16%" height="25" nowrap align="center">存货名称</td>
+    <td width="8%" height="25" nowrap align="center">$m1.MONTHNAME发货数量</td>
+    <td width="8%" height="25" nowrap align="center">$m1.MONTHNAME发货含税金额</td>
+    <td width="10%" height="25" nowrap align="center">本月收款日期</td>
+    <td width="10%" height="25" nowrap align="center">本月收款金额</td>
+  </tr>
+  #end
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk0" type="text" class="login3" style="width:150" onKeyUp="showdata(this,0)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec0" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode0" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode0" type="text"  style="width:150" class='login3'  onfocus="calendar()"><input name="F_prodName" id="F_prodName0" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number0" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk1" type="text" class="login3" style="width:150" onKeyUp="showdata(this,1)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec1" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode1" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode1" type="text"  style="width:150" class='login3'  onfocus="calendar()"><input name="F_prodName" id="F_prodName1" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number1" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk2" type="text" class="login3" style="width:150" onKeyUp="showdata(this,2)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec2" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode2" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode2" type="text"  style="width:150" class='login3'  onfocus="calendar()"><input name="F_prodName" id="F_prodName2" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number2" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk3" type="text" class="login3" style="width:150" onKeyUp="showdata(this,3)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec3" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode3" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode3" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName3" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number3" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk4" type="text" class="login3" style="width:150" onKeyUp="showdata(this,4)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec4" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode4" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode4" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName4" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number4" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk5" type="text" class="login3" style="width:150" onKeyUp="showdata(this,5)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec5" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode5" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode5" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName5" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number5" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk6" type="text" class="login3" style="width:150" onKeyUp="showdata(this,6)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec6" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode6" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode6" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName6" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number6" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk7" type="text" class="login3" style="width:150" onKeyUp="showdata(this,7)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec7" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode7" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode7" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName7" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number7" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" class="fCopy">
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk8" type="text" class="login3" style="width:150" onKeyUp="showdata(this,8)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec8" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode8" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode8" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName8" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number8" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td></tr>
+  <tr bgcolor="#FFFFFF" >
+     <td align="center" nowrap><input name="F_prodpk" id="F_prodpk9" type="text" class="login3" style="width:150" onKeyUp="showdata(this,9)"></td>
+     <td align="center" nowrap><input name="F_invspec" id="F_invspec9" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="unitcode" id="unitcode9" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+     <td align="center" nowrap><input name="F_batchcode" id="F_batchcode9" type="text"  style="width:150" class='login3' onfocus="calendar()"><input name="F_prodName" id="F_prodName0" type="hidden" value="">	 </td>
+      <td align="center" nowrap><input name="F_number" id="F_number9" type="text" class="login3" style="width:150" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+  </tr>
+  <tr><td colspan=8 style="padding:0px" ><table id="dtb"></table></td>
+  </tr>
+  </table>
+   <div align="center">
+<input type="button" class="login2" value=" 提  交 " name="B22" onclick="save('Y')">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value=" 添加行 " name="B222" onClick="addRow();">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" class="login2" value="返  回" name="B222" onClick="javascript:location.href='enteraccount.aspx'">
+  </div>
+</form>
+<form name="thisform" action="" method="post" target="dataframe">
+<span id="subdata"></span>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body> 
+</html>      

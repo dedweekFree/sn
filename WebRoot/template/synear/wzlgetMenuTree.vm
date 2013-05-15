@@ -1,0 +1,287 @@
+<HTML>
+<HEAD>		
+<title></title>
+<link rel="stylesheet" type="text/css" href="/extjs/resources/css/ext-all.css"/>
+<link rel="stylesheet" type="text/css" href="../extdemo/css/main.css"/>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL = '../extdemo/img/s.gif';
+</script>
+</HEAD>
+<BODY>
+<div id="loading-mask" style=""></div>
+  <div id="loading">
+    <div class="loading-indicator"><img src="../extdemo/img/extanim32.gif" width="32" height="32" style="margin-right:8px;" align="absmiddle"/>Loading...</div>
+  </div>
+<script type="text/javascript">
+//设置树的点击事件
+function treeClick(node,e) {
+	 if(node.isLeaf()){
+		e.stopEvent();
+		var n = tab.getComponent(node.id);
+		if (!n) {
+			var n = tab.add({
+				'id' : node.id,
+				'title' : node.text,
+				closable:true,
+				html : '<iframe scrolling="auto" frameborder="0" width="100%" height="100%" src="output/'+node.id+'/'+node.id+'.html"></iframe>'
+				//html : '我是"'+node.text+'"'
+				});
+		}
+		tab.setActiveTab(n);
+	 }
+}
+//生成标签页
+var tab = new Ext.TabPanel({
+			region:'center',
+			deferredRender:false,
+			activeTab:0,
+			resizeTabs:true, // turn on tab resizing
+			minTabWidth: 115,
+			tabWidth:135,
+			enableTabScroll:true,
+			items:[{
+				id:'homePage',
+				title:'首页',
+				autoScroll:true,
+				html:'<div style="position:absolute;color:#ff0000;top:40%;left:40%;">欢迎使用思念内部信息化系统</div>'
+			}]
+		});
+
+Ext.onReady(function(){
+   //layout
+   var viewport = new Ext.Viewport({
+		layout:'border',
+		items:[
+			new Ext.BoxComponent({
+				region:'north',
+				el: 'north',
+				height:80
+			}),new Ext.BoxComponent({
+				region:'south',
+				el: 'south',
+				height:25
+			}),{
+			region:'west',
+			id:'west-panel',
+			split:true,
+			width: 200,
+			minSize: 175,
+			maxSize: 400,
+			margins:'0 0 0 0',
+			layout:'accordion',
+			title:'系统菜单',
+			collapsible :true,
+			layoutConfig:{
+				animate:true
+				},
+		    items: [
+    			     {
+					title:"业务系统",
+					border:false,
+					html:'<div id="A001" style="overflow:auto;width:100%;height:100%"></div>'
+					//iconCls:'nav'
+			    },
+                {
+					title:'系统管理',
+					border:false,
+					html:'<div id="S001" style="overflow:auto;width:100%;height:100%"></div>'
+					//iconCls:'nav'
+			    },  			     
+                {
+					title:'采集系统',
+					border:false,
+					html:'<div id="SY01" style="overflow:auto;width:100%;height:100%"></div>'
+					//iconCls:'nav'
+			    }]
+			},
+	        tab//初始标签页
+		 ]
+	});
+
+	//设置树形面板
+	var Tree = Ext.tree;
+
+	// set the root node
+	var a0=new Ext.tree.TreeNode({
+		id:"a0",
+		href:"",
+		hrefTarget:"_blank",
+		url:"",
+		text:"我的权限"});
+    #foreach($m in $getModuleByPidByuser)
+	var $m.MODULEID=new Ext.tree.TreeNode({
+		id:"$m.MODULEID",
+		href:"",
+		hrefTarget:"_blank",
+		url:"",
+		text:"$!m.MODULENAME"});
+		a0.appendChild(${m.MODULEID});
+	     #foreach($n in $getFunByuser)
+	         #if($m.MODULEID==$n.PID)        
+			var $n.MODULEID=new Ext.tree.TreeNode({
+				id:"$n.MODULEID",	
+				href:"baseaction.action?functionId=$n.MODULEID&type=0&navigationUrl=$n.MODULEURL",	
+				hrefTarget:"_blank",
+				url:"baseaction.action?functionId=$n.MODULEID&type=0&navigationUrl=$n.MODULEURL",
+				text:"$!n.MODULENAME"
+			});
+			${m.MODULEID}.appendChild(${n.MODULEID});
+		 #end
+	    #end
+    #end
+
+   	var tree = new Tree.TreePanel({
+		el:'A001',
+		autoScroll:true,
+		root:a0,
+		animate:true,
+		enableDD:false,
+		border:false,
+		rootVisible:true,
+		containerScroll: true,
+		/*loader: new Tree.TreeLoader({
+			dataUrl:'treedata.php'
+		})*/
+        listeners:{
+          'click':function(node, event) {
+          event.stopEvent();
+          var n = tab.getComponent(node.id);
+	  if(node.attributes.url!=''){
+            if (!n) { //判断是否已经打开该面板
+              n = tab.add({
+                 'id':node.id,
+                 'title':node.text,
+                 closable:true,  //通过html载入目标页
+		  //	   html : '我是"'+node.attributes.url+'"'          //node.attributes.hrefTarget
+                 html:'<iframe scrolling="auto" frameborder="0" width="100%" height="100%" src="'+node.attributes.url+'"></iframe>'
+              });
+	    }
+          }else{
+            node.expand();
+	  }
+          tab.setActiveTab(n);
+        }
+      }
+	});
+
+      tree.setRootNode(a0);
+	// render the tree
+	tree.render();
+	a0.expand();
+	tree.on('click',treeClick);
+
+    //tree2
+    var root2=new Ext.tree.TreeNode({
+		    id:"root2",
+		    text:"树的根"
+		});
+
+    var c1=new Ext.tree.TreeNode({
+		id:'c1',
+		icon:'img/im2.gif',
+		text:'信息征集'
+	});
+
+    var c2=new Ext.tree.TreeNode({
+		id:'c2',
+		icon:'img/im2.gif',
+		text:'bug征集'
+	});
+
+
+    var c22=new Ext.tree.TreeNode({
+		id:'c22',
+		icon:'img/im2.gif',
+		text:'实例征集'
+	});
+
+    var c3=new Ext.tree.TreeNode({
+		id:'c3',
+		icon:'img/im2.gif',
+		text:'给我留言',
+        href:'http://www.extshow.com/'//添加超链接
+        //hrefTarget:'_blank'//新窗口打开链接
+	});
+    var c4=new Ext.tree.TreeNode({
+		id:'c4',
+		icon:'img/im2.gif',
+		text:'留言列表'
+	});
+
+	var c5=new Ext.tree.TreeNode({
+		id:'c5',
+		text:'更新公告'
+	});
+
+    var root3=new Ext.tree.TreeNode({
+		    id:"root3",
+		    text:"根"
+		});
+	c1.appendChild(c2);
+    c1.appendChild(c22);
+	root2.appendChild(c1);
+    root2.appendChild(c3);
+    root2.appendChild(c4);
+    root3.appendChild(c5);
+
+	var tree2=new Ext.tree.TreePanel({
+		renderTo:"S001",
+		root:root2,
+		animate:true,
+		enableDD:false,
+		border:false,
+		rootVisible:false,
+		containerScroll: true
+	});
+
+    c4.on('click',function(node,event){
+	    var n = tab.getComponent(node.id);
+		if (!n) {
+			var n = tab.add({
+				'id' : node.id,
+				'title' : node.text,
+				closable:true,
+				html : '<iframe scrolling="no" frameborder="0" width="100%" height="100%" src="index.html"></iframe>'
+				});
+		}
+		tab.setActiveTab(n);
+	})
+
+   var tree3=new Ext.tree.TreePanel({
+		renderTo:"SY01",
+		root:root3,
+		animate:true,
+		enableDD:false,
+		border:false,
+		rootVisible:false,
+		containerScroll: true
+	});
+tree3.on('click',treeClick);
+	//end loding
+	setTimeout(
+				function() {
+					Ext.get('loading').remove();
+					Ext.get('loading-mask').fadeOut({remove:true});
+				}, 250
+			  );
+});
+</script>
+<div id="north">
+<p class="api-title"><b>EXT 实战</b>
+</div>
+<div id="west">
+</div>
+<div id="south">
+    <div style="float:left;margin:5px;font:normal 12px tahoma, arial, sans-serif, 宋体;">
+    Power By: <span style="color:blue">ExtJs&FleaPHP</span>
+	&nbsp;
+	</div>
+    <div style="float:right;margin:5px;font:normal 12px tahoma, arial, sans-serif, 宋体;"> 版权所有：<a href="http://www.extshow.com">www.extshow.com</a></div>
+</div>
+<div id="center2"></iframe></div>
+</BODY>
+</HTML>

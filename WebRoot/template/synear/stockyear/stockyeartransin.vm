@@ -1,0 +1,152 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>调拨入库查询</title>
+<script language="javascript">
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+ function a(){
+	form2.submit();
+ }
+ function b(){
+	   document.thisform.page.value =1;
+		document.thisform.submit();
+ }
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	var v1 = "$!form_billdate1";
+	var v2 = "$!form_billdate2";
+	if(v1=="" && v2==""){ 
+        document.getElementById('billdate1').value=Today;
+	document.getElementById('billdate2').value=Today;
+	}else{
+        document.getElementById('billdate1').value=v1;
+	document.getElementById('billdate2').value=v2;
+	}
+    }
+ </script>
+
+</head>
+
+<body onload="GetDateString()">
+<form name="thisform" method="post" action="stockyeartransin.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>单据日期:</td>
+    <td align="left"><input type="text" name="billdate1" id="billdate1" value="$!form_billdate1" onclick="ShowDate(billdate1)"/>-<input type="text" name="billdate2" id="billdate2" value="$!form_billdate2" onclick="ShowDate(billdate2)"/></td>
+    <td>入库日期:</td>
+    <td align="left"><input type="text" name="stockindate1" id="stockindate1" value="$!form_stockindate1" onclick="ShowDate(stockindate1)"/>-<input type="text" name="stockindate2" id="stockindate2" value="$!form_stockindate2" onclick="ShowDate(stockindate2)"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>单据号:</td>
+    <td align="left"><input type="text" name="billno" value="$!form_billno"/></td>
+    <td>单据状态:</td>
+    <td align="left"> <select id="billstatus" name="billstatus">
+        <option value="">全部</option>
+	<option value="N" #if($form_billstatus == 'N')selected#end>自由</option>
+	<option value="Y" #if($form_billstatus == 'Y')selected#end>提交</option>
+	</select>
+  </td>
+  </tr>
+  <tr class="trcolor">
+    <td>调出库存组织:</td>
+    <td align="left">
+       <select name="deptname">
+          <option value=""></option>
+          #foreach($!m in $stockyearcalbodyquery)
+	     <option value="$m.BODYNAME" #if($!form_deptname == $m.BODYNAME)selected#end>$m.BODYNAME</option>
+          #end
+      </select>
+    </td>
+    <td>仓库:</td>
+    <td align="left">
+       <select name="stockname">
+          <option value=""></option>
+          #foreach($!m in $stockyearstockquery)
+	     <option value="$m.STORNAME" #if($!form_stockname == $m.STORNAME)selected#end>$m.STORNAME</option>
+          #end
+      </select>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>产品名称:</td>
+    <td align="left"><input type="text" name="invname" id="invname" value="$!form_invname"/></td>
+    <td>&nbsp;</td>
+    <td align="left">&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td><input type="button" name="b1" class="bt1" value="查&nbsp;询" onclick="b()"/></td>
+    <td>&nbsp;</td>
+    <td><input type="button" name="b2" class="bt1" value="新&nbsp;建" onclick="a()"/></td>
+  </tr>
+</table>
+</form>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>单据号</td>
+    <td>单据类型</td>
+    <td>调出库存组织</td>
+    <td>仓库</td>
+    <td>入库日期</td>
+    <td>单据日期</td>
+    <td>单据状态</td>
+    <td>添加人</td>
+    <td>操作</td>
+  </tr>
+    #set($i=0)
+    #foreach($!m in $stockyeartransinquery)
+	  <tr class="trcolor">
+	    <td>$!m.SN_STOCK_IN_PK</td>
+	    <td>#if($!m.BILLCLS=='A')生产入库
+		#elseif($!m.BILLCLS=='B')移库入库
+		#elseif($!m.BILLCLS=='C')调拨入库
+		#end
+	    </td>
+	    <td>$!m.DEPTNAME</td>
+	    <td>$!m.STORNAME</td>
+	    <td>$!m.INDATE</td>
+	    <td>$!m.BILLDATE</td>
+	    <td>#if($!m.FSTATUS == 'N')自由#elseif($m.FSTATUS=='Y')提交#end</td>
+	    <td>$!m.USERNAME</td>
+	    <td>#if($!m.FSTATUS=="N")&nbsp;  #else <a href="stockyeartransindetail.aspx?billno=$!m.SN_STOCK_IN_PK&billdate1=$!m.BILLDATE">查看</a><!--#if($!m.USERNAME == $session_USERNAME)&nbsp;&nbsp;<a href="stockyeartransindel.aspx?billno=$!m.SN_STOCK_IN_PK" target="dataframe">删除</a>#end--> #end </td>
+	  </tr>
+    #set($i=$i+1)
+    #end
+     <tr >
+        <td class="tdlabel" colspan="9">$pagecode</td>
+   </tr>
+</table>
+<form action="stockyeartransinadd.aspx" method="post" name="form2">
+<input type="hidden" name="sourceaddr2" value="">
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

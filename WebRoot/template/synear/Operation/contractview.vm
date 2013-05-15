@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>合同明细</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script language="javascript">
+   var num1 = 0;
+   var num2 = 0;
+   var num3 = 0;
+   var num4 = 0;
+   var num5 = 0;
+   var num6 = 0;
+   var num7 = 0;
+   var num8 = 0;
+   var num9 = 0;
+   var num10 = 0;
+   var num11 = 0;
+    function accAdd(arg1,arg2){ 
+	var r1,r2,m; 
+	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+	m=Math.pow(10,Math.max(r1,r2)) 
+	return (arg1*m+arg2*m)/m 
+ }
+</script>
+</head>
+<body>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">合同明细</div></td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+  #foreach($mm in $selsncontractbypagebycsaleid)
+    <tr height="20"  align="center" class="trtitle">
+	<td  nowrap align="right">单据日期</td>
+	<td nowrap>$!mm.DBILLDATE</td>
+	<td nowrap align="right">状态</td>
+	<td nowrap> 
+	    #if($!mm.FSTATUS=="1")
+	      保存
+	    #elseif($!mm.FSTATUS=="2")
+	      提交
+	    #elseif($!mm.FSTATUS=="3")
+	      已确认
+	    #elseif($!mm.FSTATUS=="4")
+	       已验收
+	     #elseif($!mm.FSTATUS=="5")
+		      未确认  
+            #elseif($!mm.FSTATUS=="6")
+		      结束  
+	    #end
+	</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">供应商编码</td>
+	<td nowrap>$!mm.CUSTCODE</td>
+        <td nowrap align="right">供应商名称</td>
+	<td nowrap>$!mm.CUSTNAME</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">级别</td>
+	<td nowrap>$!mm.GRADE</td>
+        <td nowrap align="right">&nbsp;</td>
+	<td nowrap>&nbsp;</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">附件</td>
+	<td nowrap colspan="3">
+	   #if($!mm.FILEURL!="")<a href="/DownFileServlet?filepath=$!mm.FILEURL">$!mm.FILEURL</a>
+	   #else &nbsp; #end</td>
+     </tr>
+  #end
+</table>
+<br>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+  <tr height="20"  align="center" class="trtitle">
+    <td height="25" nowrap>序号</td>
+    <td height="25" nowrap>合同编号</td>
+    <td height="25" nowrap>账期</td>
+    <td height="25" nowrap>合同期间</td>
+    <td height="25" nowrap>供货名称</td>
+    <td  height="25" nowrap>备注</td>
+  </tr>
+  #set($i = 1 )
+  #foreach($mm in $selsncontractdetailbypage)
+  <tr>
+     <td>
+         $i
+     </td>
+     <td>
+         #if($mm.HTBH!="")$mm.HTBH#else&nbsp;#end
+     </td>
+     <td>
+         $mm.ACCOUNTNAME
+     </td>
+     <td>
+         $mm.CONTRACTPERIOD
+     </td>
+     <td>
+         $mm.ZCMC
+     </td>
+     <td>
+         #if($mm.VNOTE!="")$mm.VNOTE#else&nbsp;#end
+     </td>
+    </tr>
+  #set($i = $i+1 )
+  
+  #end
+  
+  </table>
+   <div align="center">
+   <input type="button" class="bt1" value=" 返  回 " name="B222" onClick="history.back(-1);">
+  </div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

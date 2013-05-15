@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>dispatchordermissqueryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>开单日期##订单号##经销商##卖场客户##卖场所属系统##缺品编码##缺品名称##缺品规格##订单件数##卖场实收件数##缺品件数</web:col>
+  <web:key>DBILLDATE##VRECEIPTCODE##OCUSTNAME##CUSTNAME##DOCNAME##INVCODE##INVNAME##INVSPEC##NNUMBER##SURENNUMBER##QPNNUMBER</web:key>
+  <web:name>缺品明细表</web:name>
+</web:page>
+
+
+

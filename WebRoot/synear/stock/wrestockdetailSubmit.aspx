@@ -1,0 +1,11 @@
+<web:page>
+  <web:sql>reinsertoutstock1</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>nc_prod_pk,nnumber,billno_bid,unitcode,batchcode,bbillno</web:multiValue>
+  <web:successMsg>保存成功！</web:successMsg>
+  <web:failMsg>保存失败！</web:failMsg>
+  <web:url>outstock.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

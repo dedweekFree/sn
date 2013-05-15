@@ -1,0 +1,105 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../../inc/js/calendarold.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar-setup.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar-en.js"></script>
+<script language="javascript">
+    function tocheck(str){
+	document.form1.ischeck.value=str;
+	document.form1.action="checktender.aspx";
+	document.form1.submit();
+    }
+</script>
+<title>=======</title>
+</head>
+
+<body>
+<table class="datatable" width="100%"><form name="form1" method="post" target="dataframe">
+<input type="hidden" name="proid" value="$!form_proid">
+<input type="hidden" name="ischeck" value="">
+#foreach($!m in $zbinfodetail)
+  <tr class="trcolor">
+    <td align="right" width="50%">项目名称:
+    </td>
+    <td align="left" width="50%">$!m.PRONAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">项目状态:</td>
+    <td align="left">
+      #if($!m.STATUS == 'A')
+	    普通模式
+	#end
+	#if($!m.STATUS == 'B')
+	    竞价模式
+        #end
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right" width="50%">项目类型:
+    </td>
+    <td align="left" width="50%">$!m.TENDTYPENAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right" width="50%">部门:
+    </td>
+    <td align="left" width="50%">$!m.DEPARTNAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">&nbsp;</td><td align="left">#if($!m.PIC=='h')<font color="red">限高价</font>#else<font color="red">限低价</font>#end</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">&nbsp;</td><td align="left">#if($!m.ISLIMITPRICE=='Y')<font color="red">自由报价模式</font>#else<font color="red">限价模式</font>#end</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right" width="50%">招标价:
+    </td>
+    <td align="left" width="50%">$!m.PPIC元/$!m.TYPENAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right" width="50%">招标量:
+    </td>
+    <td align="left" width="50%">$!m.TENDQUANTITY$!m.TYPENAME
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">开始时间:</td><td align="left">$!m.ATIME</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">开标时间:</td><td align="left">$!m.KTINE</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">结束时间:</td><td align="left">$!m.ZTIME</td>
+  </tr>
+    <tr class="trcolor">
+    <td align="right">说明:</td>
+    <td align="left">#if($!m.PRODESC.length()>200)$!m.PRODESC.substring(0,200)#else$!m.PRODESC#end&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">附件:</td>
+    <td align="left">
+    #if($m.PROTHER != "")
+      <a href="/DownFileServlet?filepath=$!m.PROTHER">$m.PROTHER.substring($!m.PROTHER.lastIndexOf("/")).replace("/","") 
+    </a>
+    #else
+    &nbsp;
+    #end
+    </td>
+  </tr>
+  <tr class="trcolor"><td colspan="2" align="center">
+      #if($!form_ischeck == '1')<input type="button" name="b3" class="bt1" value="审核通过" onclick="javascript:tocheck(1)"/>&nbsp;&nbsp;<input type="button" name="b3" class="bt1" value="审核不通过" onclick="javascript:tocheck(2)"/>#end
+      <input type="button" name="b3" class="bt1" value="返&nbsp;&nbsp;回" onclick="javascript:history.back(-1)"/>
+    </td></tr>
+  #end
+  </form>
+</table>
+ <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>

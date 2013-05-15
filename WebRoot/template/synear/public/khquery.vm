@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>客户档案</title>
+</head>
+
+<body>
+<form name="form1" method="post" action="">
+<table class="datatable">
+   <tr class="trcolor">
+    <td align="left">客户名称<input type="text" style="width:100" name="invname" value="$!form_invname">&nbsp;<input type="button" value="查询" onclick="tosearch()"></td>
+    <input type="hidden" name="xtype" value="1">
+    <input type="hidden" name="custname" value="$!form_custname$">
+  </tr>
+</table>
+</form>
+<table class="datatable" id="TableList">
+   <tr class="trcolor">
+    <td>选择</td>
+    <td>客户编码</td>
+    <td>客户名称</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selsneverycustname)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="ButtonSelectOk($i)"/></td>
+    <td>$!m.USERNAME</td>
+    <td>$!m.NAME
+    <input type="hidden" name="name" id='name$i' value="$!m.NAME" >
+    </td>
+  </tr>
+#set($i=$i+1)
+#end
+</table>
+</body>
+</html>
+<script language="javascript">
+function ButtonSelectOk(i){
+    var htmlname = "";
+    if(document.getElementById('Checkbox'+i).checked == true){ 
+       htmlname =document.getElementById('name'+i).value;
+    }
+    window.top.opener.document.getElementById("$form_custname").value= htmlname;
+    window.top.close();
+}
+function tosearch(){
+   document.form1.action="khquery.aspx?custname=$!form_custname&invname="+document.form1.invname.value;
+   document.form1.submit();
+}
+</script>

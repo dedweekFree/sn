@@ -1,0 +1,174 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/pubjs.js"></script>
+<script src="../../inc/js/preAfter.js"></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<title>=====</title>
+<style type="text/css">
+<!--
+.fixedHeaderTr    
+{    
+position:relative;    
+top:expression(this.offsetParent.scrollTop-3);    
+};    
+   
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft));   
+}
+-->
+</style>
+<script language="javascript">
+        var num1 = 0;
+	function sub(){
+		document.thisform.page.value =1;
+		document.thisform.submit();
+	}
+	 function toadd(url){
+	    document.form2.action=url;
+	    document.form2.submit();
+	 }
+	 function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+		   ;
+		 else
+		   idText.value=reValue;
+	    }
+
+	    function searchresults(url){
+	      
+	           document.thisform.action = url;
+		   document.thisform.submit();
+	    }
+	    function testok(){
+	        document.thisform.action = "tiaomasaomiaosaveadd.aspx";
+		document.thisform.submit();
+	    }
+	    function init(){
+	       var MyDate=new Date();
+		var Year=MyDate.getFullYear();
+		var MonthNum=MyDate.getMonth();
+		var Month;
+		if(MonthNum<9){
+		    Month="0"+(MonthNum+1);
+		}else{
+		    Month=MonthNum+1;
+		}
+		var Day=MyDate.getDate();
+		if(Day<=9){
+		    Day="0"+Day;
+		}
+		var sbtoday = "";
+		#foreach($m in $querysbyestoday)
+		     sbtoday = '$m.TOMOROWDAY'
+		#end
+		var Today=Year+"-"+Month+"-"+Day;
+		var v1 = "$!form_billdate1";
+	        var v2 = "$!form_billdate";
+		if(v1=="" && v2==""){ 
+		   document.getElementById('billdate1').value=Today;
+		   document.getElementById('billdate').value=sbtoday;
+		}else{
+		   document.getElementById('billdate1').value=v1;
+		   document.getElementById('billdate').value=v2;
+		}
+	    }
+</script>
+</head>
+
+<body onload="init()">
+<form name="thisform" method="post" action="pullgoods.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>单据开始日期</td>
+    <td align="left"><input type="text" name="billdate" onclick="ShowDate(billdate)"  value="$!form_billdate" /></td>
+    <td>单据结束日期</td>
+    <td align="left"><input type="text" name="billdate1" onclick="ShowDate(billdate1)"  value="$!form_billdate1" /></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input type="button" name="b1" class="bt1" value="查  询" onclick="sub()"/>&nbsp;<!--<input type="button" class="bt1" name="btn" value="导出excel表"onclick="javascript:method1('tb');">--></td>
+  </tr>
+</table>
+</form>
+<br>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff"  align="center" id="tb" class="datatable">
+  <tr  class="fixedHeaderTr" bgcolor="#abcdef" id="ftr">
+    <td nowrap align="center">序号</td>
+    <td nowrap align="center">运输公司</td>
+    <td nowrap align="center">派车总量</td>
+    <td nowrap align="center">到车量</td>
+    <td nowrap align="center">未到量</td>
+    <td nowrap align="center">装车完毕订单量</td>
+    <td nowrap align="center">派车订单量</td>
+    <td nowrap align="center">到车订单量</td>
+    <td nowrap align="center">未到订单量</td>
+  </tr>
+  #set($i=1)
+  #foreach($!m in $sendcorpnamedrivercount)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$!m.SENDCORPNAME</td>
+    <td><a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1&sendcorpname=$!m.SENDCORPNAME">$!m.SENDCOUNT</a></td>
+    <td>#if($!m.SCOUNT=='0')$!m.SCOUNT#else<a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1&sendcorpname=$!m.SENDCORPNAME&st1=2">$!m.SCOUNT</a>#end</a></td>
+    <td>#if($!m.WEICOUNT=='0')$!m.WEICOUNT#else<a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1&sendcorpname=$!m.SENDCORPNAME&st1=1">$!m.WEICOUNT</a>#end</a></td>
+     <td>$!m.NOUTNUM</td>
+     <td>$!m.NSHOULDOUTNUM</td>
+     <td>$!m.DCL</td>
+     <td>$!m.WDCL</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  #foreach($!m in $sendcorpnamedrivercountsum)
+  <tr class="trcolor">
+       <td colspan="2">合计</td>
+       <td><a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1">$!m.SENDCOUNT</td>
+       <td>#if($!m.SCOUNT=='0')$!m.SCOUNT#else<a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1&st1=2">$!m.SCOUNT</a>#end</a></td>
+       <td>#if($!m.WEICOUNT=='0')$!m.WEICOUNT#else<a href="zhuangcheallcount.aspx?billdate=$!form_billdate&billdate1=$!form_billdate1&st1=1">$!m.WEICOUNT</a>#end</a></td>
+       <td>$!m.NOUTNUM</td>
+       <td>$!m.NSHOULDOUTNUM</td>
+       <td>$!m.DCL</td>
+       <td>$!m.WDCL</td>
+  </tr>
+  #end
+  <tr>
+        <td class="tdlabel" colspan="22">$pagecode</td>
+   </tr>
+</table>
+<form method="post" name="form2">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

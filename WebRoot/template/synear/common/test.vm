@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="gb2312"?>
+<ufinterface roottag="so_preorder" billtype="38"  replace="Y" receiver="" sender="yj" isexchange="Y" filename="预订单表头.xml" proc="add" operation="req">
+<so_preorder id="1231560102" subdoctype="">
+        <so_preorder_head>
+            <!--去掉了预订单主表主键-->
+
+            <!--原币,不能为空,参考币种档案-->
+            <ccurrencytypeid>RMB</ccurrencytypeid>
+            
+            <!--单据类型,不能为空-->
+            <creceipttype>38</creceipttype>
+            
+            <!--折本汇率,不能为空-->
+            <nexchangeotobrate>1.0</nexchangeotobrate>
+            
+            <!--公司主键,参照基础数据"公司目录"-->
+            <pk_corp>101</pk_corp>
+            
+            <!--自定义1,可以为空-->
+            <vdef1>$form_custpk</vdef1>
+            
+             <!--自定义2,可以为空-->
+            <vdef2></vdef2>
+            
+            <!--自定义3,可以为空-->
+            <vdef3></vdef3>
+            
+            <!--自定义4,可以为空-->
+            <vdef4></vdef4>
+            
+            <!--自定义5,可以为空-->
+            <vdef5></vdef5>
+            
+            <!--自定义6,可以为空-->
+            <vdef6></vdef6>
+            
+             <!--自定义7,可以为空-->
+            <vdef7></vdef7>
+            
+            <!--自定义8,可以为空-->
+            <vdef8></vdef8>
+            
+            <!--自定义9,可以为空-->
+            <vdef9></vdef9>
+            
+             <!--自定义10,可以为空-->
+            <vdef10></vdef10>
+            
+            <!--备注,可以为空-->
+            <vnote></vnote>
+            
+           	<!--单据号,可空字段, 如果为空保存时系统自动获取 -->
+            <vreceiptcode></vreceiptcode>
+            
+           	<!--收货地址字符串,可以为空-->
+            <vreceiveaddress></vreceiveaddress>
+            
+        </so_preorder_head>
+        
+        <so_preorder_body>
+	  #foreach($m in $rsform)
+            <entry>
+                <!--去掉销售预订单附表ID 不能为空-->	
+                <!--批次ID,可以为空-->
+                <cbatchid>$m.cpackunitid</cbatchid>
+                
+                <!--发货仓库ID,可以为空参照仓库档案ID-->
+                <cbodywarehouseid>$m.cinvbasdocid</cbodywarehouseid>
+                
+                <!--发货库存组织,可以为空（参照库存组织档案）-->
+                <ccalbodyid>$m.get("cinventoryid")</ccalbodyid>
+                
+               	<!--原币,不能为空,参考币种档案-->
+                <ccurrencytypeid>RMB</ccurrencytypeid>
+                
+               	<!--存货基本档案主键,为空，需要业务插件转换,需要参照基础数据"存货档案-->
+                <cinvbasdocid>$m.pk_preorder_b</cinvbasdocid>
+                
+               	<!--存货管理档案主键,不能为空，需要参照基础数据"存货档案"-->
+                <cinventoryid>a2</cinventoryid>
+                
+                <!--辅单位主键,可以为空需要参照基础数据"计量档案"-->
+                <cpackunitid>$m.cpriceid</cpackunitid>
+                
+               
+                        
+               	<!--收货地址,可以为空(参照子表的收货单位的默认收货地址字符串-->
+                <vreceiveaddress>a</vreceiveaddress>
+             
+            </entry>
+	  #end
+        </so_preorder_body>
+    </so_preorder>
+</ufinterface>
+
+

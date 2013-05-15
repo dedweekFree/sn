@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="./../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>明细</title>
+</head>
+<script language="javascript">
+    function tosub(){
+       if(document.thisform.remark.value == ""){
+	   alert("问题处理不能为空");
+	   document.thisform.remark.focus();
+	   return false;
+       }
+       document.thisform.zhid.value = location.host; 
+       document.thisform.submit();
+    }
+</script>
+<body>
+<form action="pdatemesgendsub.aspx" method="post" name="thisform" target="saveframe">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="2">任务办理</td>
+  </tr>
+#foreach($!m in $selsendmsg)
+  <tr class="trcolor">
+    <td>报修人</td>
+    <td align="left">$!m.NAME [$!m.DETPNAME $!m.MINPHONE ] </td>
+  </tr>
+  <tr class="trcolor">
+    <td>报修日期</td>
+    <td align="left">$!m.TS <input type="hidden" name="sendcode" value="$!m.SENDCODE"></td>
+  </tr>
+  <tr class="trcolor">
+    <td>任务描述</td>
+    <td align="left">$!m.REMARK</td>
+  </tr>
+  <tr class="trcolor">
+    <td>问题处理</td>
+    <td align="left"><textarea name="remark" style="width: 300px; height: 150px">#if($!m.RECREMARK == "*")#else$!m.RECREMARK#end</textarea></td>
+  </tr>
+  <tr class="trcolor">
+    <td><input type="button" name="b1" value="返回" class="bt1" onclick="javascript:history.go(-1)" /></td>
+    <td> #if($!m.RECREMARK=='*') <input type="button" name="b2" value="提交" onclick="tosub()" class="bt1" /> #else &nbsp; #end </td>
+  </tr>
+    <input type="hidden" name="form_id" value="$!form_getusername">
+    <input type="hidden" name="sendtime" value="$!m.SENDTIME">
+    <input type="hidden" name="to_id" value="$!m.USERNAME">
+    <input type="hidden" name="remind_time" value="$!m.REMIND_TIME">
+    <input type="hidden" name="zhid" value="">
+    #end
+</table>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>createvsession</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>username,userphone</web:multiValue>
+  <web:successMsg>会议申请成功！</web:successMsg>
+  <web:failMsg>会议申请失败！</web:failMsg>
+  <web:url>vsessionapply.aspx</web:url>
+  <web:template>videosession/messagezzfy.vm</web:template>
+</web:page>

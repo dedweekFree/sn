@@ -1,0 +1,336 @@
+<HTML>
+<HEAD>		
+<title>经销商对账明细</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+
+//查看
+function ViewRow(custcode,ysmonth,custname)
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.custcode.value = custcode;
+       document.form1.ysmonth.value=ysmonth;
+       document.form1.custname.value = custname;
+       document.form1.target="_self";
+       document.form1.action="custdzcwdetail.aspx";
+       document.form1.submit();
+}
+//报批
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.billno.value = paras[1];
+   document.form1.action="tempSalePlanOkSubmit.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+//调整
+function editRow2()
+{  
+	//!$!m.BILLNO,!$!m.PK_FACTORY,!$!m.BILLDATE,!$!m.DEPTNAME,!$!m.PLANNUM,
+	//!$!m.REALHOURS,!$!m.MAKERUSER,!$!m.FSTATUS">
+
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.billno.value = paras[1];
+       document.form1.pk_factory.value = paras[2];
+       document.form1.billdate.value = paras[3];
+       document.form1.plannum.value=paras[5];
+       document.form1.realhours.value=paras[6];
+       document.form1.makeruser.value=paras[7];
+       document.form1.ts1.value=paras[9];
+       document.form1.target="_self";
+       document.form1.action="editPaiChan2.aspx";
+       document.form1.submit();
+}
+//修改
+function editRow(fstatus)
+{  
+	//!$!m.BILLNO,!$!m.PK_FACTORY,!$!m.BILLDATE,!$!m.DEPTNAME,!$!m.PLANNUM,
+	//!$!m.REALHOURS,!$!m.MAKERUSER,!$!m.FSTATUS,!$!m.TS1">
+
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.billno.value = paras[1];
+       document.form1.pk_factory.value = paras[2];
+       document.form1.billdate.value = paras[3];
+       document.form1.plannum.value=paras[5];
+       document.form1.realhours.value=paras[6];
+       document.form1.makeruser.value=paras[7];
+       document.form1.ts1.value=paras[9];
+       document.form1.fstatus.value=fstatus;
+       document.form1.target="_self";
+       document.form1.action="editPaiChan.aspx";
+       document.form1.submit();
+}
+//删除
+function DelRow()
+{      
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",!");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.billno.value = paras[1];
+	   document.form1.action="delPaiChanSubmit.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+   }
+}
+
+//客户确认
+function okRow2(st)
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.billno.value = paras[0];
+   document.form1.stok.value = st;
+   document.form1.action="tempSalePlanOkSubmit2.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue.substr(0,7);
+ 
+ }
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+
+function checkinput2()
+{  
+	 document.thisform.page.value =1;
+	 if(document.all.thisform.ysmonth.value==""){
+		   alert("请选择开始时间！");
+		   return false;
+	   }
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择分厂名称！");
+	    return false;
+      }
+	  document.all.thisform.pk_product.value=document.all.thisform.custpk.value;
+	  document.all.thisform.deptname.value=getSelectedText("custpk");
+	  document.all.thisform.action="testPlan.aspx";
+      document.all.thisform.target="saveframe";
+      document.all.thisform.submit();
+}
+function testok()
+{ 
+	document.all.form1.custpk.value=document.all.thisform.custpk.value;
+	
+	document.all.form1.deptname.value=getSelectedText("custpk");
+	document.all.form1.billdate.value=document.all.thisform.ysmonth.value;
+	document.all.form1.action="newPaiChan.aspx";
+    document.all.form1.submit();
+}
+
+//获取下拉列表选中项的文本
+function getSelectedText(name){
+var obj=document.getElementById(name);
+for(i=0;i<obj.length;i++){
+   if(obj[i].selected==true){
+    return obj[i].innerText;      //关键是通过option对象的innerText属性获取到选项文本
+   }
+}
+}
+
+ function addfile(){
+      if(document.all.thisform.custpk.value==""){
+         alert("请选择分厂名称！");
+	    return false;
+      }
+      var f_id="PC"+getTimeStr();
+     window.open('paichanpfile.jsp?formname=form1&myframeurl=myframe&picurl=paper&type=custfile&tendtypeid=pcexcel&custpk='+document.all.thisform.custpk.value+'&billno='+f_id,'','status=no,scrollbars=no,top=160,left=150,width=450,height=365');
+}
+
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+
+function exportfile(){
+   thisform.action = "exprot.exl";
+   thisform.submit();
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" action="custdzalldetail.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+
+         <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+	              <tr class="search">
+                          <td class="tdlabel" width="10%">客户编码</td>
+			  <td class="tdinput" width="20%">
+			  <input type="text" name="custcode" value="$!form_custcode">
+			</td>
+			<td class="tdlabel" width="10%">客户名称</td>
+			  <td class="tdinput" width="20%">
+			  <input type="text" name="custname" value="$!form_custname">
+			</td>
+		      </tr>
+      		      <tr class="search"> 
+			  <td class="tdlabel" width="10%">查询月份</td>
+				<td class="tdinput" width="20%">
+                      #if(!$form_ysmonth)
+                       <script>
+			document.write("<input type=text name=ysmonth size=10 readonly value='"+first+"'>");
+                       </script>
+		       #else
+		         <input type=text name=ysmonth size=10 readonly value='$form_ysmonth'>
+		       #end
+		<input type="button" value="↓" onClick="ShowDate(ysmonth);" class="button" name="button23" >
+			
+			</td>	
+			
+			<td class="tdlabel" width="10%">&nbsp;</td>
+			<td class="tdinput" width="20%">
+			  &nbsp;
+			</td>
+                </tr>
+		<tr>  <td>&nbsp;</td>
+		 <td align="left"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;	&nbsp;&nbsp;	&nbsp;&nbsp;
+		</td>
+		<td class="tdlabel" width="10%">&nbsp;</td>
+			<td class="tdinput" width="20%">
+			  &nbsp;
+			</td>
+		</tr>
+	  </table>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">对账月份</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">客户编码</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">客户名称</td>
+	<td nowrap="nowrap">期初余额</td>
+	<td nowrap="nowrap">期末余额</td>
+	<td nowrap="nowrap">明细</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $custndzheadall)
+	<tr height="20" class="trcolor">
+	     <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.YSMONTH</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.CUSTCODE</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.CUSTNAME</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.YE</td>
+		<td align="center" nowrap="nowrap">$!m.BYMONEY</td>
+		<td align="center" nowrap="nowrap"><span id="qxspan" dtParams=",!$!m.CUSTCODE,!$!m.YSMONTH,!$!m.CUSTNAME"><a style='cursor:hand' onclick="javascript:ViewRow('$!m.CUSTCODE','$!m.YSMONTH','$!m.CUSTNAME')"><font color=blue>明细</font></a>
+		</span></td>
+	 </tr>
+   #set($i=$i+1)
+   #end  
+  
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="custcode" value="$!form_custcode">
+  <input type="hidden" name="ysmonth" value="$!form_ysmonth">
+  <input type="hidden" name="custname" value="">
+</form>
+
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

@@ -1,0 +1,82 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>政策编号查询</title>
+<script language="javascript">
+function ButtonSelectOk(i){
+    if(document.getElementById('Checkbox'+i).checked == true){
+       document.getElementById('Checkbox'+i).value = 'Y';
+    }else{
+       document.getElementById('Checkbox'+i).value = 'N';
+    }
+}
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" action="stycodequery.aspx">
+<input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable" id="TableList">
+  <tr class="trcolor">
+    <td colspan="8" align="left">政策信息</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="2">政策编号&nbsp;&nbsp;<input type="text" name="stycode" value="$!form_stycode"></td>
+    <td colspan="2">
+     政策名称&nbsp;&nbsp;<input type="text" name="styname" value="$!form_styname">&nbsp;<input type="submit" name="search1" value="查询"  onclick="checkinput()">
+    </td>
+  </tr>
+   <tr class="trcolor">
+    <td nowrap>选择</td>
+    <td>政策编号</td>
+    <td>政策名称</td>
+    <td>类型</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selyxzxsalezc)
+  <tr class="trcolor" id="A$i">
+    <td><input type="radio" name="Checkbox" id='Checkbox$i' value="N" onclick="tosure($i)"/></td>
+    <td>$!m.STYCODE</td>
+    <td>$!m.STYNAME</td>
+    <td>#if($!m.TYPE=='A')单补#elseif($!m.TYPE=='B')套餐补#end<input type="hidden" name="area" id='area$i' value="$!m.STYCODE"></td>
+  </tr>
+#set($i=$i+1)
+#end
+  <tr >
+        <td class="tdlabel" colspan="4">$pagecode</td>
+   </tr>
+</table>
+</form>
+</body>
+</html>
+<script language="javascript">
+    function checkallinv(){
+       if(document.thisform.checkall.checked){
+          for(var i = 0 ; i <　$i ; i ++){
+             document.getElementById('Checkbox'+i).checked = true;
+	     document.getElementById('Checkbox'+i).value = 'Y';
+	  }
+       }else{
+          for(var i = 0 ; i <　$i ; i ++){
+             document.getElementById('Checkbox'+i).checked = false;
+	     document.getElementById('Checkbox'+i).value = 'N';
+	  }
+       }
+    }
+    function tosure(i){
+       var htmlstr = "";
+       var htmlstrname = "";
+       var count = 0 ;
+       htmlstrname =document.getElementById('area'+i).value;
+       window.opener.document.getElementById("stycode").value= htmlstrname;
+       window.close();
+    }
+</script>

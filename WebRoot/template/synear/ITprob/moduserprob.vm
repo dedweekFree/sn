@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>修改受理人信息</title>
+</head>
+
+<body>
+<form name="thisform" action="userprobsub.aspx" method="post" target="saveframe">
+<table class="datatable">
+#foreach($!m in $itbuser)
+  <tr class="trcolor">
+    <td>受理人姓名</td>
+    <td align="left"><input type="text" name="name" value="$!m.NAME"/>
+	<input type="hidden" name="hname" value="$!m.NAME">
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>受理人电话</td>
+    <td align="left"><input type="text" name="phone" value="$!m.PHONE"/>
+    </td>
+  </tr>
+  #end
+  <tr class="trcolor">
+    <td><input type="button" name="b1" value="返&nbsp;&nbsp;回" class="bt1" onclick="javascript:history.go(-1)"/></td>
+    <td><input type="submit" name="b2" value="提&nbsp;&nbsp;交" class="bt1"/></td>
+  </tr>
+</table>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

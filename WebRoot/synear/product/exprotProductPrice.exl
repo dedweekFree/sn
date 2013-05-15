@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>getProductPriceExportForQC</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产成品编号##产成品名称##规格##维护单价</web:col>
+  <web:key>INVCODE##INVNAME##INVSPEC##COSTPRICE</web:key>
+  <web:name>产成品价格设置模板</web:name>
+</web:page>
+
+
+

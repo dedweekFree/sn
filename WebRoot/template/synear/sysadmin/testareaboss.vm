@@ -1,0 +1,20 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='';
+ #foreach($m in $getAreaBoss)
+   feenum+='$m.NAME'+',';
+ #end
+ if(feenum != ''){
+	 if(confirm("该区域的区域经理是"+feenum+"确定要提交吗？")){
+	    parent.testok();
+	 }
+ }else{
+     parent.testok();
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,34 @@
+
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../js/style.css">
+	<style>
+	table,body{font-size:12px;background-color:#EBE9EE; margin:0px; padding:0px;}
+</style>
+</head>
+<body>
+<script src='../../../inc/js/codedtree.js'></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<div id='Layer1' class='dtree'></div>
+<script>
+function Choose(dm,mc,code){parent.setVals(dm,mc,code);}
+var d = new dTree('d');
+d.add('ffff',-1,'请选择','','');
+d.add('0001AG100000000001EN','ffff','产成品','','01');
+#foreach($m in $getclassTree)
+   d.add("$!m.CODE","$!m.PCODE","$!m.INVCLASSNAME","","$!m.INVCLASSCODE");
+#end
+
+	var str = '';
+if (document.getElementById) {
+   str += d.addNode(d.root);
+}else{
+   str += 'Browser not supported.';
+}
+   d.completed = true;
+   document.getElementById('Layer1').innerHTML=str;
+   curindex=0;
+</script>
+
+</body>
+</html>

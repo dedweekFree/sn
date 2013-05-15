@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>delSysMessage</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:successMsg>数据删除成功！</web:successMsg>
+  <web:failMsg>数据删除失败！</web:failMsg>
+  <web:url>sysmessage.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

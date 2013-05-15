@@ -1,0 +1,14 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script Language="javascript" src="../../../js/string.js"></script>
+	<script type="text/javascript">
+	    //mTarget转向目标窗口，空为不作处理
+      var message="$!app_message";
+          alert(message);
+	</script>
+</head>
+<body>
+</body>
+</html>
+

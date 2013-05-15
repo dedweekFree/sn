@@ -1,0 +1,254 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>=====</title>
+<script language="javascript">
+	function ss(){
+		var a = '#foreach($!m in $selcaccountyear)$!m.SSDATE#end'
+		var b = a.substr(0,4);
+		var ab = a.substr(5,2);
+		if(parseInt(ab)<4){
+			document.all.caccountyear.value=parseInt(b)-1;
+		}else{
+		document.all.caccountyear.value=b;
+		}
+		var now = new Date(); //获取系统日期 
+		var yyy ="'"+now.getYear()+"'"; //截取年		
+		var yy = yyy.substring(3,5);
+		var mon = now.getMonth()+1; //截取月
+		var dd = now.getDate(); //截取日
+		//取时间 
+		var hh = now.getHours(); //截取小时 
+		var mm = now.getMinutes(); //截取分钟
+		var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+		var mil = now.getMilliseconds();//毫秒
+		ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+		var clock = yy; //将得到的各个部分连接成一个日期时间 
+		if (parseInt(mon) < 10) mon += '0'; //字符串 
+		clock += mon;  
+		if (parseInt(dd) < 10) dd += '0';  
+		clock += dd;
+		if (parseInt(hh) < 10) hh += '0';  
+		clock += hh; 
+		if (parseInt(mm) < 10) mm += '0';  
+		clock += mm;
+		if (parseInt(ss) < 10) ss += '0';  
+		clock += ss;
+		if (parseInt(mil) < 10){mil += '00';
+		}else if(10 <= parseInt(mil) < 100){mil += '0';}
+		clock += (mil.substr(0,3));
+		var carrid = 'P1001'+ clock;
+		var varrordercode = 'DH' + clock;
+		document.all.carriveorderid.value=carrid;
+		document.all.varrordercode.value=varrordercode;
+		var date = new Array();
+		date = [['序号','业务类型ID','采购部门ID','业务员ID','发运方式','供应商基础ID','供应商管理ID','公司','备注','制单人ID']
+		#set($i=0)
+		#foreach($!m in $selPrayBillhead)
+		,['$i','$!m.CBIZTYPE','$!m.CDEPTID','$!m.CEMPLOYEEID','$!m.CTRANSMODEID','$!m.CVENDORBASEID','$!m.CVENDORMANGID','$!m.PK_CORP','$!m.VMEMO','$!m.COPERATOR']
+		#set($i=$i+1)
+		#end
+		]
+		document.all.cbiztype.value=date[1][1];
+		document.all.cdeptid.value=date[1][2];
+		document.all.cemployeeid.value=date[1][3];
+		document.all.ctransmodeid.value=date[1][4];
+		document.all.cvendorbaseid.value=date[1][5];
+		document.all.cvendormangid.value=date[1][6];
+		document.all.pk_corp.value=date[1][7];
+		document.all.vmemo.value=date[1][8];
+		document.all.coperator.value=date[1][9];
+		return clock;
+	}
+	function sss(){
+		var now = new Date(); //获取系统日期 
+		var yyy ="'"+now.getYear()+"'"; //截取年		
+		var yy = yyy.substring(3,5);
+		var mon = now.getMonth()+1; //截取月
+		var dd = now.getDate(); //截取日
+		//取时间 
+		var hh = now.getHours(); //截取小时 
+		var mm = now.getMinutes(); //截取分钟
+		var ss = now.getTime() % 60000; //获取时间，因为系统中时间是以毫秒计算的，所以秒要通过余60000得到。 
+		var mil = now.getMilliseconds();//毫秒
+		ss= (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒 
+		var clock = yy; //将得到的各个部分连接成一个日期时间 
+		if (parseInt(mon) < 10) mon += '0'; //字符串 
+		clock += mon;  
+		if (parseInt(dd) < 10) dd += '0';  
+		clock += dd;
+		if (parseInt(hh) < 10) hh += '0';  
+		clock += hh; 
+		if (parseInt(mm) < 10) mm += '0';  
+		clock += mm;
+		if (parseInt(ss) < 10) ss += '0';  
+		clock += ss;
+		if (parseInt(mil) < 10){mil += '00';
+		}else if(10 <= parseInt(mil) < 100){mil += '0';}
+		clock += (mil.substr(0,2));	
+		return clock;
+	}
+	function shecknum(id,k){
+	 	var a = isNaN(parseFloat(document.getElementById(id).value))?0:parseFloat(document.getElementById(id).value);
+		var b = isNaN(parseFloat(document.getElementById("nordernum"+k).value))?0:parseFloat(document.getElementById("nordernum"+k).value);
+		var c = isNaN(parseFloat(document.getElementById("leijidaohuo"+k).value))?0:parseFloat(document.getElementById("leijidaohuo"+k).value);
+		if(b*1.05<parseFloat(a+c)){
+			alert("输入数量加上已到数量不能超过5%");
+			document.getElementById(id).value=0;
+			return false;
+		}
+	}
+	function ssub(){
+		var tab = document.getElementById("tab");
+		var a=parseFloat(0);
+		for(var i=0;i<tab.rows.length-3;i++){
+		a +=parseFloat(document.getElementById("narrvnum"+i).value);
+		var c = isNaN(parseFloat(document.getElementById("leijidaohuo"+i).value))?0:parseFloat(document.getElementById("leijidaohuo"+i).value);
+		document.getElementById("huixie"+i).value=a+c;
+		var hg = parseFloat(document.getElementById("norgtaxprice"+i).value);
+		var hb = parseFloat(document.getElementById("narrvnum"+i).value);
+		var vv = hg*hb;
+		document.getElementById("nmoney"+i).value=vv;
+		document.getElementById("noriginalcurmny"+i).value=vv;
+		}
+		if(a=="0"){
+			alert("没有任何修改，不需要保存!");
+			return false;
+		}else{
+		        form1.action="arriveorder.nc";
+		        form1.submit();
+		}
+		document.getElementById("b2").style.display = "none";
+	}
+</script>
+</head>
+
+<body onload="ss()">
+<form name="form1" action="" method="post">
+<table class="datatable" id="tab">
+<input type="hidden" name="caccountyear" value="">
+<input type="hidden" name="carriveorderid" value="">
+<input type="hidden" name="cbiztype" value="">
+<input type="hidden" name="cdeptid" value="">
+<input type="hidden" name="cemployeeid" value="">
+<input type="hidden" name="ctransmodeid" value="">
+<input type="hidden" name="cvendorbaseid" value="">
+<input type="hidden" name="cvendormangid" value="">
+<input type="hidden" name="pk_corp" value="">
+<input type="hidden" name="varrordercode" value="">
+<input type="hidden" name="vmemo" value="">
+<input type="hidden" name="coperator" value="">
+
+#set($i=0)
+#foreach($!m in $selPrayBillinfohead)
+  <tr class="trcolor">
+    <td colspan="9" align="left">采购订单: $form_vordercode
+	<input type="hidden" value="vordercode" value="$form_vordercode">
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">供应商:</td>
+    <td><input type="text" name="TextGongYingShang" style="width:100px" readonly value="$!m.CUSTNAME"/>
+	<input id="TextGongYingShangId" type="hidden" value="$!m.CUSTCODE"/>
+    </td>
+    <td align="right">采购组织:</td>
+    <td><input type="text" name="TextCaiGouZhi" style="width:70px" readonly value="$!m.NAME"/>
+	<input id="TextCaiGouZhiId" type="hidden" value="$!m.PK_PURORG"/>
+    </td>
+    <td align="right">库存组织:</td>
+    <td><input type="text" name="TextKuCunZuZhi" style="width:70px" readonly value="$!m.BODYNAME"/>
+	<input name="cstoreorganization" id="cstoreorganization" type="hidden" value="$!m.PK_CALBODY"/>
+    </td>
+    <td align="right">业务员:</td>
+    <td><input type="text" name="TextYeWuYuan" style="width:70px" readonly value="$!m.PSNNAME"/>
+	<input id="TextYeWuYuanId" type="hidden" value="$!m.PK_PSNDOC"/>
+    </td>
+    <td>&nbsp;</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+
+#foreach($!m in $selcaccountyear)
+<input id="dreceivedate" name="dreceivedate" type="hidden" value="$!m.SSDATE"/>
+#end
+
+  <tr class="trcolor">
+    <td>存货编码/存货名称</td>
+    <td>到货仓库</td>
+    <td>单位</td>
+    <td>请购日期</td>
+    <td>需求日期</td>
+    <td>请购数量</td>
+    <td>订单数量</td>
+    <td>已到数量</td>
+    <td>本次数量</td>
+  </tr>
+#set($i=0)
+#foreach($!m in $selPrayBillinfo)
+	#foreach($!n in $selPrayBillhead)
+		#if($!n.CBASEID==$!m.PK_INVBASDOC && $!n.CORDER_BID==$!m.CORDER_BID && $!n.CORDERID==$!m.CORDERID)
+	<input type="hidden" name="cmangid" value="$!n.CMANGID">
+	<input type="hidden" name="corderid" value="$!n.CORDERID">
+	<input type="hidden" name="cbaseid" value="$!n.CBASEID">
+	<input type="hidden" name="corder_bid" value="$!n.CORDER_BID">
+	<input type="hidden" name="cwarehouseid" value="$!n.CWAREHOUSEID">
+	<input type="hidden" name="nprice" value="$!n.NORGTAXPRICE">
+	<input type="hidden" name="ivalidday" value="$!n.IVALIDDAY">
+	<input type="hidden" name="dproducedate" value="$!n.DPRODUCEDATE">
+	<input type="hidden" name="dvaliddate" value="$!n.DVALIDDATE">
+	#else
+	#end
+	#end
+  <tr class="trcolor">
+    <td>$!m.INVCODE / $!m.INVNAME</td>
+    <td>#if($!m.STORNAME!="")$!m.STORNAME#else&nbsp;#end</td>
+    <td>$!m.MEASNAME</td>
+    <td>$!m.DPLANARRVDATE
+    <input type="hidden" name="cpraybillid" value="$!m.CPRAYBILLID">
+    <input type="hidden" name="cpraybill_bid" value="$!m.CPRAYBILL_BID">
+    </td>
+    <td>
+    #if($!m.DDEMANDDATE!='0')
+    $!m.DDEMANDDATE
+    #else
+	 $!m.DPLANARRVDATE&nbsp;
+	#end
+    </td>
+    <td>$!m.NORDERNUM
+    <input type="hidden" name="nordernum" id="nordernum$i" value="$!m.NORDERNUM">
+    </td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.NACCUMARRVNUM
+     <input type="hidden" name="leijidaohuo" id="leijidaohuo$i" value="$!m.NACCUMARRVNUM">
+    </td>
+    <td><input type="text" name="narrvnum" id="narrvnum$i" value="0" style="width:40px" onblur="shecknum(this.id,$i)" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"></td>
+	<input type="hidden" name="carriveorder_bid" id="carriveorder_bid$i" value=>
+	<input type="hidden" name="crowno" id="crowno$i" value=''>	
+	<input type="hidden" name="vdef4" value="$!m.VDEF4">
+	<input type="hidden" name="huixie" id="huixie$i" value="$!m.NACCUMARRVNUM">
+	<input type="hidden" name="norgtaxprice" id="norgtaxprice$i" value="$!m.NORGTAXPRICE"> 
+	<input type="hidden" name="noriginalcurprice" id="noriginalcurprice$i" value="$!m.NORIGINALCURPRICE">
+	<input type="hidden" name="nmoney" id="nmoney$i" value="">
+	<input type="hidden" name="noriginalcurmny" id="noriginalcurmny$i" value="">
+	<input type="hidden" name="csourcebilltype" value="$!m.CSOURCEBILLTYPE">
+	<input type="hidden" name="csourcebillid" value="$!m.CSOURCEBILLID">
+	<input type="hidden" name="csourcerowid" value="$!m.CSOURCEROWID">
+    <script>
+	    #if($i>10){
+	    var io = "H01" + sss() + $i
+	    document.getElementById("carriveorder_bid$i").value=io}
+	    #else{var io = "H101" + sss() + $i
+	    document.getElementById("carriveorder_bid$i").value=io}
+	    #end
+	        document.getElementById("crowno$i").value=parseInt($i)+parseInt(1);
+    </script>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+<input type="button" name="b1" class="bt1" value="返&nbsp;&nbsp;回" onclick="history.go(-1)">&nbsp;&nbsp;<input class="bt1" type="button" name="b2" id="b2" value="确认数量" onclick="ssub()">
+</form>
+</body>
+</html>

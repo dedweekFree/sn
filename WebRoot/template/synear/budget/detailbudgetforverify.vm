@@ -1,0 +1,395 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+	<title>===预算===</title>
+	<script>
+		$(function(){
+			var $z1 = $(" td[name='zymcsl1']");
+			var $j1 = $(" td[name='jxssl1']");
+			var $h1 = $(" td[name='hjsl1']");
+			var $z2 = $(" td[name='zymcsl2']");
+			var $j2 = $(" td[name='jxssl2']");
+			var $h2 = $(" td[name='hjsl2']");
+			var $z3 = $(" td[name='zymcsl3']");
+			var $j3 = $(" td[name='jxssl3']");
+			var $h3 = $(" td[name='hjsl3']");
+			for(var i=0;i< $z1.length;i++){
+				$z3[i].innerText = $z1[i].innerText-$z2[i].innerText;
+				$j3[i].innerText = $j1[i].innerText-$j2[i].innerText;
+				$h3[i].innerText = $h1[i].innerText-$h2[i].innerText;
+			}
+			var $zymc1 = $(" td[name='zymc1']");
+			var $jxs1 = $(" td[name='jxs1']");
+			var $hj1 = $(" td[name='hj1']");
+			var $zymc2 = $(" td[name='zymc2']");
+			var $jxs2 = $(" td[name='jxs2']");
+			var $hj2 = $(" td[name='hj2']");
+			var $zymc3 = $(" td[name='zymc3']");
+			var $jxs3 = $(" td[name='jxs3']");
+			var $hj3 = $(" td[name='hj3']");
+			for(var i=0;i< $zymc1.length;i++){
+				$zymc3[i].innerText = $zymc1[i].innerText-$zymc2[i].innerText;
+				$jxs3[i].innerText = $jxs1[i].innerText-$jxs2[i].innerText;
+				$hj3[i].innerText = $hj1[i].innerText-$hj2[i].innerText;
+			}
+			//储运年度差异计算
+			var $cy1 = $(" td[name='cy1']");
+			var $cy2 = $(" td[name='cy2']");
+			var $cy3 = $(" td[name='cy3']");
+			for(var i=0;i< $cy1.length;i++){
+				$cy3[i].innerText = $cy1[i].innerText-$cy2[i].innerText;
+			}
+			//计算储运费用合计
+			var $cyhj1 = 0;
+			var $cyhj2 = 0;
+			for(var i=0;i< $cy1.length;i++){
+				$cyhj1 += parseFloat($cy1[i].innerText);
+				$cyhj2 += parseFloat($cy2[i].innerText);
+			}
+			//固定费用年度差异计算
+			var $gd1 = $(" td[name='gd1']");
+			var $gd2 = $(" td[name='gd2']");
+			var $gd3 = $(" td[name='gd3']");
+			for(var i=0;i< $gd1.length;i++){
+				$gd3[i].innerText = $gd1[i].innerText-$gd2[i].innerText;
+			}
+			//计算固定费用合计
+			var $gdhj1 = 0;
+			var $gdhj2 = 0;
+			for(var i=0;i< $gd1.length;i++){
+				$gdhj1 += parseFloat($gd1[i].innerText);
+				$gdhj2 += parseFloat($gd2[i].innerText);
+			}
+			//计算tp小计
+			var $tpzymc1 = $("tr[name='tpxj'] > td[name='zymc1']");
+			var $tpjxs1 = $("tr[name='tpxj'] > td[name='jxs1']");
+			var $tphj1 = $("tr[name='tpxj'] > td[name='hj1']");
+			var $tpzymc2 = $("tr[name='tpxj'] > td[name='zymc2']");
+			var $tpjxs2 = $("tr[name='tpxj'] > td[name='jxs2']");
+			var $tphj2 = $("tr[name='tpxj'] > td[name='hj2']");
+			var $tpzymc3 = $("tr[name='tpxj'] > td[name='zymc3']");
+			var $tpjxs3 = $("tr[name='tpxj'] > td[name='jxs3']");
+			var $tphj3 = $("tr[name='tpxj'] > td[name='hj3']");
+			var $tpzymcxj1 = 0;
+			var $tpjxsxj1 = 0;
+			var $tphjxj1 = 0;
+			var $tpzymcxj2 = 0;
+			var $tpjxsxj2 = 0;
+			var $tphjxj2 = 0;
+			var $tpzymcxj3 = 0;
+			var $tpjxsxj3 = 0;
+			var $tphjxj3 = 0;
+			for(var i=0;i< $tpzymc1.length;i++){
+				$tpzymcxj1+=parseFloat($tpzymc1[i].innerText);
+				$tpjxsxj1+=parseFloat($tpjxs1[i].innerText);
+				$tphjxj1+=parseFloat($tphj1[i].innerText);
+				$tpzymcxj2+=parseFloat($tpzymc2[i].innerText);
+				$tpjxsxj2+=parseFloat($tpjxs2[i].innerText);
+				$tphjxj2+=parseFloat($tphj2[i].innerText);
+				$tpzymcxj3+=parseFloat($tpzymc3[i].innerText);
+				$tpjxsxj3+=parseFloat($tpjxs3[i].innerText);
+				$tphjxj3+=parseFloat($tphj3[i].innerText);
+			}
+			$(".tpzymcxj1id")[0].innerText = $tpzymcxj1;
+			$(".tpjxsxj1id")[0].innerText = $tpjxsxj1;
+			$(".tphjxj1id")[0].innerText = $tphjxj1;
+			$(".tpzymcxj2id")[0].innerText = $tpzymcxj2;
+			$(".tpjxsxj2id")[0].innerText = $tpjxsxj2;
+			$(".tphjxj2id")[0].innerText = $tphjxj2;
+			$("#tpzymcxj3id").innerText = $tpzymcxj3;
+			$("#tpjxsxj3id").innerText = $tpjxsxj3;
+			$("#tphjxj3id").innerText = $tphjxj3;
+			//计算cp小计
+			var $cpzymc1 = $("tr[name='cpxj'] > td[name='zymc1']");
+			var $cpjxs1 = $("tr[name='cpxj'] > td[name='jxs1']");
+			var $cphj1 = $("tr[name='cpxj'] > td[name='hj1']");
+			var $cpzymc2 = $("tr[name='cpxj'] > td[name='zymc2']");
+			var $cpjxs2 = $("tr[name='cpxj'] > td[name='jxs2']");
+			var $cphj2 = $("tr[name='cpxj'] > td[name='hj2']");
+			var $cpzymc3 = $("tr[name='cpxj'] > td[name='zymc3']");
+			var $cpjxs3 = $("tr[name='cpxj'] > td[name='jxs3']");
+			var $cphj3 = $("tr[name='cpxj'] > td[name='hj3']");
+			var $cpzymcxj1 = 0;
+			var $cpjxsxj1 = 0;
+			var $cphjxj1 = 0;
+			var $cpzymcxj2 = 0;
+			var $cpjxsxj2 = 0;
+			var $cphjxj2 = 0;
+			var $cpzymcxj3 = 0;
+			var $cpjxsxj3 = 0;
+			var $cphjxj3 = 0;
+			for(var i=0;i< $cpzymc1.length;i++){
+				$cpzymcxj1+=parseFloat($cpzymc1[i].innerText);
+				$cpjxsxj1+=parseFloat($cpjxs1[i].innerText);
+				$cphjxj1+=parseFloat($cphj1[i].innerText);
+				$cpzymcxj2+=parseFloat($cpzymc2[i].innerText);
+				$cpjxsxj2+=parseFloat($cpjxs2[i].innerText);
+				$cphjxj2+=parseFloat($cphj2[i].innerText);
+				$cpzymcxj3+=parseFloat($cpzymc3[i].innerText);
+				$cpjxsxj3+=parseFloat($cpjxs3[i].innerText);
+				$cphjxj3+=parseFloat($cphj3[i].innerText);
+			}
+			$(".cpzymcxj1id")[0].innerText = $cpzymcxj1;
+			$(".cpjxsxj1id")[0].innerText = $cpjxsxj1;
+			$(".cphjxj1id")[0].innerText = $cphjxj1;
+			$(".cpzymcxj2id")[0].innerText = $cpzymcxj2;
+			$(".cpjxsxj2id")[0].innerText = $cpjxsxj2;
+			$(".cphjxj2id")[0].innerText = $cphjxj2;
+			$("#cpzymcxj3id").innerText = $cpzymcxj3;
+			$("#cpjxsxj3id").innerText = $cpjxsxj3;
+			$("#cphjxj3id").innerText = $cphjxj3;	
+			//渠道贡献合计
+			$(".qdzymcxj1id")[0].innerText = parseFloat($(".zymcyearxsbmlxj")[5].innerText)-parseFloat($(".tpzymcxj1id")[0].innerText)-parseFloat($(".cpzymcxj1id")[0].innerText);
+			$(".qdjxsxj1id")[0].innerText = parseFloat($(".jxsyearxsbmlxj")[5].innerText)-parseFloat($(".tpjxsxj1id")[0].innerText)-parseFloat($(".cpjxsxj1id")[0].innerText);
+			$(".qdhjxj1id")[0].innerText = parseFloat($(".hjyearxsbmlxj")[5].innerText)-parseFloat($(".tphjxj1id")[0].innerText)-parseFloat($(".cphjxj1id")[0].innerText);
+			$(".qdzymcxj2id")[0].innerText = parseFloat($(".zymcmonthxsbmlxj")[5].innerText)-parseFloat($(".tpzymcxj2id")[0].innerText)-parseFloat($(".cpzymcxj2id")[0].innerText);
+			$(".qdjxsxj2id")[0].innerText = parseFloat($(".jxsmonthxsbmlxj")[5].innerText)-parseFloat($(".tpjxsxj2id")[0].innerText)-parseFloat($(".cpjxsxj2id")[0].innerText);
+			$(".qdhjxj2id")[0].innerText = parseFloat($(".hjmonthxsbmlxj")[5].innerText)-parseFloat($(".tphjxj2id")[0].innerText)-parseFloat($(".cphjxj2id")[0].innerText);
+			$(".qdzymcxj3id")[0].innerText = parseFloat($(".qdzymcxj1id")[0].innerText)-parseFloat($(".qdzymcxj2id")[0].innerText);
+			$(".qdjxsxj3id")[0].innerText = parseFloat($(".qdjxsxj1id")[0].innerText)-parseFloat($(".qdjxsxj2id")[0].innerText);
+			$(".qdhjxj3id")[0].innerText = parseFloat($(".qdhjxj1id")[0].innerText)-parseFloat($(".qdhjxj2id")[0].innerText);
+			//营业费用合计的计算方法 tp合计+cp合计+储运费用合计+固定费用合计
+			//alert("tp费用合计："+$tphjxj1+"cp费用合计："+$cphjxj1+"储运费用合计："+$cyhj1+"固定费用合计："+$gdhj1);
+			//alert("tp费用合计："+$tphjxj2+"cp费用合计："+$cphjxj2+"储运费用合计："+$cyhj2+"固定费用合计："+$gdhj2);
+			var $yyjg1 = $tphjxj1+$cphjxj1+$cyhj1+$gdhj1;
+			var $yyjg2 = $tphjxj2+$cphjxj2+$cyhj2+$gdhj2;
+			var $yy1 = $(" td[name='yy1']");
+			var $yy2 = $(" td[name='yy2']");
+			var $yy3 = $(" td[name='yy3']");
+			for(var i=0;i< $yy1.length;i++){
+				$yy1[i].innerText = $yyjg1;
+				$yy2[i].innerText = $yyjg2;
+				$yy3[i].innerText = $yy1[i].innerText-$yy2[i].innerText;
+			}
+		});	
+	</script>
+</head>
+
+<body>
+	<p align="left"><font size="4"><b>预算上报汇总</b></font>
+	<input type="button" class="bt1" value=" 返   回 " onClick="javascript:window.location='budgetverify.aspx';">
+	<input type="button" name="search" class="bt1" value="导出Excel" onclick="javascript:exportMethod('tb');"> <br/> 
+	<!-- <label style="font-size:12px;">如果点击导出按钮后没有起效，请点击浏览器 工具--Internet选项--安全--自定义级别--对未标记为可安全执行脚本的ActiveX控件初始化并执行脚本   设置为启用 </label> -->
+	<table  border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+			<tr>
+				<td height="19" align="center" colspan="3" rowspan="2">项目</td> 
+				<td height="19" align="center" colspan="4">年度月预算</td>
+				<td height="19" align="center" colspan="4">月度上报预算</td>
+				<td height="19" align="center" colspan="4">与年度预算差异</td>
+			</tr>
+			<tr>
+				<td height="19" align="center" >直营卖场</td> 
+				<td height="19" align="center" >经销商</td>
+				<td height="19" align="center" >合计</td> 
+				<td height="19" align="center" >占比</td>
+				
+				<td height="19" align="center" >直营卖场</td> 
+				<td height="19" align="center" >经销商</td>
+				<td height="19" align="center" >合计</td> 
+				<td height="19" align="center" >占比</td>
+				
+				<td height="19" align="center" >直营卖场</td> 
+				<td height="19" align="center" >经销商</td>
+				<td height="19" align="center" >合计</td> 
+				<td height="19" align="center" >占比</td>
+			</tr>
+			#foreach($n in $getYearBudgetByMonSj)
+				<tr>
+					<td height="19" align="center" colspan="3" >$!n.NAMES &nbsp;</td> 
+					#set($i=1)
+					#foreach($m in $getYearBudgetByMonYj)
+						#if($!n.NAMES==$!m.COSTTYPE)
+						<td height="19" align="center" name="zymcsl1" class="zymcyearxsbmlxj" >$!m.ZYMC</td>
+						<td height="19" align="center" name="jxssl1" class="jxsyearxsbmlxj" >$!m.JXS</td> 
+						<td height="19" align="center" name="hjsl1" class="hjyearxsbmlxj" >$!m.HJ</td>
+						<td height="19" align="center" > &nbsp;</td>
+						#set($i=$i+1)
+						#end
+					#end
+					#if($i==1)
+						<td height="19" align="center" name="zymcsl1" class="zymcyearxsbmlxj" >0</td>
+						<td height="19" align="center" name="jxssl1" class="jxsyearxsbmlxj" >0</td> 
+						<td height="19" align="center" name="hjsl1" class="hjyearxsbmlxj" >0</td>
+						<td height="19" align="center" > &nbsp;</td>
+					#end
+					<td height="19" align="center" name="zymcsl2" class="zymcmonthxsbmlxj" >$!n.ZYMC</td>
+					<td height="19" align="center" name="jxssl2" class="jxsmonthxsbmlxj" >$!n.JXS</td> 
+					<td height="19" align="center" name="hjsl2" class="hjmonthxsbmlxj" >$!n.ZYMC</td>
+					<td height="19" align="center" >&nbsp;</td>
+					
+					<td height="19" align="center" name="zymcsl3" > &nbsp;</td> 
+					<td height="19" align="center" name="jxssl3" > &nbsp;</td>
+					<td height="19" align="center" name="hjsl3"  > &nbsp;</td> 
+					<td height="19" align="center" > &nbsp;</td>
+				</tr>
+			#end
+			<tr>
+				<td height="19" align="center" rowspan="18">销售部</td> 
+				<td height="19" align="center" rowspan="5">TP</td>
+			</tr>
+				#foreach($m in $getYearBudgetByMonFy1)
+				<tr name="tpxj">
+					<td height="19" align="center" >$!m.NAME1</td>
+					#foreach($x in $getYearBudgetByMonFy11)
+						#if($!x.PK==$!m.PK)
+							<td height="19" align="center" name="zymc1" >$!x.ZYMC1</td>
+							<td height="19" align="center" name="jxs1" >$!x.JXS1</td>
+							<td height="19" align="center" name="hj1" >$!x.HJ1</td>
+							<td height="19" align="center" name="" >&nbsp;</td>
+							<td height="19" align="center" name="zymc2">$!x.ZYMC2</td>
+							<td height="19" align="center" name="jxs2" >$!x.JXS2</td>
+							<td height="19" align="center" name="hj2" >$!x.HJ2</td>
+							<td height="19" align="center" >&nbsp;</td>
+						#end		
+					#end
+					<td height="19" align="center" name="zymc3"> &nbsp;</td> 
+					<td height="19" align="center" name="jxs3" > &nbsp;</td>
+					<td height="19" align="center" name="hj3" > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+				</tr>
+				#end
+				<tr>
+					<td height="19" align="center" >TP费用小计</td>
+					<td height="19" align="center" class="tpzymcxj1id" >0</td> 
+					<td height="19" align="center" class="tpjxsxj1id" >0</td>
+					<td height="19" align="center" class="tphjxj1id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" class="tpzymcxj2id" >0</td> 
+					<td height="19" align="center" class="tpjxsxj2id" >0</td>
+					<td height="19" align="center" class="tphjxj2id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" id="tpzymcxj3id" >0</td> 
+					<td height="19" align="center" id="tpjxsxj3id" >0</td>
+					<td height="19" align="center" id="tphjxj3id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+				</tr>
+			<tr>
+				<td height="19" align="center" rowspan="6">CP</td>
+			</tr>
+				#foreach($m in $getYearBudgetByMonFy2)
+				<tr name="cpxj">
+					<td height="19" align="center" >$!m.NAME1</td>
+					#foreach($x in $getYearBudgetByMonFy22)
+						#if($!x.PK==$!m.PK)
+							<td height="19" align="center" name="zymc1">$!x.ZYMC1</td>
+							<td height="19" align="center" name="jxs1" >$!x.JXS1</td>
+							<td height="19" align="center" name="hj1"  >$!x.HJ1</td>
+							<td height="19" align="center" >&nbsp;</td>
+							<td height="19" align="center" name="zymc2" >$!x.ZYMC2</td>
+							<td height="19" align="center" name="jxs2"  >$!x.JXS2</td>
+							<td height="19" align="center" name="hj2"   >$!x.HJ2</td>
+							<td height="19" align="center" >&nbsp;</td>
+						#end		
+					#end
+					<td height="19" align="center" name="zymc3" > &nbsp;</td> 
+					<td height="19" align="center" name="jxs3" > &nbsp;</td>
+					<td height="19" align="center" name="hj3" > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+				</tr>
+				#end
+				<tr>
+					<td height="19" align="center" >CP费用小计</td>
+					<td height="19" align="center" class="cpzymcxj1id" >0</td> 
+					<td height="19" align="center" class="cpjxsxj1id" >0</td>
+					<td height="19" align="center" class="cphjxj1id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" class="cpzymcxj2id" >0</td> 
+					<td height="19" align="center" class="cpjxsxj2id" >0</td>
+					<td height="19" align="center" class="cphjxj2id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" id="cpzymcxj3id" >0</td> 
+					<td height="19" align="center" id="cpjxsxj3id" >0</td>
+					<td height="19" align="center" id="cphjxj3id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+				</tr>
+				<tr>
+					<td height="19" align="center" colspan="2">渠道贡献合计</td>
+					<td height="19" align="center" class="qdzymcxj1id" >0</td> 
+					<td height="19" align="center" class="qdjxsxj1id" >0</td>
+					<td height="19" align="center" class="qdhjxj1id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" class="qdzymcxj2id" >0</td> 
+					<td height="19" align="center" class="qdjxsxj2id" >0</td>
+					<td height="19" align="center" class="qdhjxj2id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+					<td height="19" align="center" class="qdzymcxj3id" >0</td> 
+					<td height="19" align="center" class="qdjxsxj3id" >0</td>
+					<td height="19" align="center" class="qdhjxj3id" >0</td> 
+					<td height="19" align="center" class="" > &nbsp;</td>
+				</tr>	
+			<tr>
+				<td height="19" align="center" rowspan="5">储运费用</td>
+			</tr>
+				#foreach($m in $getYearBudgetByMonFy3)
+				<tr>
+					<td height="19" align="center" >$!m.NAME1</td>
+					#foreach($x in $getYearBudgetByMonFy33)
+						#if($!x.PK==$!m.PK)
+							<td height="19" align="center" name="cy1" colspan="3"  >$!x.HJ1</td>
+							<td height="19" align="center" >&nbsp;</td>
+							<td height="19" align="center" name="cy2" colspan="3"  >$!x.HJ2</td>
+							<td height="19" align="center" >&nbsp;</td>
+						#end		
+					#end
+					<td height="19" align="center" name="cy3" colspan="3"  > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+				</tr>
+				#end
+			<tr>
+				<td height="19" align="center" colspan="2">固定费用</td>
+				#foreach($x in $getYearBudgetByMonGDHJ)
+					<td height="19" align="center" name="gd1" colspan="3">$!x.YEARHJ</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+					<td height="19" align="center" name="gd2" colspan="3" >$!x.MONTHHJ</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+				#end	
+					<td height="19" align="center" name="gd3" colspan="3" > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+			</tr>	
+			<tr>
+				<td height="19" align="center" colspan="3">营业费用合计</td>
+				<td height="19" align="center" name="yy1" colspan="3"> &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+					<td height="19" align="center" name="yy2" colspan="3" > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+					<td height="19" align="center" name="yy3" colspan="3" > &nbsp;</td> 
+					<td height="19" align="center" name="" > &nbsp;</td>
+			</tr>	
+		</table>      
+	
+	<br>
+	<form name="form_submit" method="post"  action="newSalePlanSubmit.aspx" target="saveframe">
+		<span id="subdata"></span>
+	</form>
+	<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</html>
+

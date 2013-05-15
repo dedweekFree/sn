@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>营销中心政策明细</title>
+</head>
+
+<body>
+<form name="thisform" method="post">
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td><input type="button" name="b1" class="bt1" value="返&nbsp;回" onclick="javascript:history.back(-1)"/></td>
+    
+  </tr>
+</table>
+</form>
+<table class="datatable">
+#foreach($!m in $selyxzxsalezcbystyid)
+   <tr class="trcolor">
+      <td>政策编号:$!m.STYCODE</td>
+      <td>政策名:$!m.STYNAME</td>
+      <td>开始时间:$!m.STARTTIME</td>
+      <td>结束时间:$!m.ENDTIME</td>
+   </tr>
+   <tr class="trcolor">
+      <td>补贴额:$!m.ALLOWANCE</td>
+      <td>类型:#if($!m.TYPE=='A')单补#elseif($!m.TYPE=='B')套餐补#end</td>
+      <td colspan="2">备注:$!m.NOTE</td>
+   </tr>
+ #end
+</table>
+<br>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>大区</td>
+    <td>区域</td>
+    <td>产品编码</td>
+    <td>产品名称</td>
+    <td>产品规格</td>
+    <td>套餐分类</td>
+    <td>补贴数量</td>
+  </tr>
+    #set($i=0)
+    #foreach($!m in $yczcquerydetail)
+	  <tr class="trcolor">
+	    <td>#if($!m.DAQU!="")$!m.DAQU#else&nbsp;#end</td>
+	    <td>#if($!m.DEPTNAME!="")$!m.DEPTNAME#else&nbsp;#end</td>
+	    <td>#if($!m.INVCODE!="")$!m.INVCODE#else&nbsp;#end</td>
+	    <td>#if($!m.INVNAME!="")$!m.INVNAME#else&nbsp;#end</td>
+	    <td>#if($!m.INVSPEC!="")$!m.INVSPEC#else&nbsp;#end</td>
+	    <td>#if($!m.TCTP!="")$!m.TCTP#else&nbsp;#end</td>
+	    <td>#if($!m.QUANTITY!="")$!m.QUANTITY#else&nbsp;#end</td>
+	  </tr>
+    #set($i=$i+1)
+    #end
+</table>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

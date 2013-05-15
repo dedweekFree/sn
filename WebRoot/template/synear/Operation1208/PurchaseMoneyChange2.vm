@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>======</title>
+<script language="javascript">
+ function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('TextZhiDanRiQi1y1').value=Today;
+	document.getElementById('TextZhiDanRiQi1y2').value=Today;
+    }
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+</script>
+</head>
+
+<body onload="GetDateString()">
+<form name="form1" action="PurchaseMoneyChangeDetail2.aspx" method="post">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="2" align="left">入库单调整查询</td>
+  </tr>
+  <tr class="trcolor">
+    <td>选择日期:</td>
+    <td align="left"><input type="text" name="TextZhiDanRiQi1y1" onclick="ShowDate(TextZhiDanRiQi1y1)"/>-<input type="text" name="TextZhiDanRiQi1y2" onclick="ShowDate(TextZhiDanRiQi1y2)"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>供应商名称:</td>
+    <td align="left"><input type="text" name="custname"></td>
+   </tr>
+   <tr class="trcolor">
+    <td>供应商代码:</td>
+    <td align="left"><input type="text" name="custcode"></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="2"><input type="submit" class="bt1" name="Submit" value="查&nbsp;&nbsp;询" /></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

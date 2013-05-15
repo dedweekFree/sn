@@ -1,0 +1,147 @@
+<HTML>
+<HEAD>		
+<title>产品明细表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<script src="../../../js/string.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function setvalue(step,status){
+  parent.document.form1.periodno.value = "$form_periodno";
+  parent.document.form1.deptcode.value = "$form_deptcode";
+  parent.document.form1.oldstep.value = "$form_oldstep";
+  parent.document.form1.addstep.value=step;
+  parent.document.form1.status.value=status;
+  parent.document.form1.plancls.value="$!form_plancls";
+  parent.document.form1.remark.value=document.form1.remark.value;
+    if(status=='F') {
+           //parent.document.form1.action="testPlan.aspx";
+	   parent.document.all.form1.action="salePlanAudiSubmit.aspx";
+	   parent.document.form1.target="saveframe";
+	   parent.document.form1.submit();
+    }else{
+	  parent.document.all.form1.action="salePlanAudiSubmit.aspx";
+	  parent.document.all.form1.target="saveframe";
+	  parent.document.form1.submit();
+    }
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">产品代码</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">产品名称</td>
+	<td nowrap="nowrap">本月拉货计划</td>
+	<td nowrap="nowrap">下月拉货计划</td>
+	<td nowrap="nowrap">本月销售计划</td>
+	<td nowrap="nowrap">下月销售计划</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getSalePlanOkP)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		        <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.ITEMCODE</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.ITEMDESC</td>
+			<td align="center" nowrap="nowrap">$!m.REQUIREQTY</td>
+			<td align="center" nowrap="nowrap">$!m.NEXTREQUIREQTY</td>
+			<td align="center" nowrap="nowrap">$!m.TASKQTY</td>
+			<td align="center" nowrap="nowrap">$!m.NEXTTASKQTY</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		        <td align="center" nowrap="nowrap" class="FixedDataColumn">合计</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">&nbsp;</td>
+			<td align="center" nowrap="nowrap">$!form_allnum</td>
+			<td align="center" nowrap="nowrap">$!form_nextallnum</td>
+			<td align="center" nowrap="nowrap">$!form_tallnum</td>
+			<td align="center" nowrap="nowrap">$!form_tnextallnum</td>
+		 </tr>
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+ <br>
+
+  <p align="center">审核记录</p>
+  <table width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="trtitle" bgcolor="abcdef">
+    <th width="8%" height="25" nowrap>审核时间</th>
+    <th width="8%" height="25" nowrap>审核人</th>
+    <th width="8%" height="25" nowrap>审核结果</th>
+    <th width="58%" height="25" nowrap>审核意见</th>
+  </tr>
+ #foreach($m in $getAudiSalemanPlan)
+  <tr class="trcolor">
+      <td align="center" nowrap>$!m.AUDIDATE</td>
+      <td align="center" nowrap>$!m.NAME</td>
+      <td align="center" nowrap><script>'$!m.AUDISTATUS'.toRealText('F','同意','不同意').write()</script></td>
+      <td align="center" nowrap>$!m.REMARK &nbsp;</td>
+ </tr>
+ #end
+  </table> 
+<form name="form1" method='post' action="areafeeapplyaudisubmit.aspx" target="dataframe">  
+  <div align="center">
+  审核意见：<textarea name="remark" cols="120" rows="3"></textarea>
+  </div>
+</form>
+
+ <div align="center">
+    <input type="button" class="login2" value=" 通  过 " name="B222" onClick="javascript:setvalue('1','F');">&nbsp;&nbsp;&nbsp;&nbsp;
+    #if($form_oldstep=="0") 
+       <input type="button" class="login2" value=" 退  回 " name="B222" onClick="javascript:setvalue('-1','R');">
+       <!--input type="button" class="login2" value=" 退  回 " name="B222" onClick="javascript:setvalue('0','D');"-->
+    #else
+       <input type="button" class="login2" value=" 退  回 " name="B222" onClick="javascript:setvalue('-1','R');">
+    #end
+ </div>
+ 
+</BODY>
+</HTML>

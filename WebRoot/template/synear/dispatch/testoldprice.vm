@@ -1,0 +1,18 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+		 var opricegroup = '';
+		 if(opricegroup == ''){
+		    parent.document.getElementById("otaxmoney$!form_iii").value = (parseFloat(parent.document.getElementById("ohmoney$!form_iii").value)*parseFloat(parent.document.getElementById("nnumber$!form_iii").value)).toFixed(4);
+		    parent.document.getElementById("taxmoney$!form_iii").value = (parseFloat(parent.document.getElementById("hmoney$!form_iii").value)*parseFloat(parent.document.getElementById("nnumber$!form_iii").value)).toFixed(4);
+		    parent.submitok=false;
+		 }else{
+		     parent.submitok=false;	 
+		 } 
+	</script>
+</head>
+<body>
+</body>
+</html>
+

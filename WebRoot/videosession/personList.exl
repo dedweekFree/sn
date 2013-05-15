@@ -1,0 +1,7 @@
+<web:page>
+  <web:sql></web:sql>
+  <web:name>产成品价格设置模板</web:name>
+</web:page>
+
+
+

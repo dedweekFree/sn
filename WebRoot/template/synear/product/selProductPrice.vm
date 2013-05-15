@@ -1,0 +1,245 @@
+<HTML>
+<HEAD>		
+<title>费用申请表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+$(function(){
+
+		$("#div1").hide();
+		$("#div2").hide();
+		$("#sho").click(function(){
+			$("#div1").show();
+		});
+		$("#hid").click(function(){
+			$("#div1").hide();
+		});
+});
+//查看
+function ViewRow(prod_sn_pk)
+{  
+
+    document.newForm.prod_sn_pk.value = prod_sn_pk;
+    //document.form1.target="_self";
+    document.newForm.action="getUpdateDetail.aspx";
+    document.newForm.submit();
+}
+
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+function testok()
+{ 
+	document.all.form1.action="setProductPrice.aspx";
+    document.all.form1.submit();
+}
+function viewok()
+{ 
+	alert("显示记录");
+}
+
+//获取下拉列表选中项的文本
+function getSelectedText(name){
+var obj=document.getElementById(name);
+for(i=0;i<obj.length;i++){
+   if(obj[i].selected==true){
+    return obj[i].innerText;      //关键是通过option对象的innerText属性获取到选项文本
+   }
+}
+}
+
+ function addfile(){
+	  if($("#startdate").val()==""){
+			alert("起效时间为必填项");
+			return false;
+		}
+ 	$startdate = $("#startdate").val();
+	$remark = $("#remark").val();
+	$makerID = $("#makerID").val();
+    window.open('productpricefile.jsp?formname=form1&type=productpricefile&tendtypeid=pcexcel&startdate='+$startdate+'&makerID='+$makerID+'&remark='+$remark,'','status=no,scrollbars=no,top=160,left=150,width=450,height=365');
+}
+
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   str= str+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+   return str;  
+}
+
+function exportfile(){
+   thisform.action = "exprotProductPrice.exl";
+   thisform.submit();
+}
+function exporthistoryfile(){
+   thisform.action = "exprotProductHistoryPrice.exl";
+   thisform.submit();
+}
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+  <form name="thisform" method="post" action="selProductPrice.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+
+         <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+			<tr> 
+			<td align="center">
+			
+			<input type="button" value=" 修  改 " onclick="testok()"  class="bt1">&nbsp;
+			<input type="button" name="bt1" class="bt1" value="导出修改模板EXCEL" onClick="exportfile()">&nbsp;
+			<input type="button" name="bt1" class="bt1" value="导入修改数据EXCEL" id="sho">&nbsp;
+			<input type="button" class="bt1" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();">&nbsp;
+			</td >
+
+			<td  align="center">
+
+			<input type="button" name="bt1" class="bt1" value="导出全部修改记录" onClick="exporthistoryfile()">&nbsp;
+			
+			</td>
+		</tr>
+	  </table>
+	  <p>
+	  		<div style="width:100%;txt-align:center;border:1 double gray;" id="div1">
+				<br>
+				<p align="left"><font size="4"><b>产成品价格修改(起效时间必选)</b></font> <br>
+				修改人：$session_USERNAME &nbsp;&nbsp;<input type=hidden name=makerID id=makerID value='$session_USERNAME'>
+				修改起效时间：<input type="text" size="16" id="startdate" name="startdate" 
+							#foreach($m in $getSysDateForQC)
+								value="$!m.SYSDATES" 
+							#end
+					onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd',readOnly:true})" class="Wdate"/>
+				备注：<input type="text" size="26" id="remark" name="remark"> 
+				<input type="button" name="bt1" class="bt1" value="选择excel文件" onClick="addfile()">&nbsp;&nbsp;
+				<input type="button" class="bt1" value=" 取  消 " name="B222" id="hid">&nbsp;&nbsp;<P>
+			</div>
+			<p>
+			<div style="width:100%;txt-align:center;border:1 double gray;" id="div2">
+				<br>
+				<p align="left"><font size="4"><b>查询条件</b></font> <br>
+				编号：<input type=text name=mcode value='$!form_mcode'>
+				名称：<input type="text" size="16"  name="mname" value="$!form_mname"/>
+				<input type="button" name="bt1" class="bt1" value="查询" >&nbsp;&nbsp;<P>
+			</div>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">物料编号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">物料名称</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">规格</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">当前价格</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getInvbasdocInfoByPageForQC)
+    
+  		<tr height="20" class="trcolor">
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.INVCODE &nbsp;</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.INVNAME &nbsp;</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.INVSPEC &nbsp;</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.COSTPRICE &nbsp;</td>
+			<td align="center" nowrap="nowrap" class="FixedDataColumn">
+			<a style='cursor:hand' href="getUpdateDetail.aspx?prod_nc_pk=$!m.INVCODE"><font color=blue>历史修改记录</font></a>
+
+			</td>
+			
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="9" bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+
+<form name="form1" method="post">
+  <input type="hidden" name="pk_factory" value="">
+  <input type="hidden" name="custpk" value="$!form_custpk">
+  <input type="hidden" name="billno" value="$!form_BILLNO">
+  <input type="hidden" name="plannum" value="$!form_plannum">
+  <input type="hidden" name="makeruser" value="">
+  <input type="hidden" name="ts1" value="">
+  <input type="hidden" name="deptname" value="">
+  <input type="hidden" name="billdate" value="">
+  <input type="hidden" name="realhours" value="$!form_realhours">
+  <input type="hidden" name="fstatus" value="">
+  <input type="hidden" name="begintime" value="$!form_begintime">
+  <input type="hidden" name="endtime" value="$!form_endtime">
+  <input type="hidden" name="classes" value="">
+</form>
+<form name="newForm" method="post">
+  <input type="hidden" name="prod_sn_pk" value="">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

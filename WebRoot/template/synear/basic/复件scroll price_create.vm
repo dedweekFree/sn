@@ -1,0 +1,326 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javaScript" src="../../../js/common.js"></script>
+<script language="javaScript" src="../../../js/funbase.js"></script>
+<script language="JavaScript" src="../../../js/sunnysoft.js"></script>
+<script language="JavaScript" src="../../../js/sunnyfunc.js"></script>
+<script language="JavaScript" src="../../../js/browers.js"></script>
+<script language="JavaScript" src="../../../js/formCheck.js"></script>
+<title>===产品结算价格信息===</title>
+<script language="javascript" src="../../../js/GridEdit.js"></script>
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:155%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+.dirty-cell {
+    background: transparent url(../../../images/dirty.gif) no-repeat 0 0;
+}
+-->
+</style>
+
+</head>
+<script>
+var bData1=new Array(); 
+bData1=[
+      ['产品代码','产品名称','产品规格','实际成本价','生产结转价','计划价','结算价','分支结算价','状态','实际成本价','生产结转价','计划价','结算价','分支结算价','nc主键','0']
+ #set($i=1)
+ #foreach($m in $getProdPrice)
+      ,['$m.ITEMCODE','$m.ITEMDESC','$m.ITEMSPEC','$m.COSTPRICE','$m.PRODPRICE','$m.PLANPRICE','$m.ACCOUNTPRICE','$m.BRANACCOUNTPRICE','N','$m.COSTPRICE','$m.PRODPRICE','$m.PLANPRICE','$m.ACCOUNTPRICE','$m.BRANACCOUNTPRICE','$m.NC_PK','$i']
+   #set($i=$i+1)
+ #end
+]
+var pageSize=20;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  if(rdata[(page-1)*pageSize+i][8]=='Y') row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox' checked>";
+	  else  row.insertCell().innerHTML="<input type=checkbox name=checkbox value='checkbox'>";
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  for(var j=3;j<8;j++){
+	     with (row.insertCell())
+             {
+	       innerHTML=rdata[(page-1)*pageSize+i][j];
+	       if(rdata[(page-1)*pageSize+i][j]!=rdata[(page-1)*pageSize+i][j+6]){
+	         //width='10%'
+		 //attachEvent("onclick",setEditBox); 
+		 className="dirty-cell";
+	       }
+	     }
+	 }
+	 SetRowCanEdit(row);
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function search()
+{
+  savepage(pageno);
+  pageno=0;
+  var m=1;
+  var bname=true;
+  var badd=true;
+  var bstatus=true;
+  rdata=new Array();
+  rdata[0]=bData1[0];
+  for(var i=1;i<bData1.length;i++){
+    bname=form2.elements[0].value==""?true:(bData1[i][0].indexOf(form2.elements[0].value)>-1);
+    badd=form2.elements[1].value==""?true:(bData1[i][1].indexOf(form2.elements[1].value)>-1);
+	bstatus=form2.elements[2].value=="all"?true:(bData1[i][8]==form2.elements[2].value);
+	//alert(bstatus)
+    if(bname && badd && bstatus){
+       rdata[m]=bData1[i];
+	   m++
+	}
+ }
+ toPage(1);
+}
+
+function save()
+{
+  savepage(pageno);
+  var datahtml="";
+  for(var i=0;i<bData1.length;i++){
+    if(bData1[i][8]=='Y'){
+       datahtml+="<input type=hidden name=nc_pk value='"+bData1[i][14]+"'>";
+       datahtml+="<input type=hidden name=costprice value='"+bData1[i][3]+"'>";
+       datahtml+="<input type=hidden name=prodprice value='"+bData1[i][4]+"'>";
+       datahtml+="<input type=hidden name=planprice value='"+bData1[i][5]+"'>";
+       datahtml+="<input type=hidden name=accountprice value='"+bData1[i][6]+"'>";
+       datahtml+="<input type=hidden name=branaccountprice value='"+bData1[i][7]+"'>";
+    }
+ }
+ if(datahtml==''){
+   alert("没有可更新的数据！");
+   return false;
+ }
+ subdata.innerHTML=datahtml;
+ form_submit.submit();
+}
+
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      if(document.all.checkbox[i].checked) rdata[(page-1)*pageSize+i][8]='Y';
+      else  rdata[(page-1)*pageSize+i][8]='N';
+      for(var j=3;j<8;j++) rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+      bData1[rdata[(page-1)*pageSize+i][15]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch()
+{
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+  var tdW;
+  //Scroll
+  function f_scroll(Col_T,Row_T,DivNm){
+    if(Col_T!=''){
+      document.getElementById(Col_T).scrollLeft = document.getElementById(DivNm).scrollLeft;
+    }
+  }
+  
+  //Write table cell
+  function writeTD(trNum,tdNum,tdHead,content){
+    var i;
+    for(i=0;i<=tdNum;i++){
+      document.write(tdHead);
+    if(content != ''){
+      document.write(content);
+      } else {
+        document.write(trNum+","+i);
+      }
+      document.write("</TD>");
+    }
+  }
+    
+  //Write table Row
+  function writeTR(trNum,tdNum,tdHead,content){
+    var i;
+    for(i=0;i<=trNum;i++){
+      document.write("<TR>");
+      writeTD(i,tdNum,tdHead,content);
+      document.write("</TR>");
+    }
+  }
+
+</script>
+
+
+<body>
+
+<p align="left"><font size="4"><b>产品结算价格信息</b></font>
+<div style="width:100%;txt-align:center;border:3 double gray;">
+<form id="form2">
+产品代码：<input type="text" size="16" onkeyup="presearch()"> 产品名称：<input type="text" size="16" onkeyup="presearch()"> 状态：<select  onchange="search()"><option value='all' selected>全部</option><option value='N'>未修改</option><option value='Y'>修改</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="搜索" onclick="search()">        
+</form>
+</div>
+<TABLE BORDER=0  width="100%">
+ <TR>
+   <TD>
+<!--Table2 start-->
+   <Div ID="Table2" 
+     STYLE="position:relative; top:5;border-bottom: 0.5pt solid white;
+            height:20px; width:800px;overflow-x:hidden;">
+   <TABLE BORDER=0 
+     STYLE="border-collapse:collapse;background-color:#003399;
+            color: #FFFFFF;text-align:center;height:40px;">
+    <TR>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="15%" Name="pcode" >产品代码</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="23%" Name="pname">产品名称</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="9%" Name="pspec">产品规格</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">实际成本价</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">生产结转价</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" bgcolor="#EFEFEF" width="10%" Name="costp" EditType="TextBox" DataType="Float">计划价</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">结算价</td>
+      <td NOWRAP STYLE="width:100px;background-color:silver;color:black;border-color:#silver;border:0.5pt solid black;border-left:0;word-break:break-all;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">分支结算价</td>
+    </TR>
+   </TABLE>
+   </Div>
+<!--Table2 end-->
+  </TD>
+ </TR>
+ <TR>
+  <TD STYLE="vertical-align:top; ">
+<!--Table4 start-->
+   <Div ID="Table4" 
+     onScroll="f_scroll('Table2','Table3','Table4');" 
+     STYLE="height:281px; width:800px;overflow-y:scroll;overflow-x:scroll;">
+   <TABLE BORDER=0 STYLE="border-collapse:collapse;">
+<table  class="datatable" border="0" cellpadding="0" frame="box" cellspacing="2" width="100%" id="table6">
+    <tr>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="7%" Name="st"><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="15%" Name="pcode" >产品代码</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="23%" Name="pname">产品名称</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="9%" Name="pspec">产品规格</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">实际成本价</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">生产结转价</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" bgcolor="#EFEFEF" width="10%" Name="costp" EditType="TextBox" DataType="Float">计划价</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">结算价</td>
+      <td NOWRAP STYLE="width:100px;height:22px;background-color:#ffffff;border-right:0.5pt solid black;border-bottom:0.5pt solid black;word-break: break-all; text-align:center;" height="19" bgcolor="#EFEFEF" width="9%" Name="costp" EditType="TextBox" DataType="Float">分支结算价</td>
+
+    </tr>
+</table>
+   </TABLE>
+   </Div>
+<!--Table4 end-->
+  </TD>
+ </TR>
+</TABLE> 
+<div style="width:100%;txt-align:center;border:3 double gray;">
+<input type="button" value="保存" id="btnSave">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id="pg"></span>
+</div>
+
+<script language="javascript">
+var seleobj;
+
+//单击“保存”按钮
+btnSave.onclick=function()
+{
+   save();	
+}
+
+</script>
+<script>
+	 EditTables(table6);
+	 toPage(1);
+</script>
+<form name="form_submit" method="post" action="setProdPriceSubmit.aspx" target="saveframe">
+<span id="subdata"></span>
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+
+</html>
+

@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>		
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+	<!-- 引入jquery的js包 -->
+	<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+	<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+	
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+	//报批 $!m.BILLNO,!$!session_ROLES,!$!m.BILLDATE,!$!m.PK_DEPT,!$!m.BILLDESC,!$!m.STEP
+	function okRow(st,sp){  
+	   var newdesc = $("#newdesc").val();
+	   //alert(newdesc);
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+	   if(st == 'F'){
+			if(!window.confirm('确认通过？')){
+				return false;
+			}
+			if(paras[5] == paras[6]){
+				alert("same");
+				document.form1.status.value = "K";
+				document.form1.log_status.value = "K";
+			}else{
+				document.form1.status.value = st;
+			}
+	   }else{
+			document.form1.status.value = st;
+	   }
+	   if(st == 'R'){
+			if(!window.confirm('确认回退？')){
+				return false;
+			}
+		   document.form1.remark.value = newdesc;
+		   document.form1.oldstep.value = 0;
+		   document.form1.addstep.value = 0;
+		   document.form1.log_status.value = "S";
+	   }else{
+		   document.form1.oldstep.value = paras[5];
+		   document.form1.addstep.value =sp;
+	   }
+	   document.form1.billno.value = paras[0];
+	   document.form1.billdate.value = paras[2];
+	   document.form1.billdesc.value = paras[4];
+	   document.form1.log_step.value = parseInt(paras[5])+parseInt('1');
+	   
+	   document.form1.action="audiBudgetSubmit.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+	}
+	//申报数据汇总
+	function PRow(){      
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+	   document.form1.billno.value = paras[0];
+	   document.form1.billdate.value = paras[2];
+	   document.form1.area.value = paras[3];
+	   document.form1.action="detailbudgetforverify.aspx";
+	   document.form1.target="_self";
+	   document.form1.submit();
+	}
+	//查看
+	function ViewRow(){  
+	   var obj = window.event.srcElement;
+	   obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+		   document.form1.billno.value = paras[0];
+		   document.form1.target="_self";
+		   document.form1.action="viewbudgetforverify.aspx";
+		   document.form1.submit();
+	}
+	$(function(){
+		$(".s1_aid").bind("click",function(event){
+			$sid = event.target.id;
+			$("#s1"+$sid).html("<br/>退回说明：<textarea name=newdesc id=newdesc ></textarea>  <input type=button class=bt1 onclick=javascript:okRow('R',-1)  value=确认退回 />");
+			$(".s1_aid").unbind("click");
+		});
+	});
+	//搜索审批列表
+	function checkinput(){  
+	   document.thisform.page.value =1;
+	   document.thisform.submit();
+	}
+</SCRIPT>
+</HEAD>
+<BODY>
+<div>
+<div> 
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+		<tr height="20"  align="center"   class="FixedTitleRow">
+			<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">预算单号</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">上报人</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">预算期间</td>
+			<td nowrap="nowrap">地区</td>
+			<td nowrap="nowrap">操作</td>
+		</tr>
+    #set($i=1) 
+    #foreach($m in $getApplyBudgetVerigy)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		    <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLNO</td>
+            <td align="center" nowrap="nowrap">$!m.MAKER</td>
+			<td align="center" nowrap="nowrap">$!m.BILLDATE</td>
+			<td align="center" nowrap="nowrap">$!m.NAME2/$!m.NAME1</td>
+			<td align="center" nowrap="nowrap">
+				<span id="qxspan" dtParams="$!m.BILLNO,$!session_ROLES,$!m.BILLDATE,$!m.PK_DEPT,$!m.BILLDESC,$!m.STEP,$!m.MAXSTEP">
+					<a style='cursor:hand' onclick="javascript:PRow()"><font color=blue>申报预算汇总</font></a>&nbsp;
+					<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>明细</font></a>&nbsp;&nbsp;
+					<a style='cursor:hand' onclick="javascript:okRow('F',1)"><font color=blue>通过</font></a>&nbsp;
+					<a style='cursor:hand' id="s1$!m.BILLNO" class="s1_aid" >
+						<font color=blue id="$!m.BILLNO" >退回</font>
+					</a>&nbsp;
+				</span>
+			</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="thisform" method="post" action="budgetverify.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+审批记录：
+<div > 
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+	<tr height="30" class="search"> 
+			<td class="tdlabel" width="10%">上报地区:</td>
+			<td class="tdinput" width="20%">
+				<select name="nc_pk" >
+					<option value="">请选择地区</option>
+					#foreach($m in $getCustomerBudgetDept)
+						<option value="$!m.NC_PK"  #if($!form_nc_pk==$!m.NC_PK) selected #end>$!m.DEPTNAME</option>
+					#end
+				</select>	   
+			</td>	
+			<td class="tdlabel">预算期间:</td>
+			<td class="tdinput">
+				<input type="text" name="applymonth" readonly value="$!form_applymonth" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})" class="Wdate" />
+			</td>
+			<td class="tdlabel">审核操作：</td>
+			<td class="tdinput">
+				<select name="audistatus" >
+					<option value=""  #if($!form_audistatus=='') selected #end>全部</option>
+					<option value="Y"  #if($!form_audistatus=='Y') selected #end>通过</option>
+					<option value="S"  #if($!form_audistatus=='S') selected #end>退回</option>
+				</select>
+			</td>	
+			<td align="left"  width="20%" >	
+				<input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">&nbsp;&nbsp;
+			</td>
+		</tr>
+		<tr height="20"  align="center" >
+			<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+			<td nowrap="nowrap" class="FixedTitleColumn">单据号</td>
+			<td nowrap="nowrap">上报地区</td>
+			<td nowrap="nowrap">上报期间</td>
+			<td nowrap="nowrap">审核操作</td>
+			<td nowrap="nowrap">审核时间</td>
+			<td nowrap="nowrap">操作</td>
+		</tr>
+    #set($i=1) 
+    #foreach($m in $getAudiBudgetLog)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		    <td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.BILLNO</td>
+            <td align="center" nowrap="nowrap">$!m.NAME2/$!m.NAME1</td>
+			<td align="center" nowrap="nowrap">$!m.APPLYMONTH</td>
+			<td align="center" nowrap="nowrap"
+				#if($m.AUDISTATUS=="K") 
+					style=color:green; 
+				#end
+				#if($m.AUDISTATUS=="S" || $m.STATUS=="N") 
+					style=color:red; 
+				#end
+				>
+				#if($m.AUDISTATUS=="Y") 通过/$!m.AUDISTATUS #end
+				#if($m.AUDISTATUS=="S") 退回/$!m.AUDISTATUS #end
+				#if($m.AUDISTATUS=="M") 创建/$!m.AUDISTATUS #end
+				#if($m.AUDISTATUS=="F") 提报/$!m.AUDISTATUS #end
+				#if($m.AUDISTATUS=="K") 审批完成/$!m.AUDISTATUS #end
+				#if($m.AUDISTATUS=="U") 修改/$!m.AUDISTATUS #end
+			</td>
+			<td align="center" nowrap="nowrap">$!m.AUDIDATE</td>
+			<td align="center" nowrap="nowrap">
+				<span id="qxspan" dtParams="$!m.BILLNO,$!session_ROLES,$!m.BILLDATE,$!m.PK_DEPT,$!m.BILLDESC,$!m.STEP,$!m.MAXSTEP">
+					<a style='cursor:hand' onclick="javascript:PRow()"><font color=blue>申报预算汇总</font></a>&nbsp;
+					<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>明细</font></a>&nbsp;&nbsp;
+				</span>
+			</td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+		<td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</form>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="billno" value="">
+  <input type="hidden" name="deptcode" value="">
+  <input type="hidden" name="billdate" value="">
+  <input type="hidden" name="billdesc" value="">
+  <input type="hidden" name="remark" value="通过审核">
+  <input type="hidden" name="status"  value="F">
+  <input type="hidden" name="log_status"  value="Y">
+  <input type="hidden" name="log_step"  value="Y">
+  <input type="hidden" name="addstep" value="">
+  <input type="hidden" name="oldstep" value="">
+  <input type="hidden" name="area" value="">
+  <input type="hidden" name="roleid" value="$!session_ROLES">
+</form>
+<br>
+<div style="width:100%; height:80%;" id="show" style="display:none">
+<iframe name="dataframe" src="about:blank" width="100%" height="600" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</div>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

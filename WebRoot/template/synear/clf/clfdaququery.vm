@@ -1,0 +1,265 @@
+<HTML>
+<HEAD>		
+<title>大区经理差旅费查询</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (document.body.clientHeight-this.offsetTop-20));    
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.clfid.value = paras[0];
+   document.form1.target="_self";
+   document.form1.action="clfview.aspx";
+   document.form1.submit();
+}
+
+//报批
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.baseid.value = paras[0];
+   document.all.form1.custpk.value =paras[2];
+   document.all.form1.periodno.value =paras[3];
+   document.form1.action="testOldPlan.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+//修改
+function editRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.clfid.value = paras[0];
+       document.form1.action="clfdaquedit.aspx";
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+    var obj = window.event.srcElement;
+    obj = getParent(obj,"SPAN");
+    var paras=obj.dtParams.split(",!");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	   document.form1.clfid.value = paras[0];
+	   document.form1.action="clfdel.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+   }
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.submit();
+}
+
+function checkinput2()
+{  
+     document.form1.month.value = document.thisform.billdate1.value;
+     document.form1.target="saveframe";
+     document.all.form1.action="testuser.aspx";
+     document.all.form1.submit();
+}
+
+function testok()
+{  
+   thisform.action="clfdaquadd.aspx";
+   thisform.submit();
+}
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue.substring(0,7);
+ }
+ function GetDateString(){
+        var sbtoday = "";
+	#foreach($m in $queryzhywsysdatepara)
+	     sbtoday = '$m.YESMONTH'
+	#end
+	var v1 = "$!form_billdate1";
+	var v2 = "$!form_billdate2";
+	if(v1=="" && v2==""){ 
+	   document.getElementById('billdate1').value=sbtoday;
+	   document.getElementById('billdate2').value=sbtoday;
+	}else{
+	   document.getElementById('billdate1').value=v1;
+	   document.getElementById('billdate2').value=v2;
+	} 
+    }
+//-->
+</SCRIPT>
+</HEAD>
+<BODY onload="GetDateString()">
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" class="datatable">
+   <tr>
+	<td><a href="/DownFileServlet?filepath=/fileupload/file/差旅费报销票据粘贴详解.pptx">差旅费报销-票据粘贴详解</a>&nbsp;&nbsp;&nbsp;<a href="/DownFileServlet?filepath=/fileupload/file/差旅费报销说明文档.doc">差旅费报销说明文档</a></td>
+   </tr>
+</table> 
+<div>
+  <form name="thisform" method="post" action="clfdaququery.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      	<tr class="search"> 
+	  <td class="tdlabel" width="10%">报销开始月份</td>
+	  <td class="tdinput" width="20%">
+	    <input type="text" name="billdate1" id="billdate1" value="$!form_billdate1" onclick="ShowDate(billdate1)"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%">报销结束月份</td>
+	  <td class="tdinput" width="20%">
+	     <input type="text" name="billdate2" id="billdate2" value="$!form_billdate2" onclick="ShowDate(billdate2)"/>	
+	  </td>	
+	</tr>
+	<tr>
+	  <td>&nbsp;
+	  </td><td align="left" colsapn="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+			&nbsp;&nbsp;</td>
+	  <td>&nbsp;
+	  </td><td align="left"><input type="button" value="新建" onclick="checkinput2()"  class="bt1"></td>
+	</tr>
+	<tr>
+	  <td>
+	  </td><td align="left"></td>
+	</tr>
+  </table>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap="nowrap" class="FixedTitleColumn">序号</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">月份</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">大区</td>
+	<td nowrap="nowrap" class="FixedTitleColumn">用户</td>
+	<td nowrap="nowrap">状态</td>
+	<td nowrap="nowrap">当前位置</td>
+	<td nowrap="nowrap">申报交通费（油费）金额</td>
+	<td nowrap="nowrap">实报正规交通票金额</td>
+	<td nowrap="nowrap">实报其他交通票金额</td>
+	<td nowrap="nowrap">申报补助金额</td>
+	<td nowrap="nowrap">实报补助金额</td>
+	<td nowrap="nowrap">申报差旅费小计</td>
+	<td nowrap="nowrap">实报差旅费小计</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $selclfdaququerybypage)
+	<tr height="20" class="trcolor">
+		<td align="center" class="FixedDataColumn">$i</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">
+		$!m.MONTH</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.DAQU</td>
+		<td align="center" nowrap="nowrap" class="FixedDataColumn">$!m.NAME</td>
+		<td align="center" nowrap="nowrap">
+		   #if($m.FSTATUS=="K") 已批准/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="N") 待报/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="F") 待批/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="R") 被否决/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="Z") 审核通过/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="S") 作废/$!m.FSTATUS #end
+		   #if($m.FSTATUS=="V") 已发放/$!m.FSTATUS #end
+		</td>
+		<td align="center" nowrap>#if($!m.ROLENAME!="")$!m.ROLENAME#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.YTICKETMONEY!="")$!m.YTICKETMONEY#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.STICKETMONEY!="")$!m.STICKETMONEY#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.SOTHERTICKETMONEY!="")$!m.SOTHERTICKETMONEY#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.YSUBMONEY!="")$!m.YSUBMONEY#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.SSUBMONEY!="")$!m.SSUBMONEY#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.YBJE!="")$!m.YBJE#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap">#if($!m.SBJE!="")$!m.SBJE#else&nbsp;#end</td>
+		<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.CLFID">
+		<a style='cursor:hand' onclick="javascript:ViewRow()"><font color=blue>查看</font></a>#if($m.FSTATUS=="N" || $m.FSTATUS=="R")&nbsp;&nbsp;<a style='cursor:hand' onclick="javascript:editRow()"><font color=blue>修改</font>&nbsp;&nbsp;<a style='cursor:hand' onclick="javascript:DelRow()"><font color=blue>删除</font>#end</a>
+		</span></td>
+	 </tr>
+	 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="17"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post">
+<input type="hidden" name="clfid">
+<input type="hidden" name="month">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

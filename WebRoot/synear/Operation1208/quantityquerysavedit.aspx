@@ -1,0 +1,11 @@
+<web:page>
+  <web:sql>updatequantityquery</web:sql>
+  <web:sql_type>update</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>pk_calbody,pk_invbasdoc,plannumber,outnnumber,innumber,nextoutnnumber,nextinnumber,stockquantity,monthnnumber,month,quantityid</web:multiValue>
+  <web:successMsg>数据保存成功！</web:successMsg>
+  <web:failMsg>数据保存失败！</web:failMsg>
+  <web:url>quantityqueryadd.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

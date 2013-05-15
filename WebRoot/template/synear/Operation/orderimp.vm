@@ -1,0 +1,171 @@
+<html>
+<head>
+<title>上传文件</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script language="javascript">
+function Trim(stringValue){
+    return stringValue.replace(/(^[\s]*)|([\s]*$)/g,'');
+}
+function delHtmlTag(str){   
+        return str.replace(/<[^>]+>/g,"");//去掉所有的html标记   
+    } 
+  function getValue1(){
+	if(document.form1.custnameid.value==""){
+	    alert("客户不能为空");
+	    return false;
+	}
+	if(document.form1.paper.value == ""){
+	    alert("文件路径不能为空");
+	    return false;
+	}else{
+	    if(document.form1.paper.value.indexOf(".xml")== -1 && document.form1.custnameid.value == "4"){
+		alert("导入文件格式不正确");
+		return false;
+	    }
+	    if(document.form1.paper.value.indexOf(".xls")== -1  && document.form1.custnameid.value == "5"){
+                alert("导入文件格式不正确");
+		return false;
+	    }
+	    if(document.form1.paper.value.indexOf(".txt")== -1  && document.form1.custnameid.value == "3"){
+                alert("导入文件格式不正确");
+		return false;
+	    }
+	    if(document.form1.paper.value.indexOf(".jsp")== -1  && document.form1.custnameid.value == "2"){
+                alert("导入文件格式不正确");
+		return false;
+	    }
+	}
+	if(document.form1.custnameid.value == "3" || document.form1.custnameid.value == "4" || document.form1.custnameid.value == "5"){
+	   document.form1.bt2.disabled = true;
+	   document.form1.action="/CustFileReadServlet";
+	   document.form1.submit();
+	}else if(document.form1.custnameid.value == "2"){
+           document.form1.bt2.disabled = true;
+	   var b=document.getElementById("custnameid");
+           var custnameid = b.value;
+           var hdatahtml="";
+           var datahtml="";
+	   var xx=document.frames("myframe").document.body.innerHTML;
+	   document.getElementById("dv").innerHTML=xx;
+	   var str = document.getElementById("dv");
+	   var tab = document.getElementsByTagName("table");
+	   var unitname=document.form1.unitname.value;
+	   var m;
+	   var n;
+	   var p;	
+	   var ordernum;
+	   var storenum
+	   var invname;
+	   var qty;
+	   var price;
+	   var spc;
+	   for(m=0;m<tab.length;m++){
+		var row =tab[m].rows;
+		for(i=0;i<row.length;i++){
+			if(i==0){
+			continue;
+			}
+			if(row[i].cells[23].innerHTML=="EA"){
+			continue;
+			}
+			for(j=0;j<row[i].cells.length;j++){
+				var cell =row[i].cells[j];
+			    if(j==0){
+			    ordernum=cell.innerHTML;
+			    }
+			    if(j==10){
+			      if(cell.innerHTML==""){
+			        invname=m;	
+			      }else{
+			      m=cell.innerHTML;
+			      invname=cell.innerHTML;
+			      }			  			  		    
+			    }
+			    if(j==15){
+			      if(cell.innerHTML==""){
+			        spc=n
+			      }else{
+			       spc = cell.innerHTML;
+			       n=cell.innerHTML;
+			      }
+			    }
+			   if(j==17){
+			       if(cell.innerHTML==""){
+			          price=p;
+			       }else{
+			         p=cell.innerHTML;
+			         price=cell.innerHTML;
+			       }
+			   }
+			   if(j==21){
+			       storenum=cell.innerHTML;
+			   }	
+			   if(j==22){
+			       qty=cell.innerHTML;
+			   }
+			}
+				
+		          // alert( "订单号:"+ordernum+"商品名:"+invname+"单价:"+price+"出货地点:"+storenum+"取货量:"+qty)
+		        datahtml+="<input type=hidden name=invname value='"+invname+"'>";
+		        datahtml+="<input type=hidden name=store value='"+storenum.substring(0,3)+"'>";
+			datahtml+="<input type=hidden name=qty value='"+qty+"'>";
+			datahtml+="<input type=hidden name=spc value='"+spc+"'>";
+			datahtml+="<input type=hidden name=unitname value='"+unitname+"'>";
+			datahtml+="<input type=hidden name=price value='"+price+"'>";
+			datahtml+="<input type=hidden name=ordernum value='"+ordernum+"'>";
+			datahtml+="<input type=hidden name=custnameid value='"+custnameid+"'>" 
+		    }
+		}
+		subdata.innerHTML=hdatahtml+datahtml;
+		document.all.form2.action="custordertest.aspx";
+		document.all.form2.target="dataframe";
+		document.all.form2.submit();
+	}
+	
+}
+function testok2(){
+	document.all.form2.action="bai.aspx";
+	alert("订单导入成功")
+	document.all.form2.submit();
+}
+function addfile(){
+	if(document.form1.custnameid.value == ""){
+		alert("客户不能为空");
+		document.form1.custnameid.focus();
+		return false;
+	}
+	if(document.form1.custnameid.value == "3" || document.form1.custnameid.value == "4" || document.form1.custnameid.value == "5"){
+      	    window.open('orderpfile.jsp?formname=form1&myframeurl=myframe&picurl=paper&type=custfile&tendtypeid='+document.form1.custnameid.value,'','status=no,scrollbars=no,top=160,left=150,width=450,height=365');
+	 }else if(document.form1.custnameid.value == "2"){
+	     window.open('file.jsp?formname=form1&myframeurl=myframe&picurl=paper&type=baijia','','status=no,scrollbars=no,top=160,left=150,width=450,height=365');
+	 }
+}
+</script>
+</head>
+<body>
+<form name="form1" method="post">
+客户：<select name="custnameid">
+	    <option value=""></option>
+	    #foreach($!m in $queryzhcust)
+	       #if($m.CUSTNAMEID != '1' and $m.CUSTNAMEID !='6')
+	        <option value="$m.CUSTNAMEID">$m.CUSTNAME</option>
+	       #end
+            #end
+	</select>
+	<input type="hidden" name="unitname" value="$session_CORPID">
+<input name="paper" type="text" size="40" value="" contenteditable="false"/>
+<input type="hidden" name="sysuser" value = "$session_USERNAME">
+<input type="button" name="bt1" class="bt1" value="文件上传" onClick="addfile()">
+<input type="button" class="bt1" name="bt2" value="确认无误，点击提交" onClick="getValue1()">
+</form>
+<form name="form2" method="post" action="" target="dataframe">
+<span id="subdata"></span>
+</form>
+<div id="dv" style="display:none"></div>
+<iframe src="" name="myframe" id="myframe" width="100%" height="100%">
+</iframe>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

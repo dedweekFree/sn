@@ -1,0 +1,285 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+<title>报表查询</title>
+<script language="JavaScript">
+$(function(){
+	$("#selectChanLiangReport").click(function(){
+			$selectDate = $("#selectDate").val();
+			if($selectDate!=""){
+				//alert($("#fenchangxinxi").val());
+				var fenchangxinxi=  $("#fenchangxinxi").val();
+				var val1 = fenchangxinxi.substr(0,fenchangxinxi.length-3);
+				$("#fenchangxinxi").val(val1);
+				//alert(sss);
+				var chanchengpinxinxi=  $("#chanchengpinxinxi").val();
+				var val2 = chanchengpinxinxi.substr(0,chanchengpinxinxi.length-3);
+				$("#chanchengpinxinxi").val(val2);
+				$("#queryform").submit();
+			}else{
+				alert("请选择月份");
+			}
+		});
+		
+		
+		
+				var $edittds= $("tr[name='fenchang'] > td[name='fenchangIDs']");
+				var $danjianzhongIDs= $("td[name='danjianzhongID']");
+				alert($danjianzhongIDs.length);
+				alert($edittds.length);
+				var $num1;
+				var $num2;
+				var $num3;
+				var $num4;
+				var $num5;
+				var $num6;
+				var $num7;
+				var $num8;
+				
+				
+				var $num1;
+				var $num2;
+				var $num3;
+				var $num4;
+				var $num5;
+				var $num6;
+				var $num7;
+				var $num8;
+				if($edittds.length!=0){
+					for(var i=0;i< $edittds.length;i++){
+						$num1 = $("td[name=yc"+$edittds[i].innerText+"]");
+						$num2 = $("td[name=ycd"+$edittds[i].innerText+"]");
+						$num3 = $("td[name=sc"+$edittds[i].innerText+"]");
+						$num4 = $("td[name=scd"+$edittds[i].innerText+"]");
+						$num5 = $("td[name=tb"+$edittds[i].innerText+"]");
+						$num6 = $("td[name=tbd"+$edittds[i].innerText+"]");
+						$num7 = $("td[name=ym"+$edittds[i].innerText+"]");
+						$num8 = $("td[name=ymd"+$edittds[i].innerText+"]");
+						for(var j=0;j< $danjianzhongIDs.length;j++){
+							$num2[j].innerText = formatNum($num1[j].innerText * $danjianzhongIDs[j].innerText,2);
+							$num4[j].innerText = formatNum($num3[j].innerText * $danjianzhongIDs[j].innerText,2);
+							$num6[j].innerText = formatNum($num5[j].innerText * $danjianzhongIDs[j].innerText,2);
+							$num8[j].innerText = formatNum($num7[j].innerText * $danjianzhongIDs[j].innerText,2);
+							
+							
+						}
+					}
+				}	
+		
+	function formatNum(Num1,Num2){ 
+     if(isNaN(Num1)||isNaN(Num2)){ 
+           return(0); 
+     }else{ 
+           Num1=Num1.toString(); 
+           Num2=parseInt(Num2); 
+           if(Num1.indexOf('.')==-1){ 
+                 return(Num1); 
+           }else{ 
+                 var b=Num1.substring(0,Num1.indexOf('.')+Num2+1); 
+                 var c=Num1.substring(Num1.indexOf('.')+Num2+1,Num1.indexOf('.')+Num2+2); 
+                 if(c==""){ 
+                       return(b); 
+                 }else{ 
+                       if(parseInt(c)<5){ 
+                             return(b); 
+                       }else{ 
+                             return((Math.round(parseFloat(b)*Math.pow(10,Num2))+Math.round(parseFloat(Math.pow(0.1,Num2).toString().substring(0,Math.pow(0.1,Num2).toString().indexOf('.')+Num2+1))*Math.pow(10,Num2)))/Math.pow(10,Num2)); 
+                       } 
+                 } 
+           } 
+     } 	
+	}	
+		
+		
+});
+</script>
+</head>
+<body>	
+<form name="queryform" method="post" action="setChanLiangReportByDate.aspx" id="queryform" >
+<input name = "deptids" type="hidden" id="fenchangxinxi" value="#foreach($m in $getUserFactoryBySessionUser)${m.PK_DEPTDOC}','#end" />
+<input name = "invids" type="hidden" id="chanchengpinxinxi" value="#foreach($m in $getNewSysProdInfos)${m.PK_INVBASDOC}','#end" />
+<table class="datatable" border="0" cellpadding="0" frame="box" cellspacing="0">
+		<tr class="search"> 
+            <td class="tdlabel" width="10%">选择月份</td>
+		  	<td class="tdinput" width="10%" colspan="3">
+				<input type="text" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})" class="Wdate" name="selectDate" value="$!{form_selectDate}" id="selectDate"/>
+			</td>
+			<td class="tdinput" width="20%" colspan="3">
+				<input type="button" name="search" class="bt1" id="selectChanLiangReport" value="查询">
+			</td>
+        </tr>
+
+</table>
+</form>
+	</br>
+	<input type="button" name="search" class="bt1" id="exportbtn" value="导出Excel" onclick="javascript:exportMethod('ydbb');">
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="ydbb" class="datatable" name="chanliang">
+		<tr height="20"  align="center" bgcolor="#abcdef" id="ftr" >
+			<td nowrap="nowrap" rowspan="3">存货编码</td>
+			<td nowrap="nowrap" rowspan="3">存货名称</td>
+			<td nowrap="nowrap" rowspan="3">规格</td>
+			<td nowrap="nowrap" rowspan="3">单件重</td>
+			#foreach($m in $getUserFactoryBySessionUser)
+				<td nowrap="nowrap" colspan="8">${m.DEPTNAME}</td>
+			#end
+			<td nowrap="nowrap" colspan="8">本月合计</td>
+			<td nowrap="nowrap" colspan="2">上月累计生产</td>
+			<td nowrap="nowrap" colspan="2">本年累计</td>
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			#foreach($m in $getUserFactoryBySessionUser)
+				<td nowrap="nowrap" colspan="2">月初库存</td>
+				<td nowrap="nowrap" colspan="2">本月生产</td>
+				<td nowrap="nowrap" colspan="2">本月调拨</td>
+				<td nowrap="nowrap" colspan="2">月末库存</td>
+			#end
+			<td nowrap="nowrap" colspan="2">月初库存</td>
+			<td nowrap="nowrap" colspan="2">本月生产</td>
+			<td nowrap="nowrap" colspan="2">本月调拨</td>
+			<td nowrap="nowrap" colspan="2">月末库存</td>
+			<td nowrap="nowrap" colspan="2">上月生产</td>
+			<td nowrap="nowrap" colspan="2">本年生产</td>
+		</tr>
+		<tr height="20"  align="center"  bgcolor="#abcdef" id="ftr">
+			#foreach($m in $getUserFactoryBySessionUser)
+				<td nowrap="nowrap" colspan="1">件数</td>
+				<td nowrap="nowrap" colspan="1">吨位</td>
+				<td nowrap="nowrap" colspan="1">件数</td>
+				<td nowrap="nowrap" colspan="1">吨位</td>
+				<td nowrap="nowrap" colspan="1">件数</td>
+				<td nowrap="nowrap" colspan="1">吨位</td>
+				<td nowrap="nowrap" colspan="1">件数</td>
+				<td nowrap="nowrap" colspan="1">吨位</td>
+			#end
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>
+			<td nowrap="nowrap" colspan="1">件数</td>
+			<td nowrap="nowrap" colspan="1">吨位</td>			
+		</tr>
+	
+	#foreach($s in $getInvbasCategory)
+		#foreach($m in $getNewSysProdInfos)
+			#if($s.ID == $m.CATEGORYID)
+			<tr height="20" class="trcolor" name="yuedureport" >
+				<td align="center" nowrap="nowrap" >$m.INVCODE &nbsp;</td>
+				<td align="center" nowrap="nowrap">$m.INVNAME &nbsp;</td>
+				<td align="center" nowrap="nowrap">$m.INVSPEC &nbsp;</td>
+				<td align="center" nowrap="nowrap" name="danjianzhongID">$m.UNITWEIGHT &nbsp;</td>				
+			#foreach($x in $getUserFactoryBySessionUser)
+				#set($count=1) 
+				#foreach($n in $getChanLiangResultByDate)
+					#if($n.PK_DEPTDOC == $x.PK_DEPTDOC && $n.PK_INVBASDOC == $m.PK_INVBASDOC)
+						<td nowrap="nowrap" colspan="1" name=yc${x.PK_DEPTDOC} >$n.FIRSTNUM</td>
+						<td nowrap="nowrap" colspan="1" name=ycd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=sc${x.PK_DEPTDOC} >$n.MAKENUM </td>
+						<td nowrap="nowrap" colspan="1" name=scd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=tb${x.PK_DEPTDOC} >$n.MOVENUM</td>
+						<td nowrap="nowrap" colspan="1" name=tbd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=ym${x.PK_DEPTDOC} >$n.ENDNUM</td>
+						<td nowrap="nowrap" colspan="1" name=ymd${x.PK_DEPTDOC} >0</td>
+						#set($count=$count+1)
+					#end
+				#end
+					#if($count==1)
+						<td nowrap="nowrap" colspan="1" name=yc${x.PK_DEPTDOC} >20</td>
+						<td nowrap="nowrap" colspan="1" name=ycd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=sc${x.PK_DEPTDOC} >30</td>
+						<td nowrap="nowrap" colspan="1" name=scd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=tb${x.PK_DEPTDOC} >40</td>
+						<td nowrap="nowrap" colspan="1" name=tbd${x.PK_DEPTDOC} >0</td>
+						<td nowrap="nowrap" colspan="1" name=ym${x.PK_DEPTDOC} >50</td>
+						<td nowrap="nowrap" colspan="1" name=ymd${x.PK_DEPTDOC} >0</td>
+					#end
+			#end
+				<td nowrap="nowrap" colspan="1" name=hjyc >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjycd >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjsc >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjscd >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjtb >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjtbd >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjym >0</td>
+				<td nowrap="nowrap" colspan="1" name=hjymd >0</td>
+				<td nowrap="nowrap" colspan="1" >0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+			 </tr>
+			#end
+		#end
+		<tr height="20" class="trcolor" name="yuedureport">
+				<td align="center" nowrap="nowrap" >&nbsp;</td>
+				<td align="center" nowrap="nowrap"><b style="color:red;">$s.CATEGORYNAME<b></td>
+				<td align="center" nowrap="nowrap">&nbsp;</td>
+				<td align="center" nowrap="nowrap">&nbsp;</td>
+				#foreach($m in $getUserFactoryBySessionUser)
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+					<td nowrap="nowrap" colspan="1">0</td>
+				#end
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+				<td nowrap="nowrap" colspan="1">0</td>
+		</tr>
+	#end
+</table>
+		<table>
+		<tr name="fenchang">
+			#foreach($m in $getUserFactoryBySessionUser)
+				<td nowrap="nowrap" colspan="8" name="fenchangIDs">${m.PK_DEPTDOC}</td>
+			#end
+		</tr>
+		</table>
+<script> 
+function exportMethod(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>
+</body>
+</html>

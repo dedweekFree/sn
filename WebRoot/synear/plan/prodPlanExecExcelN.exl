@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>getProdPlanExecExSt</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产品分类##产品名称##产品代码##计划数量##追加数量##调整数量##下单数量##安排数量##备货数量##发货数量##剩余计划</web:col>
+  <web:key>INVCLASSNAME##INVNAME##INVCODE##PLANNUM##ZPLANNUM##TPLANNUM##PREORDERNUM##ARRNUM##ORDERNUM##SALENUM##PLUSPALNNUM</web:key>
+  <web:name>产品计划完成情况</web:name>
+</web:page>
+
+
+

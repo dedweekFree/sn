@@ -1,0 +1,209 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>区域分支补贴金额查询</title>
+<script language="javascript">
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+ function a(){
+	form2.submit();
+ }
+ function b(){
+	   document.thisform.page.value =1;
+		document.thisform.submit();
+ }
+function GetDateString(){
+        var t1=""
+	var t2=""
+	var v1 = "$!form_starttime";
+	var v2 = "$!form_endtime";
+	#foreach($!m in $yxzcsendsalemonthday)
+	     t1 = "$m.FIRSTDAY";
+	     t2 = "$m.LASTDAY";
+	#end
+	if(v1=="" && v2==""){ 
+	document.getElementById('starttime').value=t1;
+	document.getElementById('endtime').value=t2;
+	}else{
+	document.getElementById('starttime').value=v1;
+	document.getElementById('endtime').value=v2;
+	}
+    }
+    function todel(url){
+       if(confirm("确认要删除吗？")){
+           document.thisform.target="dataframe";
+	   document.thisform.action=url;
+	   document.thisform.submit();
+       }
+    }
+     var dept=new Array(); 
+	dept=[
+	   ['区域主键','区域名称','大区主键']
+		#foreach($!m in $selsyneararea)
+		  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+		#end
+	   ];
+       function setF(departid,objid)
+	{
+	    if(departid==""){
+		  var obj = document.getElementById(objid);
+		  var length = obj.length;
+		  for (var j=length-1; j>0; j--)
+		  {
+		    obj.options.remove(j);
+		  }
+		  for(var i=1;i<dept.length;i++){   
+		      var oOption = document.createElement("OPTION");
+		      obj.options.add(oOption);
+		      oOption.innerText = dept[i][1];
+		      oOption.value = dept[i][0];
+		  }	  
+	    }else{
+	      var obj = document.getElementById(objid);
+	      var length = obj.length;
+	      for (var j=length-1; j>0; j--)
+	      {
+		obj.options.remove(j);
+	      }
+		 
+	      for(var i=1;i<dept.length;i++){
+		if(dept[i][2]==departid){
+		  var oOption = document.createElement("OPTION");
+		  obj.options.add(oOption);
+		  oOption.innerText = dept[i][1];
+		  oOption.value = dept[i][0];
+		}
+	      }
+	    }
+	}
+	function togetmont(url){
+	    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	 }
+	 function downfile()
+	{
+	   thisform.action="tcbexcel.exl";
+	   thisform.submit();
+	}
+ </script>
+
+</head>
+
+<body onload="GetDateString()">
+<form name="thisform" method="post" action="xsdwbtjequery.aspx">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+<table class="datatable">
+  <tr class="trcolor">
+    <td>政策开始日期:</td>
+    <td align="left"><input type="text" name="starttime" id="starttime" value="$!form_starttime" onclick="ShowDate(starttime)"/></td>
+    <td>政策结束日期:</td>
+    <td  align="left"><input type="text" name="endtime" id="endtime" value="$!form_endtime" onclick="ShowDate(endtime)"/></td>
+  </tr>
+  <tr class="trcolor">
+    <td>政策编号:</td>
+    <td align="left"><input type="text" name="stycode" id="stycode" value="$!form_stycode"/><input type="button" value="..." onclick="togetmont('stycodequery.aspx?type=B&stycode='+document.thisform.stycode.value)" class="bt1"></td>
+    <td>政策名称:</td>
+    <td align="left"><input type="text" name="styname" value="$!form_styname"/></td>
+  </tr>
+  <tr  class="trcolor">
+	  <td>大区</td>
+		<td align="left">
+		 <select name=dq_pk  onchange="javascript:setF(this.value,'areapk');">
+		<option value=''>请选择大区</option>
+	      #foreach($m2 in $selsyneardaqu)
+		     <option value="$!m2.NC_PK" #if($form_dq_pk==$m2.NC_PK) selected #end>$!m2.DEPTNAME</option>
+	      #end
+		</select>	
+	</td>	
+	<td>区域</td>
+	<td align="left">
+	  <select name=areapk><option value=''>请选择区域</option>
+	      #foreach($m1 in $selsyneararea)
+		     <option value="$!m1.NC_PK" #if($form_areapk==$m1.NC_PK) selected #end>$!m1.DEPTNAME</option>
+	      #end
+	     </select>
+	</td>
+  </tr>
+ <!-- <tr class="trcolor">
+     <td>政策类型:</td>
+    <td align="left"> <select id="type" name="type">
+        <option value="">全部</option>
+	<option value="A" #if($form_type == 'A')selected#end>单补</option>
+	<option value="B" #if($form_type == 'B')selected#end>套餐补</option>
+	</select>
+    </td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>-->
+  <tr class="trcolor">
+    <td>&nbsp;</td>
+    <td><input type="button" name="b1" class="bt1" value="查&nbsp;询" onclick="b()"/></td>
+    <td><input type="button" class="bt1" name="btnss" value="导出excel" onclick="downfile()"></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</form>
+<table class="datatable">
+  <tr class="trcolor">
+    <td>大区</td>
+    <td>区域分支</td>
+    <td>政策编号</td>
+    <td>政策名称</td>
+    <td>补贴类型</td>
+    <td>单件补贴额</td>
+    <td>计划量</td>
+    <td>计划套数</td>
+    <td>补贴额</td>
+    <td>实际销量</td>
+    <td>实际套数</td>
+    <td>补贴额</td>
+  </tr>
+    #set($i=0)
+    #foreach($!m in $yczcxsdwbtjequery)
+	  <tr class="trcolor">
+	    <td>$!m.DAQU</td>
+	    <td>$!m.DEPTNAME</td>
+	    <td>$!m.STYCODE</td>
+	    <td>$!m.STYNAME</td>
+	    <td>#if($!m.TYPE=='A')单补#elseif($!m.TYPE=='B')套餐补#end</td>
+	    <td>$!m.ALLOWANCE</td>
+	    <td>$!m.PLANNUM</td>
+	    <td>$!m.TAOSHU1</td>
+	    <td>$!m.SS1</td>
+	    <td>$!m.SALENUM</td>
+	    <td>$!m.TAOSHU</td>
+	    <td>$!m.SS2</td>
+	  </tr>
+    #set($i=$i+1)
+    #end
+    #foreach($!m in $yczcxsdwbtjequerysum)
+        <tr class="trcolor">
+	    <td colspan="6">合计</td>
+	    <td>$!m.PLANNUM</td>
+	    <td>$!m.TAOSHU1</td>
+	    <td>$!m.SS1</td>
+	    <td>$!m.SALENUM</td>
+	    <td>$!m.TAOSHU</td>
+	    <td>$!m.SS2</td>
+	  </tr>
+    #end
+     <tr >
+        <td class="tdlabel" colspan="12">$pagecode</td>
+   </tr>
+</table>
+<form action="yxzcadd.aspx" method="post" name="form2">
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+</body>
+</html>

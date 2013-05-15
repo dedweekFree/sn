@@ -1,0 +1,56 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+	<style>
+	table,body{font-size:12px;background-color:#EBE9EE; margin:0px; padding:0px;}
+</style>
+<script language="javascript">
+function Choose(){
+    var code=document.getElementById("unitcode").value;
+    var a1 = document.getElementById("areacode").value;
+    var a2 = document.getElementById("pathcode").value;
+    var b = document.getElementById("layercode").value;
+    var c = document.getElementById("fstyle").value;
+    var c22 = document.getElementById("stockunitname").value;
+    top.result1.document.location='unusestockright.aspx?unitcode='+code+'&areacode='+a1+'&pathcode='+a2+'&layercode='+b+'&fstyle='+c+'&sys=1&stockunitname='+c22;
+}
+</script>
+</head>
+<body>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+库位代码:<input type="text" name="stockunitname">
+<select name="unitcode" id="unitcode">
+	<option value="">全部</option>
+	#set($i=0)
+	#foreach($!m in $selunitcode)
+	<option value="$!m.UNITCODE" #if($!m.UNITCODE==$!form_unitcode) selected #else #end>$!m.UNITCODE</option>
+	#set($i=$i+1)
+	#end
+	</select><br>
+所处区域:<select name="areacode" id="areacode">
+	<option value="">全部</option>
+	#set($i=0)
+	#foreach($!m in $selareacode)
+	<option value="$!m.AREACODE" #if($!m.AREACODE==$!form_areacode) selected #else #end>$!m.AREACODE</option>
+	#set($i=$i+1)
+	#end
+	</select>
+	<br>
+所处巷道:<select name="pathcode">
+	<option value="">全部</option>
+	#set($i=0)
+	#foreach($!m in $selpathcode)
+	<option value="$!m.PATHCODE" #if($!m.PATHCODE==$!form_pathcode) selected #else #end>$!m.PATHCODE</option>
+	#set($i=$i+1)
+	#end
+	</select><br>
+所处层:<select name="layercode" id="layercode"><option value="">全部</option><option value="1">1层</opeion><option value="2">2层</opeion><option value="3">3层</opeion><option value="4">4层</opeion><select><br>
+库位类型:<select name="fstyle" id="fstyle"><option value="0">零托</opeion><select><br>
+<input type="button" value="查询" onclick="Choose()">
+</body>
+</html>

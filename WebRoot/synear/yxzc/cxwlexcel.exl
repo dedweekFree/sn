@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>jxscxwldzquerybypageexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>发放物料时间##客户编码##客户名称##物料名称##计量单位##出库数量##实收数量##出库单价#出库金额（元）</web:col>
+  <web:key>SENDDATE##CUSTCODE##CUSTNAME##WLNAME##UNITNAME##NNUM##SNNUM##PRICE##MONEY</web:key>
+  <web:name>促销物料明细</web:name>
+</web:page>
+
+
+

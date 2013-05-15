@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>		
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+//计划调整
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+   document.form1.periodno.value = paras[0];
+   document.form1.deptcode.value = paras[1];
+   document.form1.status.value = paras[2];
+   document.form1.bigareapk.value =paras[3];
+   document.form1.deptname.value = paras[4];
+   document.form1.action="adjustSalePlan.aspx";
+   document.form1.target="_self";
+   document.form1.submit();
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+  <form name="thisform" method="post" action="salePlanAdjust.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+  </form>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">计划期间</td>
+	<td nowrap="nowrap">区域代码</td>
+	<td nowrap="nowrap">区域名称</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $getFzSalePlanArea)
+  		<tr height="20" class="trcolor">
+			<td align="center" class="FixedDataColumn">$i</td>
+		        <td align="center" nowrap="nowrap">$!m.PERIODNO</td>
+			<td align="center" nowrap="nowrap">$!m.DEPTCODE</td>
+			<td align="center" nowrap="nowrap">$!m.DEPTNAME</td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.PERIODNO,$!m.DEPTCODE,$!m.STATUS,$!m.NC_PK,$!m.DEPTNAME">
+			     <a style='cursor:hand' onclick="javascript:okRow()"><font color=blue>计划调整</font></a>&nbsp;&nbsp;
+			</span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<form name="form1" method="post" action="">
+  <input type="hidden" name="deptcode" value="">
+  <input type="hidden" name="deptname" value="">
+  <input type="hidden" name="periodno" value="">
+  <input type="hidden" name="status" value="">
+  <input type="hidden" name="bigareapk" value="">
+</form>
+</BODY>
+</HTML>

@@ -1,0 +1,487 @@
+	/*日历控件样式样式*/
+	.dateTimePicker {
+		BEHAVIOR: url('/inc/platform/htc/Calendar.htc')
+	}
+
+body {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-size: 12px;
+	margin:5 5 5;
+	background-color: #ffffff;	
+}
+
+body.nomarg{
+	margin:0px;
+	padding:12px;
+	background:#FFFFFF;
+	overflow:auto;
+}
+
+body.scroll{
+  scrollbar-3dlight-color :#4F6E92;
+  scrollbar-base-color :#eeeeee;
+  scrollbar-arrow-color :#4F6E92;
+}
+
+body.menu{ 
+        font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-size: 12px;
+	margin:5 5 0;
+	
+}
+body.menu1{  
+   background-color: #6699ff;
+}
+body.menu2{ 
+  background-color:#e2e2e2;
+} 
+
+table {
+   border-width:1px;
+   cell-Space:1; 
+   cell-Pad:1 ;
+   border-collapse:collapse;
+   }
+
+table.main { 
+  border-width:0px;
+  cell-Space:0px; 
+  cell-Pad:0px; 
+  width: 720px; 
+}
+table.w580 { 
+  border-width:0px;
+  cell-Space:0px; 
+  cell-Pad:0px; 
+  width: 580px; 
+}
+table.new { 
+  border-width:1px;
+  cell-Space:0px; 
+  cell-Pad:2px;
+  border-style:solid;
+border-left-color:#4F6E92;
+	border-top-color:#4F6E92;
+	border-right-color:#4F6E92;
+	border-bottom-color:#4F6E92;
+
+}
+
+table.file { 
+  border-width:1px;
+  border-style:solid;
+}
+table.forfile {
+	border-width:2px;
+	width: 100%;
+	border-style:solid;
+	border-left-color:#ffffff;
+	border-top-color:#ffffff;
+	border-right-color:#ffffff;
+	border-bottom-color:#0033CC;
+}
+table.menutitle21 {
+	border-width:3px;
+	width: 100%;
+	border-style:solid;
+	border-left-color:#e2e2e2;
+	border-top-color:#e2e2e2;
+	border-right-color:#e2e2e2;
+	border-bottom-color:#e2e2e2;
+}
+table.menutitle31 {
+	border-width:2px;
+	width: 100%;
+	
+	
+}
+table.menutitle32 {
+	border-width:2px;
+	width: 100%;
+	border-style:solid;
+	border-left-color:#99ccff;
+	border-top-color:#99ccff;
+	border-right-color:#99ccff;
+	border-bottom-color:#6699ff;
+}
+th {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-weight:normal;
+	font-size: 12px;
+	background-color: #E8ECFF;
+	color:#000000;
+	text-align:center;
+	border:1 ;
+        border-style:solid;
+        border-color:#4F6E92;
+	height:20px;
+	white-space:nowrap
+}
+td { 
+  font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+  font-size: 12px;
+}
+td.fortemplet { 
+  font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+  font-size: 12px;
+  color:ffffff
+}
+td.forsubmenufont{ 
+  font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+  width:80px;
+  color: #000000;
+  font-size: 12px;
+}
+
+td.forsubmenuimg{ 
+  font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+  text-align:center;
+  font-size: 12px;
+  cursor:hand;
+  height:19;
+  color:#000000;
+  vertical-align:bottom;
+}
+td.temp211 { 
+   height:1px;
+   background: #99ccff;
+}
+td.temp212 { 
+   background: #FFCB51;
+   height:1px
+}
+
+td.tabcolor1  {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-size: 12px;
+	height:25px;
+	background-color: #ffffff;
+	color: #000000;
+	border:1 ;
+        border-style:solid;
+        border-color:#4F6E92
+}
+td.tabcolor2  {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-size: 12px;
+	height:25px;
+	background-color: #ffffff;
+	color: #000000;
+	border:1 ;
+        border-style:solid;
+        border-color:#4F6E92
+}
+td.tabsel {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	height:25px;
+	font-size: 12px;
+	color: Black;
+	background-color: #E8ECFF;
+	border:1 ;
+        border-style:solid;
+        border-color:#4F6E92
+}
+td.tabform  {  
+   font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+   font-size: 12px;
+   color:#000000;
+   background-color:#eeeeee;
+   border:1 ;
+        border-style:solid;
+        border-color:#4F6E92
+ }
+ 
+
+A:link {text-decoration:none;font-size: 12px;color: #333399;} 
+A:alink {text-decoration:none;font-size: 12px;color: #333399;} 
+A:visited { text-decoration:none; font-size: 12px;color:#996633} 
+A:active {text-decoration:none;font-size: 12px;color: #996633;} 
+A:hover { text-decoration: underline; font-size: 12px;color:#996633} 
+
+A.menu:link { text-decoration:none; font-size: 12px;color:#000000} 
+A.menu:alink { text-decoration:none; font-size: 12px;color:#000000} 
+A.menu:visited { text-decoration:none; font-size: 12px;color:#000000} 
+A.menu:active { text-decoration:none; font-size: 12px;color:#000000} 
+A.menu:hover { text-decoration: underline; font-size: 12px;color:#000099} 
+
+A.menu1:link { text-decoration:underline; font-size: 12px;color:#000000} 
+A.menu1:alink { text-decoration:underline; font-size: 12px;color:#000000} 
+A.menu1:visited { text-decoration:underline; font-size: 12px;color:#000000} 
+A.menu1:active { text-decoration:underline; font-size: 12px;color:#000000} 
+A.menu1:hover { text-decoration: none; font-size: 12px;color:#000000} 
+
+p {  
+    font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+    font-size: 12px; 
+    line-height:20px
+ }
+br {  
+   font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+   font-size: 9pt
+ }
+H3 {  
+   font-family: "宋体";
+   font-weight: bolder;
+   font-size: 10pt;
+ }
+H4 {  
+    font-family: "宋体";
+    font-weight: lighter;
+    font-size: 9pt;
+  }
+
+font {  font-family: "宋体", "Arial Narrow", "Times New Roman";}
+
+input {
+	font-size:12px;
+}
+.input1 {
+		font-size: 9pt; border: 1 solid #000000;BACKGROUND-COLOR: #F3D275
+}
+SELECT {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-weight:normal;
+	FONT-SIZE: 12px;
+	color : black;
+	background-color : white;
+}
+OPTION {
+	font-family: "宋体", "Arial Narrow", "Times New Roman";
+	font-weight:normal;
+	FONT-SIZE:12px;
+	color : 000000;
+	background-color : #ffffff;
+}
+
+input.pagebut {   
+    BACKGROUND-COLOR:#EFEFEF; 
+    BORDER-BOTTOM:  white outset thin; 
+    BORDER-LEFT: white thin; 
+    BORDER-RIGHT: white outset thin; 
+    BORDER-TOP: white thin;  
+    color:#000000;  
+    FONT-FAMILY: Arial; 
+    FONT-SIZE: 9pt;        
+    HEIGHT: 18px;
+    VERTICAL-ALIGN:bottom;
+    border:1 ;
+        border-style:solid;
+        border-color:#4F6E92;
+}
+
+input.checkbut {   
+    BACKGROUND-COLOR:#EFEFEF; 
+    BORDER-BOTTOM:  white outset thin; 
+    BORDER-LEFT: white thin; 
+    BORDER-RIGHT: white outset thin; 
+    BORDER-TOP: white thin;  
+    color:#000000;  
+    FONT-FAMILY: Arial; 
+    FONT-SIZE: 9pt;        
+    HEIGHT: 18px;
+    border:1 ;
+        border-style:solid;
+        border-color:#4F6E92;
+}
+
+input.number {
+	FONT-FAMILY: Arial;
+	FONT-SIZE: 9pt;
+	HEIGHT: 18px;
+	text-align : right;
+}
+input.buttonfunction {
+	BACKGROUND-COLOR: #0099CC;
+	BORDER-BOTTOM: white outset thin;
+	BORDER-LEFT: white thin;
+	BORDER-RIGHT: white outset thin;
+	BORDER-TOP: white thin;
+	color: #375549;
+	font-family: Comic Sans MS;
+	font-size: 12px;
+	HEIGHT: 18px;
+	width: 48px;
+	VERTICAL-ALIGN:bottom
+}  
+input.pagenew {  
+   BACKGROUND-COLOR:#A5B4FF; 
+   BORDER-BOTTOM:  white outset thin; 
+   BORDER-LEFT: white thin; 
+   BORDER-RIGHT: white outset thin; 
+   BORDER-TOP: white thin;  
+   color:#ffffff;  
+   FONT-FAMILY: Arial; 
+   FONT-SIZE: 9pt;        
+   HEIGHT: 21px;
+   VERTICAL-ALIGN:middle;
+   border:1 ;
+        border-style:solid;
+        border-color:#6666cc 
+ }
+input.pagequery { 
+  BACKGROUND-COLOR:#A5B4FF;
+  BORDER-BOTTOM:  white outset thin; 
+  BORDER-LEFT: white thin; 
+  BORDER-RIGHT: white outset thin; 
+  BORDER-TOP: white thin;  
+  color:#000000;  
+  FONT-FAMILY: Arial; 
+  FONT-SIZE: 9pt;        
+  HEIGHT: 21px;
+  VERTICAL-ALIGN:middle 
+}        
+    
+.LeftNavOff {
+	BORDER-BOTTOM: #6699cc 1px solid; 
+	BORDER-LEFT: #6699cc 1px solid; 
+	BORDER-RIGHT: #6699cc 1px solid;
+	BORDER-TOP: #6699cc 1px solid; 
+	COLOR: #ffffff; CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 9pt; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 20px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; 
+	PADDING-LEFT: 3px; 
+	PADDING-RIGHT: 3px; 
+	PADDING-TOP: 1px; 
+	TEXT-DECORATION: none; 
+	WIDTH: 70px
+}
+.LeftNavUp {
+	BORDER-BOTTOM: #333366 1px solid; 
+	BORDER-LEFT: white 1px solid; 
+	BORDER-RIGHT: #333366 1px solid; 
+	BORDER-TOP: white 1px solid; 
+	COLOR: #ffff99; 
+	CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 9pt; 
+	HEIGHT: 0pt; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 20px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; 
+	PADDING-LEFT: 3px; 
+	PADDING-RIGHT: 3px; 
+	PADDING-TOP: 1px; 
+	TEXT-DECORATION: none; 
+	WIDTH: 70px
+}
+.LeftNavDown {
+	BORDER-BOTTOM: white 1px solid; 
+	BORDER-LEFT: #000066 1px solid; 
+	BORDER-RIGHT: white 1px solid; 
+	BORDER-TOP: #000066 1px solid; 
+	COLOR: #ffffff; 
+	CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 9pt; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 20px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; 
+	PADDING-LEFT: 3px; 
+	PADDING-RIGHT: 3px; 
+	PADDING-TOP: 1px; 
+	TEXT-DECORATION: none; 
+	WIDTH: 70px
+}
+.LeftNavOn {
+        BACKGROUND-COLOR:#FFFFFF;
+	BORDER-BOTTOM: #99ccff 1px solid; 
+	BORDER-LEFT: #000066 1px solid; 
+	BORDER-RIGHT: #99ccff 1px solid; 
+	BORDER-TOP: #000066 1px solid; 
+	COLOR: #666666; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 9px; 
+	FONT-WEIGHT: bold; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 20px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 3px; 
+	PADDING-LEFT: 3px; 
+	PADDING-RIGHT: 3px; 
+	PADDING-TOP: 3px; 
+	TEXT-DECORATION: none; 
+	WIDTH: 60px
+}
+.tblbody {
+	BACKGROUND: #6699cc; 
+	BORDER-BOTTOM: #30404f 1px solid; 
+	BORDER-LEFT: #b8d2e9 1px solid; 
+	BORDER-RIGHT: #30404f 1px solid; 
+	BORDER-TOP: #b8d2e9 1px solid
+}
+.table {
+	FONT-SIZE: 9pt; LINE-HEIGHT: 12pt
+}
+
+.ButtonNormal {
+	BORDER-BOTTOM: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; BORDER-RIGHT: #ffffff 1px solid; BORDER-TOP: #ffffff 1px solid; 
+	COLOR: #0000a0; 
+	CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 14px; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 14px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; PADDING-TOP: 0px; 
+	TEXT-DECORATION: none; 
+	VERTICAL-ALIGN: middle; 
+	WIDTH: 70px
+}
+.ButtonUp {
+	BORDER-BOTTOM: #333366 1px solid; 
+	BORDER-LEFT: #ECECFF 1px solid; 
+	BORDER-RIGHT: #333366 1px solid; 
+	BORDER-TOP: #ECECFF 1px solid; 
+	COLOR: #0000a0; CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 14px; 
+	HEIGHT: 0pt; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 24px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; 
+	PADDING-LEFT: 5px; 
+	PADDING-RIGHT: 5px; 
+	PADDING-TOP: 0px; 
+	TEXT-DECORATION: none; 
+	VERTICAL-ALIGN: middle; 
+	WIDTH: 70px
+}
+.ButtonDown {
+	BORDER-BOTTOM: #ECECFF 1px solid; 
+	BORDER-LEFT: #333366 1px solid; 
+	BORDER-RIGHT: #ECECFF 1px solid; 
+	BORDER-TOP: #333366 1px solid; 
+	COLOR: #0000a0; 
+	CURSOR: hand; 
+	FONT-FAMILY: verdana; 
+	FONT-SIZE: 14px; 
+	LETTER-SPACING: -0.5pt; 
+	LINE-HEIGHT: 24px; 
+	MARGIN: 0px; 
+	PADDING-BOTTOM: 0px; 
+	PADDING-LEFT: 5px; 
+	PADDING-RIGHT: 5px; 
+	PADDING-TOP: 0px; 
+	TEXT-DECORATION: none; 
+	VERTICAL-ALIGN: middle; 
+	WIDTH: 70px
+}
+.input_noline { border-left:0px;border-right:0px;border-top:0px;border-bottom:0px;font-size:12px}
+.input_bottomline {  border-left:0px;border-right:0px;border-top:0px;border-bottom:1px groove #000000;font-size:12px}
+.textarea_noline {  border-left:0px;border-right:0px;border-top:0px;border-bottom:0px;font-size:12px;SCROLLBAR-FACE-COLOR: #ffffff; SCROLLBAR-HIGHLIGHT-COLOR: #ffffff; SCROLLBAR-SHADOW-COLOR: #ffffff; SCROLLBAR-3DLIGHT-COLOR: #ffffff; SCROLLBAR-ARROW-COLOR:  #ffffff; SCROLLBAR-TRACK-COLOR: #ffffff; SCROLLBAR-DARKSHADOW-COLOR: #ffffff; }
+
+.font_song14 { 
+  font-family: "宋体", "Arial Narrow", "Times New Roman"; 
+  font-size: 14px;
+  font-color: #000000;
+}
+.button_logoin {  font-family: "宋体"; font-size: 12px; height: 13pt;color: #000000; border: 1 solid; cursor: hand; background-color: #FFFFFF}
+.input_logoin {  font-family: "宋体"; font-size: 12px; height: 13pt;color: #000000; border: 1 solid #000000}
+hr {height:1;color:#4F6E92;}

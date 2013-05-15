@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title></title>
+<script language="javascript">
+      function GetSelectCustNameValue(){
+        var ReturnCustValue=showModalDialog('../Public/SelectGongYinShang/Index.aspx','','dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+        if(ReturnCustValue!=null){
+            var ReturnCustValueInfo=ReturnCustValue.split("!");
+            var TextCustName=document.getElementById("TextCustName");
+            TextCustName.value=ReturnCustValueInfo[0].split(" ")[1];
+        }
+    }
+ 
+ function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+        document.getElementById('TextZhiDanRiQi1y1').value=Today;
+	document.getElementById('TextZhiDanRiQi1y2').value=Today;
+	var a = document.all.roles.value
+	if(a=="R8885"){
+		document.getElementById("t1").style.display="none";
+		document.getElementById("td").style.display="none";
+		document.getElementById("td1").style.display="none";
+	}
+    }
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+</script>
+</head>
+
+<body onload="GetDateString()">
+<form name="form1" action="PrayBillList2.aspx" method="post">
+<table class="datatable" id='tb1'>
+  <tr class="trcolor">
+    <td colspan="4" align="left">采购订单查询<font id="Loading"></font></td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">采购单日期:</td>
+    <td align="left">
+    <input type=text name=TextZhiDanRiQi1y1 id=TextZhiDanRiQi1y1 value='' onclick=ShowDate(TextZhiDanRiQi1y1) style="width:80px">-<input type=text name=TextZhiDanRiQi1y2 id=TextZhiDanRiQi1y2 value='' onclick=ShowDate(TextZhiDanRiQi1y2) style="width:80px">
+    </td>
+    <td align="right" id='td'></td>
+    <td align="left" id='td1'>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">请购单号:</td>
+    <td align="left"><input type="text" name="vpraycode" /></td>
+    <td align="right">采购订单号:</td>
+    <td align="left"><input type="text" name="vordercode" /></td>
+  </tr>
+  <input type="hidden" name="roles" value="$!session_ROLES">
+  <tr class="trcolor" id="t1">
+    <td align="right">&nbsp;</td>
+    <td colspan="3" align="left">&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4"><input name="button" class="bt1" type="submit" id="button" value="查  询"/></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

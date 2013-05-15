@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>selsnbasicuserinfoexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>用户名##用户姓名##大区##区域##工商银行卡号##身份证号##任职级别##家庭住址##常住地##驻地天数</web:col>
+  <web:key>USERNAME##NAME##DQNAME##DEPTNAME##BANKNUM##CARD##LEVELNAME##ADDRESS##ADDRESSNAME##ADDRESSDAY</web:key>
+  <web:name>营销中心人员信息</web:name>
+</web:page>
+
+
+

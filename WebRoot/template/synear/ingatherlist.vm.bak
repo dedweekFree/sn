@@ -1,0 +1,155 @@
+
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script type="text/javascript" src="../../../inc/js/array2.js"></script>
+<title>出入库汇总单</title>
+</head>
+<script type="text/javascript">
+
+
+function showTotal()
+{
+
+   var rowtotal=datatable.rows.length;
+   var coltotal=datatable.rows[3].cells.length;
+    var str=0;
+           
+    for(var i=2;i<rowtotal-1;i++){
+   
+    for(var k=2 ;k<coltotal-1;k++){
+   
+         if(k<9){
+
+	    str=str+Number(datatable.rows(i).cells(k).innerText);
+
+	 }
+	
+          if(k>=9&&k<13){
+	      str=str-Number(datatable.rows(i).cells(k).innerText);
+	  }
+
+         str = str+Number(datatable.rows(i).cells(13).innerText);
+	
+	
+
+   }
+   datatable.rows(i).cells(14).innerText = str;
+   str=0;
+  }
+    for(var k=2 ;k<coltotal;k++){
+     for(var i=2;i<rowtotal-1;i++){
+           str=str+Number(datatable.rows(i).cells(k).innerText);
+     }
+        datatable.rows(i).cells(k).innerText=str;
+	str=0;
+     }
+
+   
+
+}
+
+
+function ForDight(Dight,How) 
+{ 
+Dight = Math.round (Dight*Math.pow(10,How))/Math.pow(10,How); 
+return Dight; 
+} 
+
+ //指定页面区域内容导入Excel
+ function AllAreaExcel() 
+ {
+  var oXL = new ActiveXObject("Excel.Application"); 
+  var oWB = oXL.Workbooks.Add(); 
+  var oSheet = oWB.ActiveSheet;  
+  var sel=document.body.createTextRange();
+  sel.moveToElementText(PrintA);
+  sel.select();
+  sel.execCommand("Copy");
+  oSheet.Paste();
+  oXL.Visible = true;
+ }
+</script>
+
+<body onload="showTotal()">	
+<div class="qx" style="text-align:left">日期:$form_begintime : $form_endtime&nbsp;&nbsp;&nbsp;&nbsp; <!-- $form_begintime 至 -->
+生产分厂/仓库：$!form_facname  $!form_stor</div>
+<table class="datatable" border="0" cellpadding="0" frame=box id="datatable"
+		cellspacing="0">
+<tr class="search">
+  <td rowspan="2" width="auto"  ><div align="center">产品品称</div></td>
+  <td rowspan="2" width="auto" >产品规格</td>
+  <td rowspan="2" width="auto" >期初库存</td>
+  <td colspan="6" width="auto" ><div align="center">入库</div></td>
+  <td colspan="4" width="auto" ><div align="center">出库</div></td>
+  <td width="auto" rowspan="2" >盈亏</td>
+  <td width="auto" rowspan="2" >期末库存</td>
+</tr>
+<tr class="search">
+<td width="auto" >产成品入库</td>
+<td width="auto" >退货入库</td> 
+<td width="auto" >车间返修入库</td>
+<td width="auto" >次品入库</td> 
+<td width="auto" >大库产品调入</td>
+<td width="auto" >倒包装入库</td>
+<td width="auto" >产成品出库</td>
+<td width="auto" >车间返修出库</td>
+<td width="auto" >大库产品调出</td>
+<td width="auto" >倒包装出库</td>
+</tr> 
+
+    #foreach($k in $sql0)
+     #if($k.QZNUM!="0"||$k.INCP!="0"||$k.INTH!="0"||$k.INFX!="0"||$k.INZP!="0"||$k.INDK!="0"||$k.INDB!="0" ||$k.OUTCP!="0"||$k.OUTFX!="0"||$k.OUTDK!="0"||$k.OUTDB!="0"||$k.DIFF!="0")
+	<tr class="trcolor NUM">
+		<td class="CN">$k.INVNAME</td>
+		<td class="NUM">$k.INVTYPE</td>
+               <td>$k.QZNUM</td>
+		<td>$k.INCP</td>
+		<td >$k.INTH</td>
+		<td >$k.INFX</td>			
+		<td >$k.INZP</td>
+
+		<td >$k.INDK</td>
+		<td >$k.INDB</td>
+
+                <td >$k.OUTCP</td>
+		<td >$k.OUTFX</td>
+		<td >$k.OUTDK</td>
+		<td >$k.OUTDB</td>
+		<td >$k.DIFF</td>
+		<td ></td>
+	</tr>
+     #end
+   #end
+ 
+	<tr class="trcolor NUM">
+		<td class="CN">合计</td>
+		<td class="NUM"></td>
+		<td></td>
+
+		<td>0</td>
+
+		<td>0</td>			
+		<td>0</td>
+
+		<td>0</td>
+		<td>0</td>
+
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+	</tr>
+
+</table>
+<div><input type="button" name="search" class="bt1" value="重新查询" onclick="window.location='ingather.aspx'"></div>
+
+
+</body>
+</html>

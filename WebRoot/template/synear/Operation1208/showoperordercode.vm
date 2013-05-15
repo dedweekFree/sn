@@ -1,0 +1,108 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>========</title>
+</head>
+<body>
+<form name="thisfrom" method="post" action="">
+<table class="datatable" id="table1" border="1">
+  <tr class="trcolor">
+    <td colspan="12" align="left">采购订单:$!form_vordercode (备货单:$!form_operordercode)</td>
+  </tr>
+    #foreach($!m in $PurchaseListDetailhead1)   
+  <tr class="trcolor">
+    <td>供应商:</td>
+    <td>$!m.CUSTNAME</td>
+    <td>采购组织:</td>
+    <td>$!m.NAME</td>
+    <td>业务员:</td>
+    <td>$!m.PSNNAME</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+    #end
+  <tr class="trcolor">
+    <td>存货编码</td>
+    <td>存货名称</td>
+    <td>单位</td>
+    <td>需求日期</td>
+    <td>订单数量</td>
+    <td>备货次数</td>
+    <td>备货数量</td>
+    <td>计划到货日期</td>
+    <td>备注</td>
+    <td>到货仓库</td>
+    <td>到货地点</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $PurchaseListDetail2)
+  <tr class="trcolor">
+    <td>$!m.INVCODE</td>
+    <td>$!m.INVNAME</td>
+    <td>$!m.MEASNAME</td>
+    <td>$!m.DDEMANDDATE</td>
+    <td>$!m.NORDERNUM</td>
+    <td>$!m.CISHU</td>
+    <td>$!m.NNUMBER</td>
+    <td>$!m.PREPAREDATE</td>
+    <td>$!m.REMARK</td>
+    <td>$!m.STORNAME</td>
+    <td>$!m.VDEF4</td>
+  </tr>
+  #set($i=$i+1)
+  #end
+  <tr class="trcolor">
+    <td colspan="4">供应商签字:___________________________</td>
+    <td colspan="8" align="left">到&nbsp;货&nbsp;时&nbsp;间:&nbsp;_________年_________月_________日_________时_________分</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4" rowspan="2">库管员签字:___________________________</td>
+    <td colspan="8" align="left">卸车开始时间:_________年_________月_________日_________时_________分</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="8" align="left">卸车结束时间:_________年_________月_________日_________时_________分</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4" rowspan="2">质检员签字:___________________________</td>
+    <td colspan="8" align="left">检验开始时间:_________年_________月_________日_________时_________分</td>
+  </tr>
+  <tr>
+    <td colspan="8" align="left">检验结束时间:_________年_________月_________日_________时_________分</td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="12">
+      <input name="b2" type="button" class="bt1" value="导出EXCEL表" onclick="javascript:method1('table1');"/>
+      <input type="button" name="b4" class="bt1" value="返回" onclick="javascript:history.go(-1)"/></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>

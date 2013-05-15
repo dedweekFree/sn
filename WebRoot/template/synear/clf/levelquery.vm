@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>任职级别</title>
+<script language="javascript">
+	function s(){
+		if(form1.levelname.value == ""){
+			alert("级别名称不能为空");
+			form1.levelname.focus();
+			return false;
+		}
+		form1.submit();
+	}
+	function todelete(url){
+	    if(confirm("确定要删除吗？")){
+                 document.form1.action=url;
+		 form1.submit();
+	    }
+	}
+	function toedit(url){
+	   document.form1.action=url;
+	   form1.submit();
+	}
+</script>
+</head>
+
+<body>
+<form name="form1" method="post" action="levelinsert.aspx" target="dataframe">
+<table class="datatable">
+  <tr class="search"> 
+	<td class="tdlabel" width="10%">级别名称</td>
+	<td class="tdinput" width="20%">
+		<input type="text" name="levelname" value="$!form_levelname">		
+	</td>
+	</tr>
+   <tr>
+    <td colspan="4" align="right"><input type="button" name="button" class="bt1" value="提交" onclick="s()"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  </table>
+  </form>
+  <table class="datatable">
+  <tr class="trcolor">
+  <form name="thisform" method="post">
+    <td>任职级别</td>
+    <td>操作</td>
+  </tr>
+  #set($i=0)
+  #foreach($!m in $selbasiclevel)
+  <tr>
+    <td align="center">
+    <input value="$!m.LEVELNAME" name="levelname$i" id="levelname$i" type="text"></td>
+    <td align="center">
+       <a href="#"  onclick="toedit('leveledit.aspx?levelid=$!m.LEVELID&levelname='+document.getElementById('levelname$i').value)">修改</a>
+    &nbsp;&nbsp;&nbsp;<a href="#"  onclick="todelete('leveldel.aspx?levelid=$!m.LEVELID')">删除</a></td>
+  </tr>
+  #set($i=$i+1)
+  #end
+</table>
+    <div>
+    <iframe name="dataframe" src="" width="0" height="0"></iframe>
+    </div>
+</body>
+</html>

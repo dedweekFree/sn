@@ -1,0 +1,11 @@
+﻿<web:page>
+  <web:sql>ZhrFeeApplyInsert2</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>F_deptcode,F_prodpk,F_pfee,F_pmemo,F_deptbear,F_deptsubject</web:multiValue>
+  <web:successMsg>数据保存成功！</web:successMsg>
+  <web:failMsg>数据保存失败！</web:failMsg>
+  <web:url>/</web:url>
+  <web:target>self</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

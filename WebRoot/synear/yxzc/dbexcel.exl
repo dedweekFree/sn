@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>yczcbtjequeryexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>大区##区域分支##政策名称##补贴类型##单件补贴额##计划量##补贴额##实际销量#补贴额</web:col>
+  <web:key>DAQU##DEPTNAME##STYNAME##TYPE##ALLOWANCE##PLANNUM##SS1##SALENUM##SS2</web:key>
+  <web:name>销售单位单件补贴额明细</web:name>
+</web:page>
+
+
+

@@ -1,0 +1,254 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<title>================</title>
+<script language="javascript">
+function ShowDate(idText){
+	 var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+	 var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+	 if(reValue==null) 
+	   ;
+	 else
+	   idText.value=reValue;
+	 }
+
+function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	var a = '$!form_ts';
+	if(a==""){
+        document.getElementById('ts').value=Today;
+	}else{
+        document.getElementById('ts').value='$!form_ts';
+	}
+    }
+var bData1=new Array(); 
+	bData1=[['客户名称','产品名称','nc产品名称','公司']
+		#set($i=1)
+		#foreach($!m in $selinformationdetail)
+		,['$!m.CUSTNAME','$m.OERMITEM','$m.NC_ITEM','$!m.PK_CORP']
+		#set($i=$i+1)
+		#end
+		]
+var pageSize=10000;
+var pageno=0;
+var rdata=new Array();
+rdata=bData1;
+
+function toPage2(){
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+
+function toPage(page){
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=table6.rows.length;i>1;i--) table6.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++){
+    if(((page-1)*pageSize+i)<rdata.length){
+  	  var row=table6.insertRow()
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][0]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][1]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][2]
+	  row.insertCell().innerText=rdata[(page-1)*pageSize+i][3]
+	 
+	 }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;<br>";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>&nbsp;&nbsp;"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+}
+
+function savepage(page){
+  if(page>0){
+    for(var i=1;i<table6.rows.length;i++){
+      for(var j=0;j<3;j++) rdata[(page-1)*pageSize+i][j]=table6.rows[i].cells[j+1].innerText;
+      bData1[rdata[(page-1)*pageSize+i][0]]=rdata[(page-1)*pageSize+i];
+    }
+  }
+}
+function presearch(){
+   key=event.keyCode;
+   if(key==13)   //回车
+   {
+     search();
+   }
+}
+
+function seldata(obj){
+  for(var i=1;i<table6.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+ 
+function showindow(){
+	if(document.getElementById("oermstore").value==""){
+		var b="";
+	}else{
+	var b = document.getElementById("oermstore").value;
+	}
+	var ReturnAllQualityValue=showModalDialog('seloermstore.aspx?&oermstore='+b,"a",'dialogWidth:650px;dialogHeight:500px;dialogLeft:280px;dialogTop:150px;center:yes; help:yes;resizable:yes;status:yes');
+		  if(ReturnAllQualityValue!=null){
+			document.getElementById("oermstore").value=ReturnAllQualityValue;
+		}
+	}
+	function q(){
+	        document.thisform.button.disabled = true;
+		document.thisform.action="information.aspx";
+		document.thisform.submit();
+	}
+	function add(){
+                   if(document.thisform.oermitem.value==""){
+		     alert("产品名称不能为空");
+
+		     document.thisform.oermitem.focus();
+		     return false;
+		   }
+                 if(document.thisform.nc_item.value==""){
+		     alert("nc产品名称不能为空");
+
+		     document.thisform.nc_item.focus();
+		     return false;
+		   }
+	        var a=document.getElementById("custnameid");
+		
+	        var b = a.options[a.selectedIndex].text
+		if(b==""){
+		  alert("公司名不能为空");
+		  b.focus();
+		  return false;
+		}
+		
+	        
+		document.thisform.custnameid.value=a.value;
+	        document.thisform.button1.disabled = true;
+		document.thisform.action="informationadd.aspx";
+		document.thisform.submit();
+		location.href="information.aspx"
+	}
+	
+
+</script>
+</head>
+
+<body>
+<form name="thisform" method="post" >
+<table class="datatable">
+	<tr class="trcolor">
+		<td>产品名称</td>
+		<td align="left"><input type="text" name="oermitem" value="$!form_oermitem"></td>	
+		<td>nc产品名称</td>
+		<td align="left"><input type="text" name="nc_item" id="nc_item" value="$!form_nc_item"></td>
+	</tr>
+	<tr class="trcolor">
+	  
+		<td>客户</td>
+                
+		<td align="left"><select id="custnameid" name="custnameid" style="width:140px;height:50px">   
+
+		<option></option>
+	   
+	   #foreach($!m in $queryzh)
+	         
+	          <option value="$m.CUSTNAMEID">$m.CUSTNAME</option>
+	       
+             
+	        #end
+		
+	</select>
+	   <input type="hidden" name="custnameid" id="custnameid">
+	   <input type="hidden" name="sysuser" value = "$session_USERNAME">
+	   <input type="hidden" name="pk_corp" value="#foreach($!m in $byusername)$m.PK_CORP#end">
+	</td>
+		
+	
+		<class="trcolor">
+		
+		<td><input type="submit" name="button" class="bt1" value="查&nbsp;&nbsp;询" onClick="q()">&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="submit" name="button1" class="bt2" value="插&nbsp;&nbsp;入" onClick="add()"></td>
+		<!--<td align="left"><input type="button" value="导出excel表" name="btnSave"class="bt1" onclick="javascript:method1('table6');""></td>-->
+	</tr>
+</table>
+</form>
+<br>
+<table class="datatable" id="table6">
+  <tr class="trcolor">
+  <td>客户</td>
+    <td>产品名称</td>
+    <td>nc产品名称</td>
+    <td>公司</td>
+    
+  </tr>
+</table>
+<div style="width:100%;txt-align:center;border:3 double gray;">
+<span id="pg"></span>
+</div>
+<script>
+	 toPage(1);
+</script>
+
+</body>
+</html>
+<!--
+<script>
+function method1(tableid) {//整个表格拷贝到EXCEL中 
+    var curTbl = document.getElementById(tableid); 
+    var oXL = new ActiveXObject("Excel.Application"); 
+    //创建AX对象excel 
+    var oWB = oXL.Workbooks.Add(); 
+    //获取workbook对象 
+        var oSheet = oWB.ActiveSheet; 
+    //激活当前sheet 
+    var sel = document.body.createTextRange(); 
+    sel.moveToElementText(curTbl); 
+    //把表格中的内容移到TextRange中 
+    sel.select(); 
+    //全选TextRange中内容 
+    sel.execCommand("Copy"); 
+    //复制TextRange中内容  
+    oSheet.Paste(); 
+    //粘贴到活动的EXCEL中       
+    oXL.Visible = true; 
+    //设置excel可见属性 
+} 
+</script>-->

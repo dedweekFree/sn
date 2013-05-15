@@ -1,0 +1,24 @@
+<html>
+<head>
+	<title>系统操作结果</title>
+	<script type="text/javascript">
+ var feenum='F';
+ #foreach($m in $ZhrFeeApplyExist)
+   feenum='$m.FEENUM';
+ #end
+ if(parseInt(feenum)>0) {
+   alert("该客户本月费用申请已经存在或者本区域的费用已经上报！");
+   parent.submitok=false;
+ }else if(feenum=='0'){
+   parent.form1.action="BudgetAuthorizeRequestApplyAddSubmitSavedate.aspx";
+   parent.form1.submit();
+ }else{
+   alert("出现未知错误，数据保存失败！");
+   parent.submitok=false;
+ }
+	</script>
+</head>
+<body>
+</body>
+</html>
+

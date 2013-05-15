@@ -1,0 +1,7 @@
+<web:page>
+  <web:sql>getProdProfitEx</web:sql>
+  <web:db>Login</web:db>
+  <web:col>产品分类##存货编码##存货名称##规格##数量##实际成本价##计划价##结算价##分支结算价##销售价##销售金额##不含税销售收入##成本金额##结算金额##不含税结算金额##分支结算金额##计划成本</web:col>
+  <web:key>INVCLASSNAME##INVCODE##INVNAME##INVSPEC##NNUMBER##NCOSTPRICE##PLANPRICE##ACCPRICE##BRACCPRICE##NPRICE##NSUMMNY##NSUMMNY2##NCOSTMNY##ACCMNY##ACCMNY2##BRACCMNY##PLANMNY</web:key>
+  <web:name>产品毛利分析</web:name>
+</web:page>

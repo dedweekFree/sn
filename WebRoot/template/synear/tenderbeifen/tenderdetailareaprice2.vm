@@ -1,0 +1,669 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../../inc/js/calendarold.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar-setup.js"></script>
+<script type="text/javascript" src="../../../inc/js/calendar-en.js"></script>
+<title>=======</title>
+</head>
+
+<body onload="toPage(1)">
+<form name="form2" method="post">
+<table class="datatable" width="100%">
+#foreach($!m in $seltenuser)
+  <tr class="trcolor">
+    <td colspan="3" align="left">项目名称:<a href="zbinfoareadetailall.aspx?proid=$!m.PROID">$!m.PRONAME</a>&nbsp; 第($!m.ZNUM)轮
+    <input type="hidden" name="proname" id="proname" value="$!m.PRONAME">
+    <input type="hidden" name="proid" id="proid" value="$!m.PROID">
+    <input type="hidden" name="znum" id="znum" value="$!m.ZNUM">
+    <input type="hidden" name="prodesc" id="prodesc" value="$!m.PRODESC">
+    <input type="hidden" name="prother" id="prother" value="$!m.PROTHER">
+    <input type="hidden" name="tendtypeid" id="tendtypeid" value="$!m.TENDTYPEID">
+    <input type="hidden" name="typeunitid" id="typeunitid" value="$!m.TYPEUNITID">
+    <input type="hidden" name="tendstatus" id="tendstatus" value="$!m.STATUS">
+    <input type="hidden" name="pic" id="pic" value="$!m.PIC">
+    <input type="hidden" name="ppic" id="ppic" value="$!m.PPIC">
+    <input type="hidden" name="isacc" id="isacc" value="$!m.ISACC">
+    <input type="hidden" name="znum1" id="znum1" value="$!m.ZNUM">
+    <input type="hidden" name="tendquantity" id="tendquantity" value="$!m.TENDQUANTITY">
+    <input type="hidden" name="prostatus" id="prostatus" value="$!m.PROSTATUS">
+    <input type="hidden" name="ischeck" id="ischeck" value="$!m.ISCHECK">
+    <input type="hidden" name="departid" id="departid" value="$!m.DEPARTID">
+      </td>
+  </tr>
+  <tr class="trcolor">
+    <td width="33%">项目模式:</td>
+    <td width="33%">
+	#if($!m.PROSTATUS == 'A')
+	    正常
+	#elseif($!m.PROSTATUS == 'Z')
+	    停止
+        #elseif($!m.PROSTATUS == 'S')
+	    暂停
+        #elseif($!m.PROSTATUS == 'K')
+	    开标
+	#elseif($!m.PROSTATUS == 'T')
+	    进入谈判
+        #end
+    </td>
+    <td width="33%">项目状态:#if($!m.STATUS == 'A')
+	    普通模式
+	#end
+	#if($!m.STATUS == 'B')
+	    竞价模式
+        #end
+    
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td>开始时间:<input type="text" name="atime" id="atime" value='$!m.ATIME' readonly></td>
+    <td>开标时间:<input type="text" name="ktime" id="ktime" value='$!m.KTINE' readonly></td>
+    <td>结束时间:<input type="text" name="ztime" id="ztime" value='$!m.ZTIME' readonly></td>
+  </tr>
+    <tr class="trcolor">
+    <td>说明</td>
+    <td colspan="2" align="left">#if($!m.PRODESC.length()>200)$!m.PRODESC.substring(0,200)#else$!m.PRODESC#end&nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td>附件</td>
+    <td colspan="2">
+    #if($m.PROTHER != "")
+      <a href="/DownFileServlet?filepath=$!m.PROTHER"">$m.PROTHER.substring($!m.PROTHER.lastIndexOf("/")).replace("/","") 
+    </a>
+    #end&nbsp;
+    </td>
+  </tr>
+  <tr class="trcolor">
+	<td  align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">限#if($!m.PIC=='h')高#else低#end价</font></td>
+	<td colspan="2" align="left">
+       &nbsp;&nbsp;&nbsp;&nbsp;下一轮开标时间:
+       <select name="day1">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	</select>天
+	<select name="hour1">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	<option value="8">8</option>
+	<option value="9">9</option>
+	<option value="10">10</option>
+	<option value="11">11</option>
+	<option value="12">12</option>
+	<option value="13">13</option>
+	<option value="14">14</option>
+	<option value="15">15</option>
+	<option value="16">16</option>
+	<option value="17">17</option>
+	<option value="18">18</option>
+	<option value="19">19</option>
+	<option value="20">20</option>
+	<option value="21">21</option>
+	<option value="22">22</option>
+	<option value="23">23</option>
+	</select>小时<select name="minute1">
+	<option value="0" selected>0</option>
+	<option value="5">5</option>
+	<option value="10">10</option>
+	<option value="15">15</option>
+	<option value="20">20</option>
+	<option value="25">25</option>
+	<option value="30">30</option>
+	<option value="35">35</option>
+	<option value="40">40</option>
+	<option value="45">45</option>
+	<option value="50">50</option>
+	<option value="55">55</option>
+	</select>分
+    </td>
+  </tr>
+  #if($!m.PIC == "h") 
+  #set($i=0)
+     #foreach($!m1 in $querymaxareaprice)
+     <tr>
+         <td colspan="4"><input type="hidden" name="zbareaname$i" id="zbareaname$i" value="$!m1.AREAID">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到岸地：$!m1.AREANAME
+	 招标价：<input type="text" name="zbprice$i" id="zbprice$i" value="$!m1.PRICE" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">元/$!m.TYPENAME
+	 招标量：<input type="hidden" name="zbquantity$i" id="zbquantity$i" value="$!m1.TENDQUANTITY" >$!m1.TENDQUANTITY
+	 $!m.TYPENAME
+	 <input type="hidden" name="tbprice$i" id="tbprice$i" value="$!m1.PRICE"><input type="hidden" name="tbquantity$i" id="tbquantity$i" value="$!m1.TENDQUANTITY">
+	 </td>
+     </tr>
+     #set($i=$i+1)
+     #end
+   #else
+     #set($i=0)
+     #foreach($!m1 in $queryminareaprice)
+     <tr>
+         <td colspan="4"><input type="hidden" name="zbareaname$i" id="zbareaname$i" value="$!m1.AREAID">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到岸地：$!m1.AREANAME
+	 招标价：<input type="text" name="zbprice$i" id="zbprice$i" value="$!m1.PRICE">元/$!m.TYPENAME
+	 招标量：<input type="hidden" name="zbquantity$i" id="zbquantity$i" value="$!m1.TENDQUANTITY">$!m1.TENDQUANTITY
+	 $!m.TYPENAME
+	 <input type="hidden" name="tbprice$i" id="tbprice$i" value="$!m1.PRICE"><input type="hidden" name="tbquantity$i" id="tbquantity$i" value="$!m1.TENDQUANTITY"></td>
+     </tr>
+     #set($i=$i+1)
+     #end
+   #end
+  <tr>
+	<td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="islimitprice1" value="$!m.ISLIMITPRICE" #if($!m.ISLIMITPRICE == 'Y')checked#end>是否限价</td><input type="hidden" name="islimitprice" value="$!m.ISLIMITPRICE">
+  </tr>
+  <tr class="trcolor"><td colspan="3" align="left"><font color="red">中标或进入下一轮:#if($!m.PIC=='l')请选择高价#else请选择低价#end</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="b1" value="中&nbsp;&nbsp;标" class="bt1" onclick="save('K')"/>&nbsp;&nbsp;#if($!m.PROSTATUS!='T')<input type="button" value="进入谈判合同" class="bt1" onclick="save('T')"/>#end
+      #if($!m.PROSTATUS=='A')<input type="button" name="b2" class="bt1" value="进入下一轮" onclick="save('F')"/>#end
+      <input type="button" name="b3" class="bt1" value="打&nbsp;&nbsp;印" onclick="toprint1('tenderprint.aspx?proid=$!m.PROID&num=$!m.ZNUM&pid=$!m.PID')"/>&nbsp;&nbsp;
+      <input type="button" name="b3" class="bt1" value="返&nbsp;&nbsp;回" onclick="javascript:location.href='tenderinfo.aspx'"/></td></tr>
+  #end
+</table>
+</form>
+
+<table class="datatable" id='tab' width="100%">
+  <tr class="trcolor">
+    <td nowrap><input type=checkbox name=checkbox value='checkbox' onclick="seldata(this)">状态</td>
+    <td nowrap>投标项目ID</td>
+    <td nowrap>投标项目PID</td>
+    <td nowrap>投标人</td>
+    <td nowrap>到岸地</td>
+    <td nowrap>投标价</td>
+    <td nowrap>投标量</td>
+    <td nowrap>招标量</td>
+    <td nowrap>招标单位</td>
+    <td nowrap>本轮是否投标</td>
+    <td nowrap>投标说明</td>
+    <td nowrap>附件</td>
+  </tr>
+</table>
+<div align="right">
+<span id="pg"></span>
+</div>
+<form name="form1" method="post" action=""  target="saveframe">
+<span id="subdata"></span>
+<span id="subdata1"></span>
+<span id="subdata2"></span>
+#foreach($!m in $seltenuser)
+    <input type="hidden" name="proname" id="proname" value="$!m.PRONAME">
+    <input type="hidden" name="proid" id="proid" value="$!m.PROID">
+    <input type="hidden" name="prostatus" id="prostatus" value="$!m.PROSTATUS">
+    <input type="hidden" name="prodesc" id="prodesc" value="$!m.PRODESC">
+    <input type="hidden" name="atime" id="atime" value="$!m.ATIME">
+    <input type="hidden" name="ztime" id="ztime" value="$!m.ZTIME">
+    <input type="hidden" name="ktime" id="ktime" value="$!m.KTINE">
+    <input type="hidden" name="prother" id="prother" value="$!m.PROTHER">
+    <input type="hidden" name="tendstatus" id="tendstatus" value="$!m.STATUS">
+    <input type="hidden" name="userid" id="userid" value="$!m.USERID">
+    <input type="hidden" name="tendtypeid" id="tendtypeid" value="$!m.TENDTYPEID">
+    <input type="hidden" name="status" id="status" value="$!m.STATUS">
+    <input type="hidden" name="znum" id="znum" value="$!m.ZNUM">
+    <input type="hidden" name="typeunitid" id="typeunitid" value="$!m.TYPEUNITID">
+    <input type="hidden" name="isacc" id="isacc" value="$!m.ISACC">
+    <input type="hidden" name="pic" id="pic" value="$!m.PIC">
+    <input type="hidden" name="isarea" id="isarea" value="$!m.ISAREA">
+    <input type="hidden" name="znum1" id="znum1" value="$!m.ZNUM">
+    <input type="hidden" name="ktime1" id="ktime1">
+    <input type="hidden" name="ischeck" id="ischeck" value="$!m.ISCHECK">
+    <input type="hidden" name="departid" id="departid" value="$!m.DEPARTID">
+    <input type="hidden" name="islimitprice" id="islimitprice" value="$!m.ISLIMITPRICE">
+#end
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>
+<script language="javascript">
+	var tmpdata = new Array();
+	var bData1 = new Array();
+		tmpdata = [['ID0','投标商1','价格2','说明3','附件4','序号5','选中6','次数7','用户名8','投标时间9','供货能力10','单位11','投标量12','招标量13','aaa14','是否投标15','状态16','项目ID17','招标价18','到岸地区19','到岸地区ID20','投标价121','投标量222','PID23','PIDS24','company25','zbquantity26','说明27','附件28','结束时间','当前时间']
+		#foreach($!m in $seltendedailareaprice)
+		#set($i=0)
+		,['$!m.PID','$!m.COMPANY','$!m.TENDPRICE','$!m.TENDBAK&nbsp;','#if($!m.TENDOTER!="")<a href="/DownFileServlet?filepath=$!m.TENDOTER">$m.TENDOTER.substring($!m.TENDOTER.lastIndexOf("/")).replace("/","")#else&nbsp;#end','$i','N','$!m.TENDNUM','$!m.USERID','$!m.TENDTIME','$!m.SUPPLY','$!m.TYPENAME','$!m.QUANTITY','$!m.TENDQUANTITY','$!m.TENDPRICE','$!m.ISCAST','$!m.TENDSTATUS','$!m.PROID','$!m.PPIC','$!m.AREANAME','$!m.TBAREAID','$!m.TBPRICE','$!m.TBQUANTITY','$!m.TBPID','$!m.TBPIDS','$!m.COMPANY','$!m.ZBQUANTITY','$!m.TENDBAK','$m.TENDOTER','$m.ZTIME','$m.SYSDATETIME']
+		  #set($i=$i+1)
+		  #end
+		]
+	var bData1Asc = new Array();
+		bData1Asc = [['ID','投标商','价格','说明','附件','序号','选中','次数','用户名','投标时间','供货能力','单位','投标量','招标量','aaa','是否投标','状态','项目ID','招标价','到岸地区','到岸地区ID','投标价1','投标量2','PID','PIDS','company','zbquantity','说明','附件','结束时间','当前时间']
+		#foreach($!m in $seltendedailareaprice1)
+		#set($i=0)
+		,['$!m.PID','$!m.COMPANY','$!m.TENDPRICE','$!m.TENDBAK&nbsp;','#if($!m.TENDOTER!="")<a href="/DownFileServlet?filepath=$!m.TENDOTER">$m.TENDOTER.substring($!m.TENDOTER.lastIndexOf("/")).replace("/","")#else&nbsp;#end','$i','N','$!m.TENDNUM','$!m.USERID','$!m.TENDTIME','$!m.SUPPLY','$!m.TYPENAME','$!m.QUANTITY','$!m.TENDQUANTITY','$!m.TENDPRICE','$!m.ISCAST','$!m.TENDSTATUS','$!m.PROID','$!m.PPIC','$!m.AREANAME','$!m.TBAREAID','$!m.TBPRICE','$!m.TBQUANTITY','$!m.TBPID','$!m.TBPIDS','$!m.COMPANY','$!m.ZBQUANTITY','$!m.TENDBAK','$!m.TENDOTER','$m.ZTIME','$m.SYSDATETIME']
+		  #set($i=$i+1)
+		  #end
+		]
+       var tendquan = new Array();
+           tendquan = [['ID','投标商','价格','说明','附件']
+	   #foreach($!m1 in $selectareaprice)
+	   #set($i=0)
+           ,['$!m1.PROID','$!m1.AREAID','$!m1.PRICE','$!m1.TENDQUANTITY','$!m1.ZNUM']
+	   #set($i=$i+1)
+           #end
+	   ]
+	/* var ptendesc = new Array();
+           ptendesc = [['ID','项目ID','用户','投标价','投标时间','投标备注','附件','状态','是否投标过','投标量','选中']
+	   #foreach($!m1 in $queryptendesc)
+	   #set($i=0)
+           ,['$!m1.PID','$!m1.PROID','$!m1.USERID','$!m1.TENDPRICE','$!m1.TENDTIME','$!m1.TENDBAK','$!m1.TENDOTHER','$!m1.TENDSTATUS','$!m1.ISCAST','$!m1.QUANTITY','N']
+	   #set($i=$i+1)
+           #end
+	   ] */
+	var tendarea = new Array();
+           tendarea = [['ID','投标商']
+	   #foreach($!m1 in $querymaxareaprice)
+	   #set($i=0)
+           ,['$!m1.PROID','$!m1.AREAID']
+	   #set($i=$i+1)
+           #end
+	   ]
+var pageSize=40;
+var pageno=0;
+var rdata=new Array();
+var areapricedate = new Array();
+if(document.form2.pic.value=='l'){
+   rdata=tmpdata;
+   bData1=tmpdata;
+}else{
+   rdata=bData1Asc;
+   bData1=bData1Asc;
+}
+function toPage2() 
+{
+  var element=document.all.pgs;
+  if(element.value.search("^-?\\d+(\\.\\d+)?$")!=0){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value<1){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  if(element.value>Math.ceil((rdata.length-1)/pageSize)){
+     alert("页数必须为大于1且小于"+Math.ceil((rdata.length-1)/pageSize)+"的整数!");
+     element.focus();
+     return false;
+  }
+  toPage(element.value) 
+}
+function toPage(page) 
+{
+try{
+  savepage(pageno);
+  pageno=page;
+  for(var i=tab.rows.length;i>1;i--) tab.deleteRow(i-1);
+  for(var i=1;i<=pageSize;i++)
+    if(((page-1)*pageSize+i)<rdata.length){{
+  	  var row=tab.insertRow();
+	  if(rdata[(page-1)*pageSize+i][6]=='Y') 
+	      row.insertCell().innerHTML="<input type=checkbox name='checkbox' value='checkbox' checked>";
+	  else 
+	      row.insertCell().innerHTML="<input type=checkbox name='checkbox' value='checkbox'>";
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][17];
+	  row.insertCell().innerHTML='<a href=zbinfoareadetailall.aspx?proid='+rdata[(page-1)*pageSize+i][17]+'&pid='+rdata[(page-1)*pageSize+i][0]+'>'+rdata[(page-1)*pageSize+i][23]+'</a>';
+	  if(new Date(new Date(rdata[(page-1)*pageSize+i][30].replace(/-/g,"/"))-new Date(rdata[(page-1)*pageSize+i][29].replace(/-/g,"/")))/(24*60*60*1000) > 0){
+              if(rdata[(page-1)*pageSize+i][10] == 'A'){
+		   row.insertCell().innerHTML="<font color='red'>"+rdata[(page-1)*pageSize+i][1]+"</font>";
+	      }else{
+		   row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][1];
+	      }
+	  }else{
+	      if(rdata[(page-1)*pageSize+i][10] == 'A'){
+		   row.insertCell().innerHTML="<font color='red'>******</font>";
+	      }else{
+		   row.insertCell().innerHTML="******";
+	      }
+	  }
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][19];
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][21]+"元";
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][22];
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][26];
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][11];
+	  if(rdata[(page-1)*pageSize+i][15]=='N'){
+	     row.insertCell().innerHTML='否';
+	  }else{
+	    row.insertCell().innerHTML='<font color="red">是</font>';
+	  }
+	  if(new Date(new Date(rdata[(page-1)*pageSize+i][30].replace(/-/g,"/"))-new Date(rdata[(page-1)*pageSize+i][29].replace(/-/g,"/")))/(24*60*60*1000) > 0){
+              row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][3];
+	  }else{
+	      if(rdata[(page-1)*pageSize+i][27] != ""){
+	           row.insertCell().innerHTML="******";
+	       }else{
+	           row.insertCell().innerHTML="&nbsp;";
+	       }
+	  }
+	  row.insertCell().innerHTML=rdata[(page-1)*pageSize+i][4];
+    }
+ }
+ var apg=Math.ceil((rdata.length-1)/pageSize);
+ var npg=parseInt(page)+1;
+ var ppg=parseInt(page)-1;
+ var pagetext="共<font color=red>"+apg+"</font>页<font color=red>"+(rdata.length-1)+"</font>条记录，每页显示<font color=red>"+pageSize+"</font>条，目前是第<font color=red>"+page+"</font>页&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value="+npg+">&nbsp;&nbsp;&nbsp;&nbsp;";
+ else  pagetext+="<a style='cursor:hand' onclick='toPage2()'><font color=blue>转到</font></a><input type=text id=pgs size=3 value=1>&nbsp;&nbsp;&nbsp;&nbsp;";
+ if(page>1) pagetext+="<a style='cursor:hand' onclick='toPage(1)'><font color=blue>首页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+ppg+")'><font color=blue>上一页</font></a>&nbsp;&nbsp;"
+ if(page<apg) pagetext+="<a style='cursor:hand' onclick='toPage("+npg+")'><font color=blue>下一页</font></a>&nbsp;&nbsp;<a style='cursor:hand' onclick='toPage("+apg+")'><font color=blue>尾页</font></a>"
+ 
+ document.all.pg.innerHTML=pagetext;
+ }catch(e){
+   alert(e.description)
+ }
+ init();
+}
+
+function save(bst){
+	try{ 
+		savepage(pageno);
+		var datahtml="";
+		var datahtml1="";
+		var datahtml2="";
+		var datahtml3="";
+		var count = 0;
+		var ct = 1;
+		for(var i=1;i<bData1.length;i++){
+		    if(bData1[i][6]=='Y'){
+		        ct ++;
+			count++;
+                        datahtml+="<input type=hidden name=tbareaid value='"+bData1[i][20]+"'>";
+			datahtml+="<input type=hidden name=tbprice value='"+bData1[i][21]+"'>";
+			datahtml+="<input type=hidden name=tbquantity value='"+bData1[i][22]+"'>";
+			datahtml+="<input type=hidden name=tbpid value='"+bData1[i][23]+"'>";
+			datahtml+="<input type=hidden name=tbpids value='"+bData1[i][24]+"'>";
+                       datahtml2+="<input type=hidden name=ppid value='"+bData1[i][24]+"'>";
+		       datahtml2+="<input type=hidden name=puserid value='"+bData1[i][8]+"'>";
+		       datahtml2+="<input type=hidden name=ptendtime value='"+bData1[i][9]+"'>";
+		       datahtml2+="<input type=hidden name=ptendbak value='"+bData1[i][27]+"'>";
+		       datahtml2+="<input type=hidden name=ptendother value='"+bData1[i][28]+"'>";
+		    }
+		}
+		if(tendquan.length != tendarea.length && tendarea.length != 1){
+		    if(ct != 1){
+			for(var i = 1 ; i < ct; i ++){
+			   if(ct<tendarea.length){
+			      if(bst == 'F'){
+				alert("至少选择"+(tendarea.length-1)+"条记录进入下一轮");
+				return false;
+			      }
+			   }else if(ct>tendarea.length){
+				   datahtml3+="<input type='hidden' name='bareaid' value='"+document.getElementById('zbareaname'+(i-1)).value+"'>";
+				   if(document.form2.islimitprice1.checked){
+				        datahtml3+="<input type='hidden' name='bprice' value='0'>";
+				   }else{
+					datahtml3+="<input type='hidden' name='bprice' value='"+document.getElementById('zbprice'+(i-1)).value+"'>";
+				   }
+				   datahtml3+="<input type='hidden' name='btendquantity' value='"+document.getElementById('tbquantity'+(i-1)).value+"'>";
+				   if((i+1)>(tendarea.length-1)){
+				     for(var j=1;j<=(ct-tendarea.length);j++){
+					datahtml3+="<input type='hidden' name='bareaid' value='synear'>";
+					datahtml3+="<input type='hidden' name='bprice' value='101'>";
+					datahtml3+="<input type='hidden' name='btendquantity' value='100'>";
+				      }
+				   }
+			   }else{
+				   datahtml3+="<input type='hidden' name='bareaid' value='"+document.getElementById('zbareaname'+(i-1)).value+"'>";
+				   if(document.form2.islimitprice1.checked){
+				        datahtml3+="<input type='hidden' name='bprice' value='0'>";
+				   }else{
+					datahtml3+="<input type='hidden' name='bprice' value='"+document.getElementById('zbprice'+(i-1)).value+"'>";
+				   }
+				   datahtml3+="<input type='hidden' name='btendquantity' value='"+document.getElementById('tbquantity'+(i-1)).value+"'>";
+			   }
+			}
+		     }else{
+		        if(bst == 'F'){
+			   alert("至少选择"+(tendarea.length-1)+"条记录进入下一轮");
+			   return false;
+		        }
+		     }
+		}else{
+			for(var i = 1 ; i < ct; i ++){
+			   if(ct<tendquan.length){
+			      if(bst == 'F'){
+				alert("至少选择"+(tendquan.length-1)+"条记录进入下一轮");
+				return false;
+			      }
+			   }else if(ct>tendquan.length){
+				   datahtml3+="<input type='hidden' name='bareaid' value='"+document.getElementById('zbareaname'+(i-1)).value+"'>";
+				   if(document.form2.islimitprice1.checked){
+				        datahtml3+="<input type='hidden' name='bprice' value='0'>";
+				   }else{
+					datahtml3+="<input type='hidden' name='bprice' value='"+document.getElementById('zbprice'+(i-1)).value+"'>";
+				   }
+				   datahtml3+="<input type='hidden' name='btendquantity' value='"+document.getElementById('tbquantity'+(i-1)).value+"'>";
+				   if((i+1)>(tendquan.length-1)){
+				     for(var j=1;j<=(ct-tendquan.length);j++){
+					datahtml3+="<input type='hidden' name='bareaid' value='synear'>";
+					datahtml3+="<input type='hidden' name='bprice' value='101'>";
+					datahtml3+="<input type='hidden' name='btendquantity' value='100'>";
+				      }
+				   }
+			   }else{
+				   datahtml3+="<input type='hidden' name='bareaid' value='"+document.getElementById('zbareaname'+(i-1)).value+"'>";
+				   if(document.form2.islimitprice1.checked){
+				        datahtml3+="<input type='hidden' name='bprice' value='0'>";
+				   }else{
+					datahtml3+="<input type='hidden' name='bprice' value='"+document.getElementById('zbprice'+(i-1)).value+"'>";
+				   }
+				   datahtml3+="<input type='hidden' name='btendquantity' value='"+document.getElementById('tbquantity'+(i-1)).value+"'>";
+			   }
+			}
+		}
+	}catch(e){}
+	if(count > 0){
+		 subdata.innerHTML=datahtml;
+		 subdata1.innerHTML=datahtml3;
+		 subdata2.innerHTML=datahtml2;
+		 if(bst == 'F'){
+		      var time =  new Date(new Date(document.form1.ktime.value.replace("-","/").replace("-","/")).getTime()+document.form2.day1.value*24*60*60*1000+document.form2.hour1.value*60*60*1000+document.form2.minute1.value*60*1000).print("%Y-%m-%d %H:%M");
+		      if(time == document.form1.ktime.value){
+		          /* alert("请选择下一轮开标时间");
+			  return false;*/
+		      }else{
+		          if(document.form1.ktime.value == document.form1.ztime.value){
+			      alert("开标时间等于结束时间，不能进入下一轮！！");
+			      return false;
+			  }else{
+				  if((new Date(time.replace(/-/g,"/"))-new Date(document.form1.ztime.value.replace(/-/g,"/")))/(24*60*60*1000) > 0){
+				      document.form1.ktime.value = document.form1.ztime.value;
+				  }else{
+				      document.form1.ktime.value = time;
+				  }
+			   }
+		      }
+		      var tbdatas = new Array();
+		      tbdatas = [['ID']
+		      #foreach($!m1 in $queryminareaprice)
+		      #set($i=0)
+		      ,['$!m1.PROID']
+		      #set($i=$i+1)
+		      #end
+		      ]
+		      if(document.form2.pic.value=='h'){
+		         for(var i = 1 ;i < tbdatas.length; i ++){
+			     if(document.getElementById('zbprice'+(i-1)).value.replace(/(^\s*)|(\s*$)/g,"") == ""){
+			         alert("招标价不能为空！！！");
+                                 document.getElementById('zbprice'+(i-1)).focus();
+				 return false;
+			     }else{
+			         var re = /^[0-9]+.?[0-9]*$/;
+				 if (!re.test(document.getElementById('zbprice'+(i-1)).value))
+				 {
+				  alert("招标价不是数字");
+				  document.getElementById('zbprice'+(i-1)).select();
+				  return false;
+				 }
+				 if(document.form2.islimitprice1.checked){
+                                     document.form1.islimitprice.value='Y';
+				 }else{
+					 if(parseInt(document.getElementById('tbprice'+(i-1)).value) < parseInt(document.getElementById('zbprice'+(i-1)).value)){
+					     alert("招标价不能高于"+document.getElementById('tbprice'+(i-1)).value);
+					     document.getElementById('zbprice'+(i-1)).select();
+					     return false;
+					 }
+					 document.form1.islimitprice.value='N';
+			         }
+			      }
+			    }
+		      }else{
+			 for(var i = 1 ;i < tbdatas.length; i ++){
+			     if(document.getElementById('zbprice'+(i-1)).value.replace(/(^\s*)|(\s*$)/g,"") == ""){
+			         alert("招标价不能为空！！！");
+                                 document.getElementById('zbprice'+(i-1)).focus();
+				 return false;
+			     }else{
+			         var re = /^[0-9]+.?[0-9]*$/;
+				 if (!re.test(document.getElementById('zbprice'+(i-1)).value))
+				 {
+				  alert("招标价不是数字");
+				  document.getElementById('zbprice'+(i-1)).select();
+				  return false;
+				 }
+				 if(document.form2.islimitprice1.checked){
+                                     document.form1.islimitprice.value='Y';
+				 }else{
+					 if(parseInt(document.getElementById('tbprice'+(i-1)).value) > parseInt(document.getElementById('zbprice'+(i-1)).value)){
+					     alert("招标价不能低于"+document.getElementById('tbprice'+(i-1)).value);
+					     document.getElementById('zbprice'+(i-1)).select();
+					     return false;
+					 }
+					 document.form1.islimitprice.value='N';
+			         }
+			      }
+			    }
+		      }
+		      
+		 }
+		 document.form1.znum.value = parseInt(document.form1.znum.value)+1;
+		 document.form1.status.value=bst;
+		 if(bst=='F'){
+		 document.all.form1.action="upstatusubareaprice.aspx";
+		 }else{
+		 document.all.form1.action="upstatusubareaprice3.aspx";
+		 }
+		 document.all.form1.target="saveframe";
+		 document.all.form1.submit();
+        }else{
+	   if(bst == 'F'){
+	     alert("至少选择"+(tendquan.length-1)+"条记录");
+	     return false;
+	   }else{
+	     alert("至少选择1条记录");
+	     return false;
+	   }
+	}
+ }
+
+function savepage(page)
+{
+  if(page>0){
+    for(var i=1;i<tab.rows.length;i++){
+      if(document.all.checkbox[i].checked){
+	      rdata[(page-1)*pageSize+i][6]='Y';
+	      rdata[(page-1)*pageSize+i][7] = parseInt(bData1[i][7])+1;
+      } else {rdata[(page-1)*pageSize+i][6]='N';}
+      for(var j=0;j<2;j++){
+        if(tab.rows[i].cells[j+1].innerText==""){
+	  rdata[(page-1)*pageSize+i][j]=document.all.editbox.value;
+	}
+	else{
+          rdata[(page-1)*pageSize+i][j]=tab.rows[i].cells[j].innerText;
+        }
+      }
+      bData1[rdata[(page-1)*pageSize+i][5]]=rdata[(page-1)*pageSize+i];
+    }
+  }return false;
+}
+
+function seldata(obj)
+{
+  for(var i=1;i<tab.rows.length;i++){
+      document.all.checkbox[i].checked=obj.checked
+  }
+}
+
+function imp(){
+	var ReturnAllQualityValue=showModalDialog('nextpage.aspx',"a",'dialogWidth:250px;dialogHeight:200px;dialogLeft:370px;dialogTop:320px;center:yes; help:yes;resizable:yes;status:yes');
+	  
+  }
+
+var undefined;
+
+function init(){
+  uniteCols(document.all.tab);//执行
+}
+
+function uniteTable(thistab,colLength){   
+  var   rn=thistab.rows.length;//取得行数   
+  var   rowspann=1;   
+  for(j=colLength-1;j>=0;j--){//从第0列开始，合并多少列   
+    for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查   
+      if(thistab.rows[i].cells[j].innerText==thistab.rows[i-1].cells[j].innerText&&thistab.rows[i].cells[j].colSpan==thistab.rows[i-1].cells[j].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[j].rowSpan;   
+        thistab.rows[i].deleteCell(j);   
+      }else{   
+        thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+        rowspann=1;   
+      }   
+    }   
+    //检测无表头的表   
+    if(i==0&&rowspann>0){   
+      thistab.rows[i].cells[j].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。   
+      rowspann=0;   
+    }   
+    
+  }   
+}  
+//本业务合并
+function uniteCols(thistab){  
+  var   rn=thistab.rows.length;//取得行数  
+  var   rowspann=1;   
+  for(i=rn-1;i>0;i--){//从倒数第一行开始往上检查  
+      if(thistab.rows[i].cells[2].innerText==thistab.rows[i-1].cells[2].innerText&&thistab.rows[i].cells[2].colSpan==thistab.rows[i-1].cells[2].colSpan){//与上面一行比较，如果两行相等就合计当前行的合并行数，并删除当前行。   
+        rowspann+=thistab.rows[i].cells[1].rowSpan; 
+	thistab.rows[i].deleteCell(11);
+	thistab.rows[i].deleteCell(10);
+	thistab.rows[i].deleteCell(9);
+	thistab.rows[i].deleteCell(8);
+	
+	thistab.rows[i].deleteCell(3);
+        thistab.rows[i].deleteCell(2);
+	//thistab.rows[i].deleteCell(0);
+      }else{   
+        thistab.rows[i].cells[2].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[3].rowSpan+=rowspann;
+	
+	thistab.rows[i].cells[8].rowSpan+=rowspann;
+	thistab.rows[i].cells[9].rowSpan+=rowspann;
+	thistab.rows[i].cells[10].rowSpan+=rowspann;
+	thistab.rows[i].cells[11].rowSpan+=rowspann;
+        rowspann=0;   
+      }   
+  }   
+  //检测无表头的表   
+  if(i==0&&rowspann>0){   
+        thistab.rows[i].cells[2].rowSpan+=rowspann;//如果不等就完成当前相同数据的合并。
+	thistab.rows[i].cells[3].rowSpan+=rowspann;
+	
+	thistab.rows[i].cells[8].rowSpan+=rowspann;
+	thistab.rows[i].cells[9].rowSpan+=rowspann;
+	thistab.rows[i].cells[10].rowSpan+=rowspann;
+	thistab.rows[i].cells[11].rowSpan+=rowspann;
+      rowspann=0;   
+  }   
+} 
+function setvalue(step,status){
+  document.form1.step.value=step;
+  document.form1.status.value=status;
+  document.form1.submit();
+}
+function toprint1(url){
+   window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+}
+</script>

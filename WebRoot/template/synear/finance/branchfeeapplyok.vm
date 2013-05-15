@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="../../../js/sunnyfunc.js"></script>
+
+<script>
+var undefined;
+
+function showtr(k,obj) { //v6.0
+  if(obj.innerText=="查看"){
+    obj.innerText="隐藏"
+    tb.rows[k*2+2].style.display="";
+  }else{
+    obj.innerText="查看"
+    tb.rows[k*2+2].style.display="none";
+  }
+}
+
+function init(){
+  try{
+     if(dtb.length==undefined){
+       tb.rows[2].style.display="none";
+     }else{
+       for(i=0;i<dtb.length;i++)
+         tb.rows[i*2+2].style.display="none";
+     }
+  }
+  catch(e){}
+}
+
+</script>
+
+</head>
+<body onload="init()">
+<br>
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">分支机构费用申请表</div></td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td height="30" class="fCopy" id="help"></td></tr>
+</table>
+
+<table id="tb" width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="ffffff"  class="datatable">
+  <tr class="trtitle" bgcolor="abcdef">
+      <th width="8%" height="25" nowrap>操作</th>
+    <th width="8%" height="25" nowrap>费用期间</th>
+    <th width="8%" height="25" nowrap>预算费用</th>
+    <th width="68%" height="25" nowrap>备注</th>
+
+  </tr>
+ #set($i=0)
+ #foreach($m in $listBrFeeapply)
+  <tr class="trcolor4">
+	<td align="center" nowrap><a href="branchfeeapplyoksubmit.aspx?applymonth=$!m.APPLYMONTH&username=$!m.MAKEUSERNAME&fid=$m.FEEID" target="dataframe">申报</a>&nbsp;&nbsp;<a href="branchfeeapplyedit.aspx?applymonth=$!m.APPLYMONTH&username=$!m.MAKEUSERNAME&fid=$m.FEEID">编辑</a>&nbsp;&nbsp;<a href="listbranchfeeapplydetail.aspx?applymonth=$!m.APPLYMONTH&username=$!m.MAKEUSERNAME&fid=$m.FEEID&step=$m.STEP">明细</a></td>
+
+     <td align="center" nowrap>$!m.APPLYMONTH</td>
+        <td align="center" nowrap>$!m.PRE_ALLFEE</td>
+	<td align="center" nowrap>$!m.REMARK &nbsp; </td>
+  </tr>
+  <tr class="trcolor4"><td colspan=9 style="padding:0px" id="dtb">$!m.REMARK &nbsp;</td></tr>
+  #set($i=$i+1)
+ #end
+  #if($i==0)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+  </table>
+ <div align="center"> <input type="button" class="login2" value=" 录  入 " name="B222" onClick="javascript:window.location='branchfeeapply.aspx';">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

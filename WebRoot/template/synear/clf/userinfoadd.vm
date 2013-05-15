@@ -1,0 +1,199 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script Language="javascript" src="../../../include/js/public.js"></script>
+<script Language="javascript" src="../../../include/js/string.js"></script>
+
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<title>竞标用户注册</title>
+<style type="text/css">
+<!--
+.STYLE1 {color: #FF0000}
+-->
+</style>
+<script language="javascript">
+        String.prototype.Trim = function() {  
+	  var m = this.match(/^\s*(\S+(\s+\S+)*)\s*$/);  
+	  return (m == null) ? "" : m[1];  
+	}  
+	String.prototype.isMobile = function() {  
+	  return (/^(?:13\d|18\d|15\d)-?\d{5}(\d{3}|\*{3})$/.test(this.Trim()));  
+	}  
+	function ignoreSpaces(string) {
+		var temp = "";
+		string = '' + string;
+		splitstring = string.split(" ");
+		for(i = 0; i < splitstring.length; i++)
+		temp += splitstring[i];
+		return temp;
+       }
+       var dept=new Array(); 
+	dept=[
+	   ['区域主键','区域名称','大区主键']
+		#foreach($!m in $selsyneararea)
+		  ,["$m.NC_PK","$m.DEPTNAME","$m.NC_FATHER_PK"]
+		#end
+	   ];
+       function setF(departid,objid)
+	{
+	    if(departid==""){
+		  var obj = document.getElementById(objid);
+		  var length = obj.length;
+		  for (var j=length-1; j>0; j--)
+		  {
+		    obj.options.remove(j);
+		  }
+		  for(var i=1;i<dept.length;i++){   
+		      var oOption = document.createElement("OPTION");
+		      obj.options.add(oOption);
+		      oOption.innerText = dept[i][1];
+		      oOption.value = dept[i][0];
+		  }	  
+	    }else{
+	      var obj = document.getElementById(objid);
+	      var length = obj.length;
+	      for (var j=length-1; j>0; j--)
+	      {
+		obj.options.remove(j);
+	      }
+		 
+	      for(var i=1;i<dept.length;i++){
+		if(dept[i][2]==departid){
+		  var oOption = document.createElement("OPTION");
+		  obj.options.add(oOption);
+		  oOption.innerText = dept[i][1];
+		  oOption.value = dept[i][0];
+		}
+	      }
+	    }
+	}
+	function checksub(){
+	   if(document.all.name.value == ""){
+	     alert("用户名不能为空");
+	     document.all.name.focus();
+	     return false;
+	   }
+	   if(document.all.level.value == ""){
+	     alert("任职级别不能为空");
+	     document.all.level.focus();
+	     return false;
+	   }
+	   if(document.all.dq_pk.value == ""){
+	     alert("大区不能为空");
+	     document.all.dq_pk.focus();
+	     return false;
+	   }
+	   if(document.all.bankno.value == ""){
+	     alert("工商卡号不能为空");
+	     document.all.bankno.focus();
+	     return false;
+	   }
+	   document.form1.target="saveframe";
+	   document.form1.action = "userinfosaveadd.aspx";
+	   document.form1.submit();
+	}
+	function togetmont(url){
+	    window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	 }
+</script>
+</head>
+
+<body>
+<form name="form1" action="" method="post">
+<table class="datatable">
+  <tr class="trcolor">
+    <td colspan="4" align="left">人员信息添加
+    </td>
+  </tr>
+   <tr class="trcolor">
+    <td align="right">用户名</td>
+    <td align="left">
+      <input type="text" name="name" />
+      <span class="STYLE1">*</span> </td>
+    <td align="right">任职级别</td>
+    <td align="left">
+      <select name="level">
+         <option value=""></option>
+	 #foreach($m in $selbasiclevel)
+           <option value="$!m.LEVELID">$!m.LEVELNAME</option>
+	 #end
+      </select>
+      <span class="STYLE1">*</span> </td>
+  </tr>
+  <tr class="trcolor">
+    
+  </tr>
+  <tr class="trcolor">
+    <td align="right">大区</td>
+    <td align="left">
+      <select name=dq_pk  onchange="javascript:setF(this.value,'areapk');">
+	<option value=''>请选择大区</option>
+      #foreach($m2 in $selsyneardaqu)
+	     <option value="$!m2.NC_PK" #if($form_dq_pk==$m2.NC_PK) selected #end>$!m2.DEPTNAME</option>
+      #end
+	</select> <span class="STYLE1">*</span>	
+    </td>
+    <td align="right">区域</td>
+    <td align="left">
+     <select name=areapk><option value=''>请选择区域</option>
+      #foreach($m1 in $selsyneararea)
+	     <option value="$!m1.NC_PK">$!m1.DEPTNAME</option>
+      #end
+     </select>
+      </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">工商卡号</td>
+    <td align="left">
+      <input type="text" name="bankno"  onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" /> <span class="STYLE1">*</span>
+    </td>
+    <td align="right">常驻地</td>
+    <td align="left">
+      <input type="text" name="addressname" readonly/><input type="button" value="..." onclick="togetmont('diququery.aspx?F_policy=addressname')" class="bt1">
+      <span class="STYLE1">*</span> </td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">驻地天数</td>
+    <td align="left">
+      <input type="text" name="addressday"  /> <span class="STYLE1">*</span>
+    </td>
+    <td align="right">手机号</td>
+    <td align="left">
+      <input type="text" name="phone" /> <span class="STYLE1">*</span></td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">身份证号</td>
+    <td align="left">
+      <input type="text" name="card" /> <span class="STYLE1">*</span>
+    </td>
+    <td align="right">&nbsp;</td>
+    <td align="left">
+      &nbsp;</td>
+  </tr>
+  <tr class="trcolor">
+    <td align="right">家庭地址</td>
+    <td align="left" colspan="3">
+      <input type="text" name="addresshome" style="width:500" readonly /><input type="button" value="..." onclick="togetmont('diququery.aspx?F_policy=addresshome')" class="bt1"> <span class="STYLE1">*</span>
+    </td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="4">
+      <input type="button" name="Submit2" class="bt1" value="提交" onclick="checksub()"/>&nbsp;<input type="reset" name="Submit" class="bt1" value="重置" />&nbsp;<input type="button" name="Submssit" class="bt1" value="返回" onclick="javascript:history.back(-1)" /></td>
+  </tr>
+  </table>
+</form>
+</div>
+<form name="form3" method="post">
+  <input type="hidden" name="username1">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</body>
+</html>

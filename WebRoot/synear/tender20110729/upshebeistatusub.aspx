@@ -1,0 +1,11 @@
+<web:page>
+  <web:sql>upshebeitend</web:sql>
+  <web:sql_type>update</web:sql_type>
+  <web:db>Login</web:db>
+   <web:multiValue>projectetail,ppicdetail,prodescetail,ptpid,ptuserid,pttenoter,ptquantity,tenduserid,tendbak,projects,tendprice</web:multiValue>
+  <web:successMsg>数据保存成功！</web:successMsg>
+  <web:failMsg>数据保存失败！</web:failMsg>
+  <web:url>tenderinfo.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

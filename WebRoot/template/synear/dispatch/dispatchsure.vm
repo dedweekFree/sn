@@ -1,0 +1,557 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>配送确认单</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../../js/sunnyfunc.js"></script>
+<script src="../../../js/string.js"></script>
+<script language="javascript">
+   var accountdata=new Array();
+   accountdata = [['产品编码','产品名称']
+   #foreach($!m in $dispatchdetailbycsaleid)
+   ,['$m.INVCODE','$m.INVNAME']
+   #end
+   ];
+   var num1 = 0;
+   var num2 = 0;
+   var num3 = 0;
+   var num4 = 0;
+   var num5 = 0;
+   var num6 = 0;
+    function accAdd(arg1,arg2){ 
+	var r1,r2,m; 
+	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+	m=Math.pow(10,Math.max(r1,r2)) 
+	return (arg1*m+arg2*m)/m 
+ }
+ function tosave(custcode,fstatus){
+   var count = 0 ;
+   for(var i = 1 ; i <= accountdata.length - 1;i++){
+      if(document.getElementById("surennumber"+i).value != "0" || document.getElementById("surennumber"+i).value == ""){
+         count ++;
+      }
+   }
+   if(count == "0"){
+      document.form1.action='testnccode1.aspx?fstatus='+fstatus;
+      document.form1.target='dataframe';
+      document.form1.submit();
+   }else{
+      if(fstatus == "5"){
+        document.form1.action='testnccode1.aspx?fstatus='+fstatus;
+        document.form1.target='dataframe';
+        document.form1.submit();
+      }else if(fstatus == "3"){
+        document.form1.action='testnccode.aspx?fstatus='+fstatus;
+        document.form1.target='dataframe';
+        document.form1.submit();
+      }
+   }
+}
+function testok(){
+   document.getElementById("B222").disabled = true;
+   document.getElementById("B22").disabled = true;
+   document.form1.action='dispatchsuresave.aspx?zj='+getTimeStr();
+   document.form1.target='dataframe';
+   document.form1.submit();
+}
+function testok1(){
+   document.getElementById("B222").disabled = true;
+   document.getElementById("B22").disabled = true;
+   document.form1.action='dispatchsuresave1.aspx?zj='+getTimeStr();
+   document.form1.target='dataframe';
+   document.form1.submit();
+}
+function getTimeStr()     
+{  
+   var str="";
+   var date = new Date();
+   var field="";
+   str= date.getFullYear()+"";
+   field=(date.getMonth()+1);
+   if(date.getMonth()<9){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   field= date.getDate();
+   if(date.getDate()<10){
+	   str = str+"0"+field;
+   }else{
+	   str = str+field;
+   }
+   if(date.getHours()<10){
+	   str = str+"0"+date.getHours();
+   }else{
+	   str = str+date.getHours();
+   }
+   if(date.getMinutes()<10){
+	   str = str+"0"+date.getMinutes();
+   }else{
+	   str = str+date.getMinutes();
+   }
+   if(date.getSeconds()<10){
+	   str = str+"0"+date.getSeconds();
+   }else{
+	   str = str+date.getSeconds();
+   }
+   return str;  
+}
+function checknum(i){
+   if(document.getElementById('surennumber'+i).value != ""){
+       if(isNaN(document.getElementById("surennumber"+i).value))
+       { 
+	 alert("确认件数必须为数字");
+	 document.getElementById("surennumber"+i).select();
+	 return false;
+       }else{
+          if(parseInt(document.getElementById('surennumber'+i).value) > parseInt(document.getElementById('oldnnumber'+i).value)){
+	      alert("确认件数不能大于出库件数");
+	      document.getElementById("surennumber"+i).select();
+	      return false;
+	  }else{
+	      if(parseFloat(document.getElementById("surennumber"+i).value) >= 0){
+	           document.getElementById("surefnnumber"+i).value = parseFloat(document.getElementById("surennumber"+i).value)*parseFloat(document.getElementById("zhl"+i).value);
+		   document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surennumber"+i).value) * parseFloat(document.getElementById("surewprice"+i).value)).toFixed(2);
+		   document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("surennumber"+i).value) * parseFloat(document.getElementById("sureprice"+i).value)).toFixed(2);
+		   document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("surennumber"+i).value) * (parseFloat(document.getElementById("sureprice"+i).value) - parseFloat(document.getElementById("surewprice"+i).value))).toFixed(2);
+	      }else{
+	           alert("确认件数不能为负数");
+	           document.getElementById("surennumber"+i).select();
+	           return false;
+	      }
+	  }
+       } 
+   }else{
+      alert("确认件数不能为空");
+      document.getElementById("surennumber"+i).focus();
+      return false;
+   }
+}
+function checksuretaxrate(i){
+   if(document.getElementById('suretaxrate'+i).value != ""){
+       if(isNaN(document.getElementById("suretaxrate"+i).value))
+       { 
+	 alert("税率必须为数字");
+	 document.getElementById("suretaxrate"+i).select();
+	 return false;
+       }else{
+          if(parseFloat(document.getElementById("suretaxrate"+i).value) >= 0){
+	           document.getElementById("surebaoprice"+i).value = (parseFloat(document.getElementById("sureprice"+i).value)/parseFloat(document.getElementById("zhl"+i).value)/(1+parseFloat(document.getElementById('suretaxrate'+i).value)/100)).toFixed(4);
+		   document.getElementById("surewprice"+i).value = (parseFloat(document.getElementById("sureprice"+i).value)/(1+parseFloat(document.getElementById('suretaxrate'+i).value)/100)).toFixed(4);
+		   document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surennumber"+i).value) * parseFloat(document.getElementById("sureprice"+i).value)/(1+parseFloat(document.getElementById('suretaxrate'+i).value)/100)).toFixed(2);
+		   document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value)-parseFloat(document.getElementById("surennumber"+i).value) * parseFloat(document.getElementById("sureprice"+i).value)/(1+parseFloat(document.getElementById('suretaxrate'+i).value)/100)).toFixed(2);
+	   }else{
+	           alert("税率不能为负数");
+	           document.getElementById("suretaxrate"+i).select();
+	           return false;
+	   }
+       } 
+   }else{
+      alert("税率不能为空");
+      document.getElementById("suretaxrate"+i).focus();
+      return false;
+   }
+}
+function checkfnum(i){
+   if(document.getElementById('surefnnumber'+i).value != ""){
+       if(isNaN(document.getElementById("surefnnumber"+i).value))
+       { 
+	 alert("确认袋数必须为数字");
+	 document.getElementById("surefnnumber"+i).select();
+	 return false;
+       }else{
+          if(parseInt(document.getElementById('surefnnumber'+i).value) > parseInt(document.getElementById('oldfnnumber'+i).value)){
+	      alert("确认袋数不能大于出库袋数");
+	      document.getElementById("surefnnumber"+i).select();
+	      return false;
+	  }else{
+	      if(parseFloat(document.getElementById("surefnnumber"+i).value) >= 0 && document.getElementById("surefnnumber"+i).value.indexOf(".") == -1){
+	         document.getElementById("surennumber"+i).value = parseFloat(document.getElementById("surefnnumber"+i).value)/parseFloat(document.getElementById("zhl"+i).value);
+		 document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surewprice"+i).value) * parseFloat(document.getElementById("surefnnumber"+i).value)/parseFloat(document.getElementById("zhl"+i).value)).toFixed(2);
+		 document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("sureprice"+i).value) * parseFloat(document.getElementById("surefnnumber"+i).value)/parseFloat(document.getElementById("zhl"+i).value)).toFixed(2);
+		 document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("sureprice"+i).value) * parseFloat(document.getElementById("surefnnumber"+i).value)/parseFloat(document.getElementById("zhl"+i).value) - parseFloat(document.getElementById("surewprice"+i).value) * parseFloat(document.getElementById("surefnnumber"+i).value)/parseFloat(document.getElementById("zhl"+i).value)).toFixed(2);
+	       }else{
+	           alert("确认袋数不能为负数或者小数");
+	           document.getElementById("surefnnumber"+i).select();
+	           return false;
+	       }
+	  }
+       } 
+   }else{
+      alert("确认袋数不能为空");
+      document.getElementById("surefnnumber"+i).focus();
+      return false;
+   }
+}
+function checkprice(i){
+    if(document.getElementById('sureprice'+i).value != ""){
+       if(isNaN(document.getElementById("sureprice"+i).value))
+       { 
+	 alert("目的客户含税单价（件）必须为数字");
+	 document.getElementById("sureprice"+i).select();
+	 return false;
+       }else{
+            document.getElementById("surebaoprice"+i).value = (parseFloat(document.getElementById("sureprice"+i).value)/parseFloat(document.getElementById("zhl"+i).value)/(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(4);
+	    document.getElementById("surewprice"+i).value =(parseFloat(document.getElementById("sureprice"+i).value)/(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(4);
+	    document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surewprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("sureprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value) - parseFloat(document.getElementById("suremoney"+i).value)).toFixed(2);
+       }
+   }else{
+      alert("目的客户含税单价（件）不能为空");
+      document.getElementById("sureprice"+i).focus();
+      return false;
+   }
+}
+function checkbaoprice(i){
+    if(document.getElementById('surebaoprice'+i).value != ""){
+       if(isNaN(document.getElementById("surebaoprice"+i).value))
+       { 
+	 alert("目的客户无税单价（袋）必须为数字");
+	 document.getElementById("surebaoprice"+i).select();
+	 return false;
+       }else{
+            document.getElementById("sureprice"+i).value = (parseFloat(document.getElementById("surebaoprice"+i).value)*parseFloat(document.getElementById("zhl"+i).value)*(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(4);
+	    document.getElementById("surewprice"+i).value =(parseFloat(document.getElementById("surebaoprice"+i).value)*parseFloat(document.getElementById("zhl"+i).value)).toFixed(4);
+	    document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surewprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("sureprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value) - parseFloat(document.getElementById("suremoney"+i).value)).toFixed(2);
+       }
+   }else{
+      alert("目的客户无税单价（袋）不能为空");
+      document.getElementById("surebaoprice"+i).focus();
+      return false;
+   }
+}
+function checksuremoney(i){
+    if(document.getElementById('suremoney'+i).value != ""){
+       if(isNaN(document.getElementById("suremoney"+i).value))
+       { 
+	 alert("目的客户无税金额必须为数字");
+	 document.getElementById("suremoney"+i).select();
+	 return false;
+       }else{
+            document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("suremoney"+i).value)*(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(2);
+	    document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value) - parseFloat(document.getElementById("suremoney"+i).value)).toFixed(2);
+          
+            document.getElementById("surebaoprice"+i).value = (parseFloat(document.getElementById("suremoney"+i).value)/parseFloat(document.getElementById("surefnnumber"+i).value)).toFixed(4);
+	    document.getElementById("sureprice"+i).value =(parseFloat(document.getElementById("suretaxmoney"+i).value)/parseFloat(document.getElementById("surennumber"+i).value)).toFixed(4);
+	    document.getElementById("surewprice"+i).value =(parseFloat(document.getElementById("suremoney"+i).value)/parseFloat(document.getElementById("surennumber"+i).value)).toFixed(4);
+	    
+	    
+       }
+   }else{
+      alert("目的客户无税金额不能为空");
+      document.getElementById("suremoney"+i).focus();
+      return false;
+   }
+}
+function checkcusttaxmoney(i){
+    if(document.getElementById('custtaxmoney'+i).value != ""){
+       if(isNaN(document.getElementById("custtaxmoney"+i).value))
+       { 
+	 alert("目的客户税额必须为数字");
+	 document.getElementById("custtaxmoney"+i).select();
+	 return false;
+       }else{
+            if(document.getElementById("suretaxrate"+i).value != "0"){
+            document.getElementById("surebaoprice"+i).value = (parseFloat(document.getElementById("custtaxmoney"+i).value)*(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)/(parseFloat(document.getElementById("suretaxrate"+i).value)/100)/parseFloat(document.getElementById("surefnnumber"+i).value)).toFixed(4);
+	    document.getElementById("sureprice"+i).value =(parseFloat(document.getElementById("surebaoprice"+i).value)*parseFloat(document.getElementById("zhl"+i).value*(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100))).toFixed(4);
+	    document.getElementById("surewprice"+i).value =(parseFloat(document.getElementById("surebaoprice"+i).value)*parseFloat(document.getElementById("zhl"+i).value)).toFixed(4);
+	    document.getElementById("suretaxmoney"+i).value = (parseFloat(document.getElementById("sureprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value) - parseFloat(document.getElementById("custtaxmoney"+i).value)).toFixed(2);
+	    }else{
+	        if(parseInt(document.getElementById('custtaxmoney'+i).value) != "0"){
+	        alert("目的客户税额必须为0");
+	        document.getElementById("custtaxmoney"+i).select();
+	        return false;
+		}
+	    }
+       }
+   }else{
+      alert("目的客户税额不能为空");
+      document.getElementById("custtaxmoney"+i).focus();
+      return false;
+   }
+}
+function checksuretaxmoney(i){
+    if(document.getElementById('suretaxmoney'+i).value != ""){
+       if(isNaN(document.getElementById("suretaxmoney"+i).value))
+       { 
+	 alert("目的客户价税合计必须为数字");
+	 document.getElementById("suretaxmoney"+i).select();
+	 return false;
+       }else{
+            document.getElementById("surebaoprice"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value)/parseFloat(document.getElementById("surefnnumber"+i).value)/(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(4);
+	    document.getElementById("sureprice"+i).value =(parseFloat(document.getElementById("suretaxmoney"+i).value)/parseFloat(document.getElementById("surennumber"+i).value)).toFixed(4);
+	    document.getElementById("surewprice"+i).value =(parseFloat(document.getElementById("sureprice"+i).value)/(1+parseFloat(document.getElementById("suretaxrate"+i).value)/100)).toFixed(4);
+	    document.getElementById("suremoney"+i).value = (parseFloat(document.getElementById("surewprice"+i).value) * parseFloat(document.getElementById("surennumber"+i).value)).toFixed(2);
+	    document.getElementById("custtaxmoney"+i).value = (parseFloat(document.getElementById("suretaxmoney"+i).value) - parseFloat(document.getElementById("suremoney"+i).value)).toFixed(2);
+       }
+   }else{
+      alert("目的客户价税合计不能为空");
+      document.getElementById("suretaxmoney"+i).focus();
+      return false;
+   }
+}
+     function toKeyUpDown(j){
+         var rowsArray = document.all('oTable').rows; 
+         for(var i=1;i<rowsArray.length-1;i++){
+              if(i == j){ 
+                 switch(window.event.keyCode){
+                     case 38 :  
+                         if(i-1>=1){ 
+			      if(event.srcElement.id == "surennumber"+i){
+			          document.getElementById("surennumber"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "surefnnumber"+i){
+			          document.getElementById("surefnnumber"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "suretaxrate"+i){
+			          document.getElementById("suretaxrate"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "surebaoprice"+i){
+			          document.getElementById("surebaoprice"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "sureprice"+i){
+			          document.getElementById("sureprice"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "suremoney"+i){
+			          document.getElementById("suremoney"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "custtaxmoney"+i){
+			          document.getElementById("custtaxmoney"+(i-1)).select(); 
+			      }else if(event.srcElement.id == "suretaxmoney"+i){
+			          document.getElementById("suretaxmoney"+(i-1)).select(); 
+			      }
+                         } 
+                         break; 
+		     case 37: 
+                         if(i >= 1){
+                              if(event.srcElement.id == "suretaxmoney"+i){
+			          document.getElementById("custtaxmoney"+i).focus(); 
+			      }else if(event.srcElement.id == "custtaxmoney"+i){
+			          document.getElementById("suremoney"+i).focus(); 
+			      }else if(event.srcElement.id == "suremoney"+i){
+			          document.getElementById("sureprice"+i).focus(); 
+			      }else if(event.srcElement.id == "sureprice"+i){
+			          document.getElementById("surebaoprice"+i).focus(); 
+			      }else if(event.srcElement.id == "surebaoprice"+i){
+			          document.getElementById("suretaxrate"+i).focus(); 
+			      }else if(event.srcElement.id == "suretaxrate"+i){
+			          document.getElementById("surefnnumber"+i).focus(); 
+			      }else if(event.srcElement.id == "surefnnumber"+i){
+			          document.getElementById("surennumber"+i).focus(); 
+			      }else if(event.srcElement.id == "surennumber"+i){
+			          if(i-1 != 0){
+			          document.getElementById("suretaxmoney"+(i-1)).focus();
+				  }
+			      }
+			 }
+		         break;
+		         break;
+		     case 39: 
+		         if(i <= rowsArray.length-1){
+                              if(event.srcElement.id == "surennumber"+i){
+			          document.getElementById("surefnnumber"+i).focus(); 
+			      }else if(event.srcElement.id == "surefnnumber"+i){
+			          document.getElementById("suretaxrate"+i).focus(); 
+			      }else if(event.srcElement.id == "suretaxrate"+i){
+			          document.getElementById("surebaoprice"+i).focus(); 
+			      }else if(event.srcElement.id == "surebaoprice"+i){
+			          document.getElementById("sureprice"+i).focus(); 
+			      }else if(event.srcElement.id == "sureprice"+i){
+			          document.getElementById("suremoney"+i).focus(); 
+			      }else if(event.srcElement.id == "suremoney"+i){
+			          document.getElementById("custtaxmoney"+i).focus(); 
+			      }else if(event.srcElement.id == "custtaxmoney"+i){
+			          document.getElementById("suretaxmoney"+i).focus(); 
+			      }else if(event.srcElement.id == "suretaxmoney"+i){
+			          if(i == rowsArray.length-1){
+			          document.getElementById("surennumber"+(i+1)).focus(); 
+				  }
+			      }
+			 }
+		         break;
+                     case 40 : 
+                         if(i+1<=rowsArray.length-2){ 
+                              if(event.srcElement.id == "surennumber"+i){
+			          document.getElementById("surennumber"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "surefnnumber"+i){
+			          document.getElementById("surefnnumber"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "suretaxrate"+i){
+			          document.getElementById("suretaxrate"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "surebaoprice"+i){
+			          document.getElementById("surebaoprice"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "sureprice"+i){
+			          document.getElementById("sureprice"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "suremoney"+i){
+			          document.getElementById("suremoney"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "custtaxmoney"+i){
+			          document.getElementById("custtaxmoney"+(i+1)).select(); 
+			      }else if(event.srcElement.id == "suretaxmoney"+i){
+			          document.getElementById("suretaxmoney"+(i+1)).select(); 
+			      }
+                         } 
+                         break; 
+                 } 
+                 break; 
+              } 
+         } 
+      } 
+</script>
+</head>
+<body>
+<form name="form1" method='post' action="">
+<input type="hidden" name="csaleid" value="$!form_csaleid">
+<input type="hidden" name="fstatus" value="">
+<table width="700" height="30"  border="0" align="center" cellpadding="0" cellspacing="0" class="B1">
+  <tr>
+    <td class="f">&nbsp;&nbsp; <div align="center" class="style1">配送确认单</div></td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="tb" class="datatable">
+  #foreach($mm in $dispatchquerybypagebycsaleid)
+    <tr height="20"  align="center" class="trtitle">
+        <td  nowrap align="right">单据号</td>
+        <td nowrap>$!mm.VRECEIPTCODE</td>
+	<td  nowrap align="right">日期</td>
+	<td nowrap>$!mm.DBILLDATE</td>
+	<td nowrap align="right">原客户</td>
+	<td nowrap>$!mm.OCUSTNAME</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">原销售部门</td>
+	<td nowrap>$!mm.ODEPTNAME</td>
+	<td nowrap align="right">原业务员</td>
+	<td nowrap>$!mm.OPSNNAME</td>
+        <td  nowrap align="right">原销售组织</td>
+        <td nowrap>$!mm.OVSALESTRUNAME</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+         <td nowrap align="right">目的销售组织</td>
+	<td nowrap>$!mm.VSALESTRUNAME</td>
+	<td nowrap align="right">目的销售部门</td>
+	<td nowrap>$!mm.DEPTNAME</td>
+	<td  nowrap align="right">目的客户</td>
+	<td nowrap>$!mm.CUSTNAME</td>
+     </tr>
+     <tr height="20"  align="center" class="trtitle">
+        <td nowrap align="right">目的业务员</td>
+	<td nowrap>#if($!mm.PSNNAME!="")$!mm.PSNNAME#else&nbsp;#end</td>
+	<td  nowrap align="right">币种</td>
+	<td nowrap>$!mm.CURRTYPENAME</td>
+	<td nowrap align="right">状态</td>
+	<td nowrap>
+	    #if($!m.FSTATUS=="1")
+	      保存
+	    #elseif($!mm.FSTATUS=="2")
+	      提交
+	    #elseif($!mm.FSTATUS=="3")
+	      已确认
+	    #elseif($!mm.FSTATUS=="4")
+	      已验收
+	    #elseif($!mm.FSTATUS=="5")
+	      未确认
+	    #end
+	</td>
+     </tr>
+  #end
+</table>
+<br>
+
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="100%" align="center" id="oTable" class="datatable">
+  <tr height="20"  align="center" class="trtitle">
+    <td height="25" nowrap>行号</td>
+    <td height="25" nowrap>存货编码</td>
+    <td height="25" nowrap>存货名称</td>
+    <td  height="25" nowrap>规格</td>
+    <td  height="25" nowrap>订单件数</td>
+    <td  height="25" nowrap>订单袋数</td>
+    <td  height="25" nowrap>出库件数</td>
+    <td  height="25" nowrap>出库袋数</td>
+    <td height="25" nowrap>确认件数</td>
+    <td height="25" nowrap>确认袋数</td>
+    <td height="25" nowrap>税率</td>
+    <td height="25" nowrap>目的客户无税单价（袋）</td>
+    <td height="25" nowrap>目的客户含税单价（件）</td>
+    <td height="25" nowrap>目的客户无税金额</td>
+    <td height="25" nowrap>目的客户税额</td>
+    <td height="25" nowrap>目的客户价税合计</td>
+    <td height="25" nowrap>原客户含税单价</td>
+    <td height="25" nowrap>原客户价税合计</td>
+    <!--<td height="25" nowrap>原配送含税单价</td>
+    <td height="25" nowrap>出库含税单价</td>-->
+  </tr>
+  #set($i = 1 )
+  #foreach($mm in $dispatchdetailbycsaleid)
+  <tr class="trcolor">
+     <td>
+         $mm.CROWNO
+     </td>
+     <td>
+         $mm.INVCODE
+     </td>
+     <td>
+         $mm.INVNAME
+     </td>
+     <td>
+         $mm.INVSPEC
+     </td>
+     <td>
+         $mm.NNUMBER<input type="hidden" name="oldnnumber" id="oldnnumber$i" value="#if($mm.CUSTNNUMBER=="")$mm.NNUMBER#else$mm.CUSTNNUMBER#end"><input type="hidden" name="oldfnnumber" id="oldfnnumber$i" value="#if($mm.CUSTFNNUMBER=="")$mm.NPACKNUMBER#else$mm.CUSTFNNUMBER#end">
+     </td>
+     <td>$mm.NPACKNUMBER</td>
+     <td>#if($mm.CUSTNNUMBER=="")$mm.NNUMBER#else$mm.CUSTNNUMBER#end</td>
+     <td>#if($mm.CUSTFNNUMBER=="")$mm.NPACKNUMBER#else$mm.CUSTFNNUMBER#end</td>
+
+     <td><input type="text" name="surennumber" id="surennumber$i" style="width:80" value="#if($!mm.SURENNUMBER!="")$!mm.SURENNUMBER#else#if($mm.CUSTNNUMBER=="")$mm.NNUMBER#else$mm.CUSTNNUMBER#end#end" onblur="checknum('$i')" onKeyUp="toKeyUpDown($i)"></td>
+     <td><input type="text" name="surefnnumber" id="surefnnumber$i" style="width:80" value="#if($!mm.SUREFNNUMBER!="")$!mm.SUREFNNUMBER#else#if($mm.CUSTFNNUMBER=="")$mm.NPACKNUMBER#else$mm.CUSTFNNUMBER#end#end" onblur="checkfnum('$i')"  onKeyUp="toKeyUpDown($i)"></td>
+     <td><input type="text" name="suretaxrate" id="suretaxrate$i" value="#if($mm.SURETAXRATE=="")$mm.NTAXRATE#else$mm.SURETAXRATE#end" style="width:50" onblur="checksuretaxrate('$i')"  onKeyUp="toKeyUpDown($i)" readonly></td>
+
+     <td><input type="text" name="surebaoprice" id="surebaoprice$i" value="$!mm.SUREBAOPRICE" style="width:80" onblur="checkbaoprice('$i')"  onKeyUp="toKeyUpDown($i)"></td>
+     <td><input type="text" name="sureprice" id="sureprice$i" value="#if($!mm.SUREPRICE!="")$!mm.SUREPRICE#else$mm.NORIGINALCURTAXPRICE#end" style="width:80" onblur="checkprice('$i')"  onKeyUp="toKeyUpDown($i)">
+     <input type="hidden" name="surewprice" id="surewprice$i" value="#if($!mm.SUREPRICE!="")$!mm.SUREWPRICE#else$mm.NORIGINALCURPRICE#end" style="width:80">
+     </td>
+     <td><input type="text" name="suremoney" id="suremoney$i" value="#if($!mm.SUREPRICE!="")$!mm.SUREMONEY#else$!mm.NORIGINALCURMNY#end" style="width:80" onblur="checksuremoney('$i')"  onKeyUp="toKeyUpDown($i)"></td>
+     <td><input type="text" name="custtaxmoney" id="custtaxmoney$i" value="$!mm.CUSTTAXMONEY" style="width:80" onblur="checkcusttaxmoney('$i')"  onKeyUp="toKeyUpDown($i)"></td>
+     <td><input type="text" name="suretaxmoney" id="suretaxmoney$i" value="$!mm.SURETAXMONEY" style="width:80" onblur="checksuretaxmoney('$i')"  onKeyUp="toKeyUpDown($i)"></td>
+     
+     <td>#if($mm.O_NORIGINALCURTAXPRICE=="")&nbsp;#else$mm.O_NORIGINALCURTAXPRICE#end</td>
+     <td>#if($mm.HSMONEY=="")&nbsp;#else$mm.HSMONEY#end</td>
+     <input type="hidden" name="crowno" value="$mm.CROWNO"><input type="hidden" name="zhl" id="zhl$i" value="$mm.ZHL">
+     
+  </tr>
+  #set($i = $i+1 )
+  <script language="javascript">
+     num1=accAdd(num1,#if($mm.NNUMBER=="")0#else$mm.NNUMBER#end);
+     num2=accAdd(num2,#if($mm.NPACKNUMBER=="")0#else$mm.NPACKNUMBER#end);
+     num3=accAdd(num3,#if($mm.CUSTNNUMBER=="")$mm.NNUMBER#else$mm.CUSTNNUMBER#end);
+     num4=accAdd(num4,#if($mm.CUSTFNNUMBER=="")$mm.NPACKNUMBER#else$mm.CUSTFNNUMBER#end);
+  </script>
+  #end
+  <tr class="trcolor">
+    <td>合计</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><script language="javascript">document.write(num1);</script></td>
+    <td><script language="javascript">document.write(num2);</script></td>
+    <td><script language="javascript">document.write(num3);</script></td>
+    <td><script language="javascript">document.write(num4);</script></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  </table>
+   <div align="center">
+       <input type="button" class="bt1"  value="保 存 " name="B222" id="B222" onClick="tosave('$!form_csaleid',5)">&nbsp;<input type="button" class="bt1"  value="提 交 " name="B22" id="B22" onClick="tosave('$!form_csaleid',3)">&nbsp;<input type="button" class="bt1" value="返  回" name="B222" onClick="history.go(-1);">
+  </div>
+</form>
+<iframe name="dataframe" src="" width="0" height="0"></iframe>
+
+</body> 
+</html>      

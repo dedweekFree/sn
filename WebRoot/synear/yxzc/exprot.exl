@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>selyxzxsalezcbystyid</web:sql>
+  <web:db>Login</web:db>
+  <web:col>政策编号##政策名##补贴额##类型##开始时间##结束时间##备注</web:col>
+  <web:key>STYCODE##STYNAME##ALLOWANCE##TYPE##STARTTIME##ENDTIME##NOTE</web:key>
+  <web:name>政策明细</web:name>
+</web:page>
+
+
+

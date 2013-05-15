@@ -1,0 +1,11 @@
+<web:page>
+  <web:sql>insertYearTask</web:sql>
+  <web:sql_type>insert</web:sql_type>
+  <web:db>Login</web:db>
+  <web:multiValue>prodpk,tasknum1,tasknum2,tasknum3,tasknum4,tasknum5,tasknum6,tasknum7,tasknum8,tasknum9,tasknum10,tasknum11,tasknum12</web:multiValue>
+  <web:successMsg>数据保存成功！</web:successMsg>
+  <web:failMsg>数据保存失败！</web:failMsg>
+  <web:url>yearTask.aspx</web:url>
+  <web:target>parent</web:target>
+  <web:template>template/synear/common/message.vm</web:template>
+</web:page>

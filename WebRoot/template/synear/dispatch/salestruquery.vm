@@ -1,0 +1,40 @@
+
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../js/style.css">
+	<style>
+	table,body{font-size:12px;background-color:#EBE9EE; margin:0px; padding:0px;}
+</style>
+<title>销售组织</title>
+</head>
+<body>
+<script src='../../../inc/js/codedtreesale.js'></script>
+<link rel='StyleSheet' href='../../js/dtree.css' type='text/css' />
+<div id='Layer1' class='dtree'></div>
+<script>
+function Choose11(dm,mc,code){
+    top.result1.document.location='khright.aspx?row=$!form_row&xtype=1&ncdl='+code.substring(0,2)+'&invcode='+code;
+}
+function Choose(dm,mc,code){
+   top.opener.setVals(dm,mc,code);
+   window.close();
+}
+var d = new dTree('d');
+d.add('ffff',-1,'请选择','','');
+#foreach($m in $seleverycorpsalestru)
+   d.add("$!m.CODE","$!m.PCODE","$!m.INVCLASSNAME","","$!m.INVCLASSCODE");
+#end
+
+	var str = '';
+if (document.getElementById) {
+   str += d.addNode(d.root);
+}else{
+   str += 'Browser not supported.';
+}
+   d.completed = true;
+   document.getElementById('Layer1').innerHTML=str;
+   curindex=0;
+</script>
+
+</body>
+</html>

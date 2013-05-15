@@ -1,0 +1,163 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+<script src="../../inc/js/alai_win_xp.js" language="javascript"></script>
+<!-- 引入jquery的js包 -->
+<script Language="javascript" src="../../../include/js/jquery-1.7.2.js"></script>
+<script Language="javascript" src="../../../include/js/jquery.alerts.js"></script>
+<script Language="javascript" src="../../../include/css/jquery.alerts.css"></script>
+<script language="javascript" src="../../../include/js/97/WdatePicker.js"></script>
+
+<title>视频会议账号管理</title>
+<script>
+	function subq(){  
+		thisform.page.value=1;
+		thisform.submit();
+		}
+	function addaccount(){
+		$acode = $("#acode").val();
+		$apwd = $("#apwd").val();
+		if($acode==""){
+			alert("账号为必填项");
+			return false;
+		}
+		thatform.submit();
+	}
+	function updatepvpwd(){
+		$piliangPwd = $("#piliangPwd").val();
+		$piliangPwdagain = $("#piliangPwdagain").val();
+
+		if($piliangPwdagain != $piliangPwd){
+			alert("新密码和确认密码必须一致！");
+			return false;
+		}
+		piliangform.submit();
+	}	
+	
+	$(function(){
+		$(".s1_aid").bind("click",function(event){
+			$sid = event.target.id;
+			$("#s1"+$sid).html("");
+			$("#s2"+$sid).html("<input type=text name=newpwd id=newpwd aid='"+$sid+"' /><input type=button class=bt1 onclick=updatepwd()  value=更新密码 />");
+			$(".s1_aid").unbind("click");
+		});
+		$("#piliang").hide();
+		$("#prompt_button").click(function(){
+			$("#piliang").show();
+		});
+	});
+	function updatepwd(){  
+		$newpwd = $("#newpwd").val();
+		$aid = $("#newpwd").attr("aid");
+		$subdata=$("#subdata");
+		$querydata="";
+		$querydata=$querydata+"<input type=hidden name=pk_aid value='"+$aid+"'><input type=hidden name=pwd value='"+$newpwd+"'>";
+		$subdata.html($querydata);
+		tempform.action="updatepwd.aspx";
+		tempform.target = "saveframe";
+		tempform.submit();
+	}
+	
+</script>
+
+</head>
+<body>
+添加操作：
+	<form name="thatform" method="post" action="addAccount.aspx" target= "saveframe">
+		<table class="datatable">
+			<tr class="trcolor">
+				<td>新增账号：</td>
+				<td align="left">账号：<input type="text" name="acode" id="acode"/></td>
+				<td align="left">密码：<input type="text" name="apwd" id="apwd" /></td>
+				<td align="left"><input type="button" name="b2" value="确认添加" onclick="addaccount()" 
+					class="bt1" /></td>
+			</tr>
+		</table>
+	</form>
+	<p/>
+	查询操作：
+	<input id="prompt_button" class="bt1" type="button"  value="批量修改密码" />
+	<div id="piliang" style="border:1px;">
+		<form name="piliangform" method="post" action="updatepvpwd.aspx" target= "saveframe">
+		<table class="datatable">
+			<tr class="trcolor">
+				<td align="right">&nbsp;</td>
+				<td align="left">批量修改密码会将全部密码修改为统一的新密码，请谨慎操作！</td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">请输入新密码：</td>
+				<td align="left"><input id="piliangPwd"  type="text"  value="" /></td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">确认新密码：</td>
+				<td align="left"><input id="piliangPwdagain"  type="text" name="pwd"  value="" /></td>
+			</tr>
+			<tr class="trcolor">
+				<td align="right">&nbsp;</td>
+				<td align="left"><input id="piliangSave" class="bt1" type="button"  value="确认修改" onclick="updatepvpwd()" /></td>
+			</tr>
+		</form>
+		</table>
+	</div>
+	<form name="thisform" method="post" action="account.aspx">	
+		<input type="hidden" name="pageSize" value="$!form_pageSize">
+		<input type="hidden" name="page" value="">
+		<table class="datatable">
+		  <tr class="trcolor">
+			<td>查询条件：</td>
+			<td align="center">账号：<input type="text" name="acode" value="$!form_acode"/></td>
+			<td align="center">密码：<input type="text" name="apwd" value="$!form_apwd"/></td>
+			<td align="center">账号状态：
+				<select name="state">
+					<option value="">全部</option>
+					<option value="空闲">空闲</option>
+					<option value="忙碌">忙碌</option>
+				</select>
+			</td>
+			<td align="center" colspan="3"><input type="button" name="b2" value="查询" 
+				class="bt1" onclick="subq()" /></td>
+		  </tr>
+		  <tr class="trcolor">
+			<td>序号</td>
+			<td>账号</td>
+			<td>密码</td>
+			<td>账号状态</td>
+			<td>使用人</td>
+			<td>联系方式</td>
+			<td>操作</td>
+		  </tr>
+		  #set($i=1)
+		  #foreach($!m in $queryAccount)
+			<tr class="trcolor">
+				<td>$i</td>
+				<td>$!m.ACODE</td>
+				<td>$!m.APWD &nbsp;</td>
+				<td>$!m.STATE</td>
+				<td>$!m.USERNAME &nbsp;</td>
+				<td>$!m.USERPHONE &nbsp;</td>
+				<td width="250">
+					<span id="s1$!m.PK_AID" class="s1_aid"> 
+						<a id="$!m.PK_AID" href="#">重置密码</a>&nbsp;&nbsp;
+					</span>
+					<span id="s2$!m.PK_AID" class="s2_aid">
+						&nbsp;&nbsp;<a target="saveframe"  href="freeaccount.aspx?pk_aid=$!m.PK_AID" onclick="return window.confirm('确认释放？')" >释放账号</a>
+						&nbsp;&nbsp;<a target="saveframe"  href="delaccount.aspx?pk_aid=$!m.PK_AID" onclick="return window.confirm('确认删除？')" >删除账号</a>
+					</span>
+					
+				</td>
+			</tr>
+		  #set($i=$i+1)
+		  #end
+		 <tr>
+		<td colspan=8 align="right">$pagecode</td>
+     </tr>
+</table>
+</form>
+<form name="tempform" method="post" target="saveframe">
+	<span id="subdata"></span>
+</form>
+</body>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 marginheight=0 marginwidth=0></iframe> 
+</html>

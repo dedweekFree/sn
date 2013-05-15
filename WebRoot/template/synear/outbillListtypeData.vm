@@ -1,0 +1,76 @@
+
+<HTML>
+<HEAD>		
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function set(id){
+  var obj=eval("document.all."+id);
+  var num=obj.rows.length-1
+  for(var i=1;i<num;i++){
+	if(i%2==1){
+		obj.rows[i].className="one";
+		}		
+	else{
+		obj.rows[i].className="two";
+	}
+  }
+}
+
+
+-->
+</SCRIPT>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">出库单号</td>
+	<td nowrap="nowrap">分厂</td>
+	<td nowrap="nowrap">仓库</td>
+	<td nowrap="nowrap">班组</td>
+	<td nowrap="nowrap">经手人</td>
+	<td nowrap="nowrap">收发类别</td>
+	<td nowrap="nowrap">入库时间</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $sql0)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		        <td align="center" nowrap="nowrap">$!m.CBILLCODE</td>
+			<td align="center" nowrap="nowrap">$!m.UNAME</td>
+			<td align="center" nowrap="nowrap">$!m.SNAME</td>
+                        <td align="center" nowrap="nowrap">$!m.TEAM</td>
+			<td align="center" nowrap="nowrap">$!m.OPERATER</td>
+                        <td align="center" nowrap="nowrap">$!m.OUTDISNAME</td>
+			<td align="center" nowrap="nowrap">$!m.HOUTDATE</td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.CBILLCODE,$!m.UNAME:$!m.SNAME"><a style='cursor:hand' onclick="javascript:parent.ViewRow(window.event.srcElement,'outtype')">查看</a>&nbsp;&nbsp;&nbsp;</span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+
+  <form name="thisform" method="post"  action="outbillListData.aspx" target="listframe">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   </form>

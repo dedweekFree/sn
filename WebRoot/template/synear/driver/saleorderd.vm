@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>======</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+</head>
+<script language="javascript">
+var nnumber = 0;
+var nnumber1 = 0;
+</script>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+#foreach($m in $saleorderheadquery)
+<tr class="trcolor">
+   <td>订单号:${m.SALEORDER}</td>
+   <td>客户:${m.CUSTNAME}</td>
+   <td>到货地:#if($!m.RECEIPTADDRESS=="")&nbsp;#else$m.RECEIPTADDRESS#end</td>
+</tr>
+<tr class="trcolor">
+   <td>数量:$m.NNUMBER</td>
+   <td>车型:#if($!m.DRIVERTYPE=="")&nbsp;#else$m.DRIVERTYPE#end</td>
+   <td>运输公司:#if($!m.SENDCORPNAME=="")&nbsp;#else$!m.SENDCORPNAME#end</td>
+</tr>
+#end
+</table>
+<br>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+  <tr class="trcolor">
+    <td height="25" nowrap>产品编码</td>
+    <td height="25" nowrap>产品名称</td>
+    <td height="25" nowrap>产品规格</td>
+    <td height="25" nowrap>数量</td>
+    <td height="25" nowrap>折合数量</td>
+  </tr>
+  #foreach($m in $saleorderdetailquery)
+  <tr class="trcolor">
+     <td width="20%">$m.INVCODE</td>
+     <td width="20%">$m.INVNAME</td>
+     <td width="20%">$m.INVSPEC</td>
+     <td width="20%">$m.NNUMBER</td>
+     <td width="20%">$m.ZHEHENUMBER</td>
+  </tr>
+  <script>
+     nnumber += $m.NNUMBER;
+     nnumber1 += $m.ZHEHENUMBER;
+  </script>
+  #end
+  <tr class="trcolor">
+     <td >合计</td>
+     <td>&nbsp;</td>
+     <td>&nbsp;</td>
+     <td><script>document.write(nnumber);</script></td>
+     <td><script>document.write(nnumber1);</script></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="5"><input type="button" class="bt1" value="返&nbsp;回" onclick="history.back(-1)"></td>
+  </tr>
+</table>
+
+</body> 
+</html>      

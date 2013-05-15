@@ -1,0 +1,250 @@
+<HTML>
+<HEAD>		
+<title>入库记录表</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
+
+<script  src="../../../inc/js/treePicker.js" language="javascript"></script>
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+
+<style>
+.changecolor{
+font: 13px/200% 宋体;
+}
+.one{
+ background:#fff;
+ text-align:left;
+}
+.two{
+ background:#eeeeee;
+ text-align:left;
+}
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function set(id){
+  var obj=eval("document.all."+id);
+  var num=obj.rows.length-1
+  for(var i=1;i<num;i++){
+	if(i%2==1){
+		obj.rows[i].className="one";
+		}		
+	else{
+		obj.rows[i].className="two";
+	}
+  }
+}
+
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",");
+       document.form1.PID.value = paras[0];
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+alert("功能暂不开放");
+return;
+      var obj = window.event.srcElement;
+	    obj = getParent(obj,"SPAN");
+	   var paras=obj.dtParams.split(",");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	    
+	   document.form1.PID.value = paras[0];
+	   //document.form1.submit();
+   }
+}
+
+function setVals(dm,mc,code) {
+      setVal(dm,mc);
+      thisform.ptype.value=code;
+      thisform.ptypename.value=mc;
+}
+
+function clearVals() {
+      thisform.ptype.value='';
+      thisform.ptypename.value='';
+}
+
+function checkinput()
+{  
+  thisform.page.value=1;
+  thisform.submit();
+}
+
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'01';
+last = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+'31';
+//-->
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#E0F4FC" style="SCROLLBAR-HIGHLIGHT-COLOR:#73C5E8;SCROLLBAR-SHADOW-COLOR:#73C5E8;SCROLLBAR-3DLIGHT-
+
+COLOR:#73C5E8;SCROLLBAR-TRACK-COLOR: #C2E8F8;SCROLLBAR-DARKSHADOW-COLOR:#73C5E8;scrollbar-Base-Color:#73C5E8;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+<tr bgcolor="#E0F4FC" height="5"><td height="5"></td></tr>
+<tr bgcolor="#E0F4FC"><td>
+	<table border="0" cellspacing="0" cellpadding="0" width="98%" align="center" >
+	  <tr height="23">
+	    <td align=left height="20">
+		   <table border="0" cellspacing="3" cellpadding="0">
+		      <tr>
+			     <td height=20>&nbsp;<div id="qx"></div></td>
+			  </tr>
+		   </table>
+		</td>
+		<td align="right">&nbsp;</td>
+	   </tr>
+      </table>
+     </td>
+</tr>
+<tr>
+  <form name="thisform" method="post" action="inbillList.aspx">
+ 
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <td colspan=2>
+      <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      		      		<tr class="search"> 
+			  <td class="tdlabel" width="10%">开始日期</td>
+				<td class="tdinput" width="20%">
+                      #if(!$form_begintime)
+                       <script>
+			document.write("<input type=text name=begintime size=10 readonly value='"+first+"'>");
+                       </script>
+		       #else
+		         <input type=text name=begintime size=10 readonly value='$form_begintime'>
+		       #end
+			<img src="../../../images/common/datetime.gif" style="cursor:hand;" align="absmiddle" alt="弹出日历下拉菜单" onClick="fPopCalendar(begintime,begintime);return false">
+			
+			</td>	
+			
+			<td class="tdlabel" width="10%">结束日期</td>
+			<td class="tdinput" width="20%">
+			  #if(!$form_endtime)
+			<script>
+				document.write("<input type=text name=endtime size=10 readonly value='"+last+"'>");
+			  </script>
+			    #else
+		         <input type=text name=endtime size=10 readonly value='$form_endtime'>
+		       #end
+			<img src="../../../images/common/datetime.gif" style="cursor:hand;" align="absmiddle" alt="弹出日历下拉菜单" onClick="fPopCalendar(endtime,endtime);return false">
+
+			</td>
+			
+			</td>	
+                </tr>
+		<tr class="search"> 
+			<td class="tdlabel" width="10%">生产分厂</td>
+			<td class="tdinput" width="20%">
+				<select name=factory><option value=''>请选择生产分厂</option>
+                           #foreach ($name in $getfactroy)
+				<option value="$name.PK_DEPTDOC" #if($form_factory==$name.PK_DEPTDOC) selected  #else unselected   #end>$name.DEPTNAME</option>
+                           #end
+                                </select><input type="hidden" name="facname" value="">			
+			</td>	
+			<td class="tdlabel" width="10%">收发类别</td>
+			<td class="tdinput" width="20%">
+				<select name=indiscode><option value=''>请选择收发类别</option>
+                           #foreach ($name in $getindiscode)
+				<option value="$name.INDISCODE" #if($form_indiscode==$name.INDISCODE) selected  #else unselected   #end>$name.INDISNAME</option>
+                           #end
+                                </select>		  		
+			</td>
+                </tr>
+		<tr class="search"> 
+                        <td class="tdlabel" width="10%">班组</td>
+			<td class="tdinput" width="20%" colspan="3">
+		                 <input type=text name=team >		  		
+			</td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+				&nbsp;&nbsp;<input type="button" value="返回" onclick="window.location='dayinbillList.aspx';"  class="bt1"></td>
+		</tr>
+		<tr>
+		  <td>
+		  </td><td align="left"></td>
+		</tr>
+	  </table>
+   </td></form>
+</tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" 
+
+class="datatable">
+<tr height="20"  align="center" class="trtitle">
+	<td nowrap="nowrap">序号</td>
+	<td nowrap="nowrap">入库单号</td>
+	<td nowrap="nowrap">分厂</td>
+	<td nowrap="nowrap">仓库</td>
+	<td nowrap="nowrap">班组</td>
+	<td nowrap="nowrap">收发类别</td>
+	<td nowrap="nowrap">入库时间</td>
+	<td nowrap="nowrap">操作</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $selectInbill)
+  		<tr height="20" class="trcolor">
+			<td align="center">$i</td>
+		        <td align="center" nowrap="nowrap">$!m.VBILLCODE</td>
+			<td align="center" nowrap="nowrap">$!m.UNAME</td>
+			<td align="center" nowrap="nowrap">$!m.SNAME</td>
+                        <td align="center" nowrap="nowrap">$!m.TEAM</td>
+			<td align="center" nowrap="nowrap">$!m.INDISNAME</td>
+			<td align="center" nowrap="nowrap">$!m.INDATE</td>
+			<td align="center" nowrap="nowrap"><span id="qxspan" dtParams="$!m.VBILLCODE,$!m.INDATE"><a style='cursor:hand' onclick="javascript:ViewRow()">查看</a>&nbsp;&nbsp;&nbsp;</span></td>
+		 </tr>
+		 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="8"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</td></tr>
+<tr><td height=5></td></tr>
+<tr><td>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</td></tr>
+</table>
+
+<script>
+  set("tb")
+</script>
+<form name="form1" method="post" action="viewInbill.aspx">
+  <input type="hidden" name="PID">
+</form>
+
+<form name="form2" method="post" action="editInbill2.aspx">
+   <input type="hidden" name="vbillcode" value="">
+   <input type="hidden" name="vbatchcode" value="">
+   <input type="hidden" name="indate" value="">
+   <input type="hidden" name="pdate" value="">
+</form>
+<br>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

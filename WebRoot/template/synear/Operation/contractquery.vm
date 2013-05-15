@@ -1,0 +1,442 @@
+<HTML>
+<HEAD>		
+<title>合同查询</title>
+<link rel="stylesheet" type="text/css" href="../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../js/spellCode.css">
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script Language="JavaScript" src="../../../include/js/PopCalendar.js"></script>
+<script src="../../../inc/js/pubjs.js"></script>
+<script src="../../../inc/js/preAfter.js"></script>
+<style> 
+.FixedTitleRow 
+{ 
+position: relative; 
+top: expression(this.offsetParent.scrollTop-2); 
+z-index: 10; 
+background-color: #E6ECF0; 
+} 
+.FixedTitleColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.scrollLeft); 
+} 
+.FixedDataColumn 
+{ 
+position: relative; 
+left: expression(this.parentElement.offsetParent.parentElement.scrollLeft); 
+} 
+.mainDiv    
+{    
+overflow:auto;    
+scrollbar-face-color:9999ff; 
+height:expression((document.body.clientHeight-this.offsetTop-20>this.children[0].offsetHeight)?(this.children[0].offsetHeight+20)   :   (this.offsetTop+90));  
+width:expression((document.body.clientWidth-this.offsetLeft-20));   
+}
+</style> 
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+//查看
+function ViewRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.csaleid.value = paras[0];
+   document.form1.target="_self";
+   document.form1.action="contractview.aspx";
+   document.form1.submit();
+}
+
+//报批
+function okRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+   document.form1.baseid.value = paras[0];
+   document.all.form1.custpk.value =paras[2];
+   document.all.form1.periodno.value =paras[3];
+   document.form1.action="testOldPlan.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+//修改
+function editRow()
+{  
+   var obj = window.event.srcElement;
+   obj = getParent(obj,"SPAN");
+   var paras=obj.dtParams.split(",!");
+       document.form1.csaleid.value = paras[0];
+       document.form1.action="contractedit.aspx";
+       document.form1.submit();
+}
+
+//删除
+function DelRow()
+{      
+    var obj = window.event.srcElement;
+    obj = getParent(obj,"SPAN");
+    var paras=obj.dtParams.split(",!");
+  
+     if(confirm('你确定要删除吗？'))
+     {
+	   document.form1.csaleid.value = paras[0];
+	   document.form1.action="contractdel.aspx";
+	   document.form1.target="saveframe";
+	   document.form1.submit();
+   }
+}
+
+function CheckAll(code){
+    var obj = window.event.srcElement;
+    obj = getParent(obj,"SPAN");
+    var paras=obj.dtParams.split(",!");
+    if(confirm('确定要反审核吗？')){
+          document.form1.target="saveframe";
+	  document.form1.csaleid.value = paras[0];
+	  document.form1.action="contractsaveckout.aspx";
+	  document.form1.submit();
+    }
+}
+
+function testok(){
+   document.form1.action="contractsaveckout.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+function CheckAll1(code){
+    var obj = window.event.srcElement;
+    obj = getParent(obj,"SPAN");
+    var paras=obj.dtParams.split(",!");
+    if(confirm('单据'+code+'确定要反审核吗？')){
+          document.form1.target="saveframe";
+	  document.form1.csaleid.value = paras[0];
+	  document.form1.vreceiptcode.value = paras[1];
+	  //document.form1.action="dispatchsaveckout.aspx";
+	  document.form1.action="testcodestatus.aspx";
+	  document.form1.submit();
+    }
+}
+
+function CheckOver(code){
+    var obj = window.event.srcElement;
+    obj = getParent(obj,"SPAN");
+    var paras=obj.dtParams.split(",!");
+    if(confirm('单据'+code+'确定要结束吗？')){
+          document.form1.target="saveframe";
+	  document.form1.csaleid.value = paras[0];
+	  document.form1.vreceiptcode.value = paras[1];
+	  document.form1.action="testcodestatus2.aspx";
+	  document.form1.submit();
+    }
+}
+
+function testok2(){
+   document.form1.action="dispatchsaveover.aspx";
+   document.form1.target="saveframe";
+   document.form1.submit();
+}
+
+var dates = new Date(); 
+current = dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):dates.getMonth())+"-"+ dates.getDate()<10?'0'+dates.getDate():dates.getDate() ;
+first ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'01';
+last ="" // dates.getYear()+"-"+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1):String(dates.getMonth()+1))+"-"+'31';
+
+function ShowDate(idText){
+ var state="dialogHeight: 300px; dialogWidth: 240px; dialogTop: 200px; dialogLeft: 300px; "+             "edge: Raised;  center: Yes; help: No; resizable: Yes; status: No;";
+
+ var reValue=window.showModalDialog('../../../js/date.html?OpenForm',"myDate",state);
+ if(reValue==null) 
+   ;
+ else
+   idText.value=reValue;
+ 
+ }
+
+function checkinput()
+{  
+   document.thisform.page.value =1;
+   document.thisform.action="contractquery.aspx"
+   document.thisform.submit();
+}
+
+function checkinput2()
+{  
+     document.thisform.action="contractadd.aspx";
+     document.thisform.submit();
+}
+
+function checkaddinput2()
+{
+     if(document.thisform.opk_cubasdoc.value == ""){
+             alert("原客户不能为空");
+	     return false;
+     }
+     if(document.thisform.pk_cubasdoc.value == ""){
+             alert("目的客户不能为空");
+	     return false;
+     }
+     document.thisform.action="dispatchnewadd.aspx";
+     document.thisform.submit();
+}
+
+  function GetDateString(){
+        var MyDate=new Date();
+        var Year=MyDate.getFullYear();
+        var MonthNum=MyDate.getMonth();
+        var Month;
+        if(MonthNum<9){
+            Month="0"+(MonthNum+1);
+        }else{
+            Month=MonthNum+1;
+        }
+        var Day=MyDate.getDate();
+        if(Day<=9){
+            Day="0"+Day;
+        }
+        var Today=Year+"-"+Month+"-"+Day;
+	var v1 = "$!form_billdate1";
+	var v2 = "$!form_billdate2";
+	if(v1=="" && v2==""){ 
+		document.getElementById('billdate1').value=Today;
+		document.getElementById('billdate2').value=Today;
+	}else{
+		document.getElementById('billdate1').value=v1;
+		document.getElementById('billdate2').value=v2;
+	}
+    }
+    function togetmont(url){
+        window.open(url,'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+    }
+    function togetcust(url){
+        if(document.thisform.custname.value != ""){
+            window.open(url+"?xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"?xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetmccust(url){
+        if(document.thisform.custname.value != ""){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"&xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetoemp(url){
+        if(document.thisform.oemployee.value != ""){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"&xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetemp(url){
+        if(document.thisform.employee.value != ""){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}else{
+	    window.open(url+"&xtype=0",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	}
+    }
+    function togetkh(url){
+        key=event.keyCode;
+        if(document.thisform.custname.value != ""){
+	  if(key == 13){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	  }
+	}
+    }
+    function togetmckh(url){
+        key=event.keyCode;
+        if(document.thisform.custname.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+    }
+    function togetoywy(url){
+        key=event.keyCode;
+        if(document.thisform.oemployee.value != ""){
+	  if(key == 13){
+            window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	  }
+	}
+    }
+    function togetywy(url){
+        key=event.keyCode;
+        if(document.thisform.employee.value != ""){
+	    if(key == 13){
+               window.open(url+"&xtype=1",'','top='+(screen.height - 600) / 2 +',left='+(screen.width - 650) / 2 +',Toolbar=no,menubar=no,scrollbars=yes,status=yes,location=no,resizable=yes,directories=no,width=650,height=500');
+	    }
+	}
+    }
+    function osetdept(dm,mc,code) {
+      thisform.odeptname.value=mc;
+    }
+    function setdept(dm,mc,code) {
+      thisform.deptname.value=mc;
+    }
+    function osetVals(dm,mc,code) {
+      thisform.osalename.value=mc;
+    }
+    function setVals(dm,mc,code) {
+      thisform.salename.value=mc;
+    }
+    function downfile()
+    {
+       thisform.action="contractexcel.exl";
+       thisform.submit();
+    }
+//-->
+</SCRIPT>
+</HEAD>
+<BODY onload="GetDateString()">
+<div>
+  <form name="thisform" method="post">
+    <!--pageSize主要是完成分页功能，设置显示的记录的条数-->
+   <input type="hidden" name="pageSize" value="$!form_pageSize">
+   <input type="hidden" name="page" value="">
+   <table border="0" cellspacing="1" cellpadding="0" bgcolor="#ffffff" width="98%" align="center"  class="datatable">
+      	<tr class="search"> 
+	  <td class="tdlabel" width="10%">单据开始日期</td>
+	  <td class="tdinput" width="20%">
+	    <input type="text" name="billdate1" id="billdate1" value="$!form_billdate1" onclick="ShowDate(billdate1)" style="width:80"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%">单据结束日期</td>
+	  <td class="tdinput" width="20%">
+	     <input type="text" name="billdate2" id="billdate2" value="$!form_billdate2" onclick="ShowDate(billdate2)" style="width:80"/>	
+	  </td>	
+	  <td class="tdlabel" width="10%">供应商名称</td>
+	   <td class="tdinput" width="20%">
+	    <input type="text" name="custname" value="$!form_custname"  style="width:150" onkeydown="togetkh('/synear/public/custvendorquery.aspx?invname='+document.thisform.custname.value)"/><input type="button" class="bt1" value="..." onclick="togetcust('/synear/public/cvquery.aspx')">
+	    <input type="hidden" name="pkcubasdoc" value="$!form_pkcubasdoc">
+	    <input type="hidden" name="pkcumandoc" value="$!form_pkcumandoc">
+	    <input type="hidden" name="grade" id="grade" value="$!form_grade">
+	   </td>	
+	   
+	</tr>
+	<tr>
+	 <td class="tdlabel">是否过期</td>
+	   <td class="tdinput">
+	      <select name="usestatus">
+                 <option value=""></option>
+		 <option value="1" #if($!form_usestatus == "1")selected#end>是</option>
+		 <option value="2" #if($!form_usestatus == "2")selected#end>否</option>
+	      </select>
+	   </td>
+	  <td align="left" colsapn="4"><input type="button" name="submit1" value="搜 索" onclick="checkinput()" class="bt1">
+			&nbsp;&nbsp;</td>
+	  <td align="left">
+	      &nbsp;
+	  </td>
+	  <td class="tdlabel">&nbsp;</td>
+	   <td class="tdinput"><input type="button" value="导出EXCEL" onclick="downfile()"  class="bt1"></td>
+	</tr>
+  </table>
+</form>
+</div>
+
+<div class="mainDiv" id="mdiv"> 
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" width="98%" align="center" id="tb" class="datatable">
+<tr height="20"  align="center"   class="FixedTitleRow">
+	<td nowrap>序号</td>
+	<td nowrap>供应商编码</td>
+	<td nowrap>供应商名称</td>
+	<td nowrap>级别</td>
+	<td nowrap>账期</td>
+	<td nowrap>合同期间</td>
+	<td nowrap>供货名称</td>
+	<td nowrap>附件</td>
+	<td nowrap>是否过期</td>
+	<td nowrap>备注</td>
+</tr>
+    #set($i=1) 
+    #foreach($m in $selsncontractbypagequery)
+	<tr height="20" class="trcolor">
+		<td align="center">$i</td>
+		<td align="center" nowrap>$!m.CUSTCODE</td>
+		<td align="center" nowrap>$!m.CUSTNAME</td>
+		<td align="center" nowrap>
+		   #if($!m.GRADE!="")
+		      $!m.GRADE
+		   #else
+		     &nbsp;
+		   #end
+		</td>
+		<td align="center" nowrap>
+		    #if($!m.ACCOUNTNAME!="")
+		      $!m.ACCOUNTNAME
+		    #else
+		      &nbsp;
+		    #end
+		</td>
+		<td align="center" nowrap>
+		    #if($!m.CONTRACTPERIOD!="")
+		      $!m.CONTRACTPERIOD
+		    #else
+		      &nbsp;
+		    #end
+		</td>
+		<td align="center" nowrap>$!m.ZCMC</td>
+		<td align="left" nowrap>
+		    #if($!m.FILEURL!="")
+		      <a href="/DownFileServlet?filepath=$!m.FILEURL">$!m.FILEURL</a>
+		    #else
+		      &nbsp;
+		    #end
+		</td>
+		<td align="center" nowrap>
+		    #if($!m.ISUSE=="1")
+		      是
+		    #elseif($!m.ISUSE=="2")
+		      否
+		    #end
+		</td>
+		<td align="center" nowrap>
+		    #if($!m.VNOTE!="")
+		      $!m.VNOTE
+		    #else
+		      &nbsp;
+		    #end
+		</td>
+	 </tr>
+	 #set($i=$i+1)
+   #end  
+   #if($i==1)
+     <tr height="20" bgcolor="#eeeeee" class="trcolor">
+     <td colspan="17"  bgcolor="#eeeeee" align="center" class="trcolor">没有相关信息</td>
+     </tr>
+   #end
+</table>
+</div>
+<div>
+		<table width="100%">
+   <tr >
+        <td class="tdlabel td">$pagecode</td>
+   </tr>
+</table>
+</div>
+<div align="center"><input type="button" class="login2" value=" 刷  新 " name="B222" onClick="javascript:window.location.reload();"> </div>
+<form name="form1" method="post">
+<input type="hidden" name="csaleid">
+<input type="hidden" name="fpageadd" value="1">
+<input type="hidden" name="billno" value="$!form_billno">	
+<input type="hidden" name="billdate1" value="$!form_billdate1">	
+<input type="hidden" name="billdate2" value="$!form_billdate2">	
+<input type="hidden" name="ocustname" value="$!form_ocustname">	
+<input type="hidden" name="odeptname" value="$!form_odeptname">	
+<input type="hidden" name="oemployee" value="$!form_oemployee">	
+<input type="hidden" name="osalename" value="$!form_osalename">	
+<input type="hidden" name="custname" value="$!form_custname">	
+<input type="hidden" name="deptname" value="$!form_deptname">	
+<input type="hidden" name="employee" value="$!form_employee">	
+<input type="hidden" name="salename" value="$!form_salename">	
+<input type="hidden" name="usestatus" value="$!form_usestatus">	
+<input type="hidden" name="vreceiptcode">
+</form>
+<iframe name="saveframe" src="about:blank" width="100%" height="0" noresize frameborder=0 framespacing=0 
+
+marginheight=0 marginwidth=0></iframe> 
+</BODY>
+</HTML>

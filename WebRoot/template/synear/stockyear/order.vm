@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>订单明细</title>
+<link rel="stylesheet" type="text/css" href="../../../js/style.css">
+<link rel="stylesheet" type="text/css" href="../../../js/spellCode.css">
+</head>
+<script language="javascript">
+var nnumber = 0;
+var nnumber1 = 0;
+var nnumber2 = 0;
+var nnumber3 = 0;
+function accAdd(arg1,arg2){ 
+	var r1,r2,m; 
+	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+	m=Math.pow(10,Math.max(r1,r2)) 
+	return (arg1*m+arg2*m)/m 
+ } 
+</script>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+  <tr class="trcolor">
+    <td height="25" nowrap>订单号</td>
+    <td height="25" nowrap>客户编码</td>
+    <td height="25" nowrap>客户名称</td>
+    <td height="25" nowrap>数量</td>
+  </tr>
+  #foreach($m in $custdzdxsdddetailsum)
+  <tr class="trcolor">
+     <td width="20%">$m.VRECEIPTCODE</td>
+     <td width="20%">$m.CUSTCODE</td>
+     <td width="20%">$m.CUSTNAME</td>
+     <td width="20%">$m.NNUMBER</td>
+  </tr>
+  #end
+</table>
+<br>
+<table border="0" cellspacing="0" cellpadding="0" class="datatable">
+  <tr class="trcolor">
+    <td height="25" nowrap>序号</td>
+    <td height="25" nowrap>产品编码</td>
+    <td height="25" nowrap>产品名称</td>
+    <td height="25" nowrap>产品规格</td>
+    <td height="25" nowrap>数量</td>
+    <td height="25" nowrap>累计出库数量</td>
+    <td height="25" nowrap>金额</td>
+    <td height="25" nowrap>累计金额</td>
+  </tr>
+  #set($i = 1 )
+  #foreach($m in $custdzdxsdddetail)
+  <tr class="trcolor">
+    <td>$i</td>
+    <td>$m.INVCODE</td>
+    <td>$m.INVNAME</td>
+    <td>$m.INVSPEC</td>
+    <td>$m.NNUMBER</td>
+    <td>$m.NOUTNUM</td>
+    <td>$m.NMNY</td>
+    <td>$m.LJNMNY</td>
+  </tr>
+  #set($i = $i + 1)
+  <script>
+     nnumber1 += $m.NNUMBER;
+     nnumber2=accAdd(nnumber2,$m.NMNY);
+     nnumber += $m.NOUTNUM;
+     nnumber3=accAdd(nnumber3,$m.LJNMNY);
+  </script>
+  #end
+  <tr class="trcolor">
+     <td colspan="2">合计</td>
+     <td>&nbsp;</td>
+     <td>&nbsp;</td>
+     <td><script>document.write(nnumber1);</script></td>
+     <td><script>document.write(nnumber);</script></td>
+     <td><script>document.write(nnumber2);</script></td>
+     <td><script>document.write(nnumber3);</script></td>
+  </tr>
+  <tr class="trcolor">
+    <td colspan="8"><input type="button" class="bt1" value="关&nbsp;闭" onclick="window.close()"></td>
+  </tr>
+</table>
+</body> 
+</html>      

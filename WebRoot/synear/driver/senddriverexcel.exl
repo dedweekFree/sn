@@ -1,0 +1,10 @@
+<web:page>
+  <web:sql>snsendmanagerquerycountexcel</web:sql>
+  <web:db>Login</web:db>
+  <web:col>派车单号##订单总量##运输公司##车牌号##联系电话##单据日期##开单时间##第一装车地##装车状态##装车量##第二装车地##装车状态##装车量##到车情况</web:col>
+  <web:key>SENDID##QUANTITY##SENDCORPNAME##DRIVERNUMBER##PHONE##CREATEDATE##TS##ADDRESS##ST1#NSHOULDOUTNUM##ADDRESS1##ST2##NSHOULDOUTNUM1##ST3</web:key>
+  <web:name>订单明细</web:name>
+</web:page>
+
+
+
