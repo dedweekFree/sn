@@ -1,7 +1,0 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-#foreach($m in $sql0)
-  var o=document.createElement("option");   
-  o.text= $!m.SNAME;   
-  o.value=$!m.PK_SCODE ;
-  form1.stockId.add(o);
-#end
