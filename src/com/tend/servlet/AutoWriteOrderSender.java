@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import net.htjs.srvapp.util.FunctionLib;
-import net.htjs.srvapp.web.BaseBean;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+
+import com.htjs.util.FunctionLib;
+import com.xxs.common.util.BaseBean;
 
 public class AutoWriteOrderSender implements Runnable {
 

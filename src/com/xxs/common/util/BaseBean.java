@@ -70,7 +70,6 @@ public class BaseBean extends BaseAttribute {
 
 	/**
 	 * 填加一条新数据，根据SID调用
-	 * 
 	 * @param request
 	 * @return 1成功、0失败
 	 */

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE sqlMapConfig
+        PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+	<!--使用SQLMaps 自带的连接池实现-->
+	<sqlMapConfig>
+		<properties resource="db.properties" />
+		<!--512,128,32-->
+		<settings cacheModelsEnabled="false" errorTracingEnabled="true"
+			enhancementEnabled="true" lazyLoadingEnabled="true" maxRequests="512"
+			maxSessions="256" maxTransactions="128"
+			useStatementNamespaces="false" />
+        	<typeHandler jdbcType="CLOB" javaType="java.lang.String" callback="com.ibatis.sqlmap.engine.type.ClobTypeHandlerCallback"/>
+			<!--<typeHandler jdbcType="BLOB" javaType="[]byte" callback="com.htjs.util.OracleBlobTypeHandlerCallback"/>-->
+			<!--<typeHandler jdbcType="CLOB" javaType="java.lang.String" callback="com.htjs.util.OracleClobTypeHandlerCallback"/>-->
+			<transactionManager type="JDBC">
+				<dataSource type="SIMPLE">
+				<property name="JDBC.Driver" value="${driver}" />
+				<property name="JDBC.ConnectionURL" value="${url}" />
+				<property name="JDBC.Username" value="${user}" />
+				<property name="JDBC.Password" value="${pass}" />
+				<property name="Driver.SetBigStringTryClob" value="true" />
+				<!-- OPTIONAL PROPERTIES BELOW -->
+				<property name="Pool.MaximumActiveConnections" value="100" />
+				<property name="Pool.MaximumIdleConnections" value="10" />
+				<property name="Pool.MaximumCheckoutTime" value="120000" />
+				<property name="Pool.TimeToWait" value="10000" />
+				<property name="Pool.PingQuery" value="select * from dual" />
+				<property name="Pool.PingEnabled" value="false" />
+				<property name="Pool.PingConnectionsOlderThan" value="0" />
+				<property name="Pool.PingConnectionsNotUsedFor" value="0" />
+			</dataSource>
+		</transactionManager>
+	   <sqlMap resource="com\nc\sqlmap\myreport.xml"/>
+	   <sqlMap resource="com\nc\sqlmap\maichang.xml"/>
+	   <sqlMap resource="com\nc\sqlmap\videosession.xml"/>
+	   <sqlMap resource="com\nc\sqlmap\productprice.xml"/>
+	   <sqlMap resource="com\nc\sqlmap\budget.xml"/>
+	   <sqlMap resource="com\nc\sqlmap\budgetreport.xml"/>
+	</sqlMapConfig>

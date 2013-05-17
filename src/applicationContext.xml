@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<import resource="classpath:applicationContext-djlr.xml"/>
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>db.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 基类 START-->
+	<bean id="baseDao" class="net.htjs.srvapp.db.BaseDao">
+		<property name="sqlMapClient"><ref local="sqlMapClient"/></property>
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"><value>${driver}</value></property>
+		<property name="url"><value>${url}</value></property>
+		<property name="username"><value>${user}</value></property>
+		<property name="password"><value>${pass}</value></property>
+	</bean>
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="configLocation" value="SqlMapConfig_simple.xml"/>
+	    <property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 基类 E N D -->
+	
+	<!-- 权限 START-->
+	 <bean id="baseDaoQx" class="net.htjs.srvapp.db.BaseDao">
+		<property name="sqlMapClient"><ref local="sqlMapClientQx"/></property>
+     </bean>
+     
+	<bean id="dataSourceQx" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"><value>${driver}</value></property>
+		<property name="url"><value>${urlQx}</value></property>
+		<property name="username"><value>${userQx}</value></property>
+		<property name="password"><value>${passQx}</value></property>
+	</bean>
+	<bean id="sqlMapClientQx" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="configLocation" value="SqlMapConfig_simple.xml"/>
+	    <property name="dataSource" ref="dataSourceQx"/>
+	  </bean>
+	  
+
+	<!-- 权限 E N D-->
+	
+	<!-- 服务系统 -->
+	<bean id="dataSourceSrv" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"><value>${driver}</value></property>
+		<property name="url"><value>${urlSrv}</value></property>
+		<property name="username"><value>${userSrv}</value></property>
+		<property name="password"><value>${passSrv}</value></property>
+	</bean>
+	
+	 <bean id="sqlMapClientSrv" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="configLocation" value="SqlMapConfig_simple.xml"/>
+	    <property name="dataSource" ref="dataSourceSrv"/>
+	  </bean>
+	  <bean id="baseDaoSrv" class="net.htjs.srvapp.db.BaseDao">
+		<property name="sqlMapClient"><ref local="sqlMapClientSrv"/></property>
+     </bean>
+	<!-- 服务系统END -->
+	
+	<!-- 登录 START-->
+     <bean id="baseDaoLogin" class="net.htjs.srvapp.db.BaseDao">
+		<property name="sqlMapClient"><ref local="sqlMapClientLogin"/></property>
+     </bean>
+	
+    <bean id="dataSourceLogin" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"><value>${driverLogin}</value></property>
+		<property name="url"><value>${urlLogin}</value></property>
+		<property name="username"><value>${userLogin}</value></property>
+		<property name="password"><value>${passLogin}</value></property>
+	 </bean>
+	 <bean id="sqlMapClientLogin" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="configLocation" value="SqlMapConfig_simple.xml"/>
+	    <property name="dataSource" ref="dataSourceLogin"/>
+	  </bean>
+	<!-- 登录 START-->
+	  
+</beans>

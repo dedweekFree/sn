@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.htjs.srvapp.util.FunctionLib;
-import net.htjs.srvapp.web.BaseBean;
+import com.htjs.util.FunctionLib;
+import com.xxs.common.util.BaseBean;
 
 public class UpdatePwdServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

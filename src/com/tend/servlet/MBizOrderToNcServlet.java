@@ -5,23 +5,16 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.htjs.srvapp.util.FunctionLib;
-import net.htjs.srvapp.web.ToNcEngine;
-import net.htjs.srvapp.web.WebApp;
 
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -31,6 +24,10 @@ import org.apache.velocity.app.VelocityEngine;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.htjs.util.FunctionLib;
+import com.xxs.common.util.ToNcEngine;
+import com.xxs.common.util.WebApp;
 
 public class MBizOrderToNcServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

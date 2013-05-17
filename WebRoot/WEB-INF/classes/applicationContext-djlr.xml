@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+     <bean id="daoQxUser" class="net.htjs.srvapp.db.DaoQxUserImpl">
+		<property name="sqlMapClient"><ref bean="sqlMapClientQx"/></property>
+     </bean>
+     <bean id="daoDjlr" class="net.htjs.srvapp.db.DaoSaleImpl">
+		<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>
+     </bean>
+</beans>
